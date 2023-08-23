@@ -6,9 +6,9 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
-  router: {
-    base: '/plan/'
-  },
+  // router: {
+  //   base: '/plan/'
+  // },
 
   static: {
     prefix: true
@@ -17,7 +17,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s',
-    title: 'ระบบบริหารการปฏิบัติราชการ',
+    title: 'ระบบบริหารจัดการแผนปฏิบัติราชการ',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -25,8 +25,8 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/png', href: 'favicon.png' },
-      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css'},
+      { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css'},
       { rel: 'preconnect', href: 'https://fonts.gstatic.com'},
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Niramit:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Prompt:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Sarabun:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap'},
     ]
@@ -39,6 +39,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    {src: '~/plugins/vueapexcharts.js', mode: 'client'},
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -61,12 +62,14 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
-    prefix: '/PlanApi/',
+    // baseURL: 'http://localhost/ptcplan-api/',
+    // baseURL: 'http://113.53.238.204/PlanApi/',
+    baseURL: '/Api/',
+    prefix: '/Api/',
     proxy: true,
   },
   proxy: {
-    '/PlanApi/': { target: 'http://localhost/ptcplan-api/', pathRewrite: {'^/PlanApi/': ''} }
+    '/Api/': { target: 'http://localhost/ptcplan-api/', pathRewrite: {'^/Api/': ''} }
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

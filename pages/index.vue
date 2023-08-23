@@ -1,116 +1,62 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6" class="mt-5 text-center">
-      <v-btn x-large color="primary" class="mt-5" to="/pjsummary">รายงานผลการดำเนินโครงการ ประจำปีงบประมาณ พ.ศ.2565</v-btn>
+  <v-row justify="center" align="center" dense>
+    <v-col cols="12" class="pt-5 px-5 green lighten-5">
+      <div class="col-12 col-md-2 ml-auto pa-0" v-if="periods.length > 0">
+        <v-select
+          v-model="periodYear"
+          label="ปีงบประมาณ พ.ศ."
+          :items="periods"
+          item-text="periodYearBd"
+          item-value="periodYear"
+          outlined
+          dense
+        ></v-select>
+      </div>
+    </v-col>
+    <v-col cols="12" class="mt-2" v-if="periodYear">
+      <InfoVue :periodYear="parseInt(periodYear)" userType="Public" />
     </v-col>
   </v-row>
 </template>
 
 <script>
+import InfoVue from '~/components/Info.vue'
 export default {
   name: 'IndexPage',
+  components: {
+    InfoVue,
+  },
+
   data() {
     return {
       thdate: '',
-      headers: [
-        {
-          text: 'Dessert (100g serving)',
-          align: 'start',
-          sortable: false,
-          value: 'name',
-        },
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Iron (%)', value: 'iron' },
-      ],
-      desserts: [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: '1%',
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: '1%',
-        },
-        {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: '7%',
-        },
-        {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: '8%',
-        },
-        {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: '16%',
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: '0%',
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: '2%',
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: '45%',
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: '22%',
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: '6%',
-        },
-      ],
+      periods: [],
+      periodYear: null,
     }
   },
-  mounted() {
+  async mounted() {
     this.thdate = new Date()
+    await this.getPeriods()
+  },
+  methods: {
+    async getPeriods() {
+      let params = {
+        token: this.$store.state.jwtToken,
+        fn: 'All'
+      }
+      let result = await this.$axios.$get('period.php', {params})
+      if(result.message == 'Success') {
+        this.periods = JSON.parse(JSON.stringify(result.period))
+        if(this.periods.length > 0) {
+          let thisPeriod = this.periods.filter(period => Date.now() >= new Date(period.periodBegin.replace('-', '/')).getTime() && Date.now() <= new Date(period.periodEnd.replace('-', '/')+' 23:59:00').getTime())
+          if(thisPeriod.length > 0) {
+            this.periodYear = thisPeriod[0].periodYear
+          } else {
+            this.periodYear = this.periods[0].periodYear
+          }
+        }
+      }
+    },
   }
 }
 </script>

@@ -3,12 +3,12 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-card elevation="1">
-          <v-card-title class="light-blue lighten-5">
+          <v-card-title class="ptcBg white--text">
             <b>ข้อมูลส่วนตัว</b>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-md-5">
-            <v-row dense class="px-5 pa-md-5">
+            <v-row dense class="px-5 pa-md-5" v-if="personal">
               <v-col cols="12" md="4" class="py-2">
                 เลขประจำตัวประชาชน <b>{{ personal.personalIDcard }}</b>
               </v-col>
@@ -24,8 +24,13 @@
               <v-col cols="12" md="4" class="py-2">
                 เบอร์โทรศัพท์ <b>{{ personal.personalPhone }}</b>
               </v-col>
-              <v-col cols="12" md="8" class="py-2">
+              <v-col cols="12" md="4" class="py-2">
                 Email <b>{{ personal.personalEmail }}</b>
+              </v-col>
+              <v-col cols="12" md="4" class="py-2">
+                ลายมือชื่อ
+                <v-icon color="success" v-if="signature">fas fa-check-circle</v-icon>
+                <v-icon color="red darken-2" v-else>fas fa-times-circle</v-icon>
               </v-col>
             </v-row>
           </v-card-text>
@@ -182,7 +187,7 @@
                           ]"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="7">
+                      <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">Email</h3>
                         <v-text-field
                           v-model="personalUpdate.personalEmail"
@@ -193,6 +198,49 @@
                             ()=> !!personalUpdate.personalEmail || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">ลายมือชื่อ</h3>
+                        <v-file-input
+                          v-model="personalSignature"
+                          ref="personalSignature"
+                          dense
+                          outlined
+                          small-chips
+                          show-size
+                          counter
+                          accept="image/jpeg"
+                          label="ภาพลายมือชื่อ"
+                          @change="signatureImagesChanged"
+                        ></v-file-input>
+                        <div class="col-12" v-if="personalSignature">
+                          <v-img
+                            :src="getImageUrl(personalSignature)"
+                            contain
+                          >
+                            <template v-slot:placeholder>
+                              <v-row
+                                  class="fill-height ma-0 "
+                                  justify="center"
+                              >
+                                <v-icon large>fas fa-images</v-icon>
+                              </v-row>
+                            </template>
+                          </v-img>
+                        </div>
+                        <div class="col-12" v-else-if="personalUpdate.personalSignature">
+                          <v-img
+                            :src="personalUpdate.imagePath+psignature+'?d='+(new Date().getTime())"
+                            contain
+                            class="align-end text-right"
+                            gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
+                            v-for="psignature in personalUpdate.personalSignature" :key="psignature.key"
+                          >
+                            <v-btn icon small color="red darken-2" @click="showDeleteSignatureDialog(psignature)">
+                              <v-icon small>fas fa-trash</v-icon>
+                            </v-btn>
+                          </v-img>
+                        </div>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -367,6 +415,78 @@
       </v-dialog>
     </v-row>
 
+    <v-row justify="center">
+      <v-dialog
+        v-model="deleteDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-8 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="red lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="deleteDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <v-card-title class="red lighten-2">
+                  <span class="fontBold black--text">ลบภาพลายมือชื่อ</span>
+                </v-card-title>
+                <v-divider class="green"></v-divider>
+                <v-form
+                  @submit.prevent="deletePersonalSignature"
+                  class="mt-4"
+                >
+                  <v-card-text>
+                    <v-row>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">ภาพลายมือชื่อ</h3>
+                        <v-row v-if="signatureDeleteName">
+                          <v-col class="col-12 col-md-6 mx-auto">
+                            <v-img
+                              :src="personal.imagePath+signatureDeleteName+'?d='+(new Date().getTime())"
+                            >
+                            </v-img>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                  <v-divider class="green lighten-2"></v-divider>
+                  <v-card-actions>
+                    <div class="col-12 text-center">
+                      <v-btn
+                        @click="deleteDialog = false"
+                        outlined
+                      >
+                        ยกเลิก
+                      </v-btn>
+                      <v-progress-circular
+                        indeterminate
+                        color="success"
+                        v-if="deleteProgress"
+                      ></v-progress-circular>
+                      <v-btn
+                        type="submit"
+                        color="red darken-1"
+                        large
+                        dark
+                        v-else
+                      >
+                        ลบ
+                      </v-btn>
+                    </div>
+                  </v-card-actions>
+                </v-form>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
   </div>
 </template>
 <script>
@@ -382,6 +502,8 @@ export default {
   data() {
     return {
       personal: {},
+      signature: false,
+      personalSignature: null,
       personalUpdate: {},
       updateDialog: false,
       changePasswordDialog: false,
@@ -391,6 +513,10 @@ export default {
       changePasswordProgress: false,
       passwordShow: false,
       oldPasswordShow: false,
+      signatureDeleteName: null,
+      deleteDialog: false,
+      deleteProgress: false,
+
     }
   },
 
@@ -409,17 +535,43 @@ export default {
 
       if(result.message == 'Success') {
         this.personal = JSON.parse(JSON.stringify(result.personal))
+        let result2 = await this.$axios.$get('signature.image.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            signatureType: 'Personal',
+            signatureID: this.personal.personalIDcard,
+            function: 'signatureImageGet'
+          }
+        })
+        if(result2.message == 'Success') {
+          this.personal.personalSignature = JSON.parse(JSON.stringify(result2.signatureImages))
+          this.personal.imagePath = result2.signatureImagePath
+          this.signature = true
+        }
       }
     },
 
-    showUpdateDialog() {
+    async showUpdateDialog() {
       this.personalUpdate = JSON.parse(JSON.stringify(this.personal))
       if(this.personalUpdate.personalPrefix!='นาย' && this.personalUpdate.personalPrefix!='นาง' && this.personalUpdate.personalPrefix!='นางสาว'){
         this.personalUpdate.personalPrefixOther = this.personalUpdate.personalPrefix
         this.personalUpdate.personalPrefix = 'อื่น ๆ'
       }
       delete this.personalUpdate.personalPassword
+      this.personalSignature = null
       this.updateDialog = true
+    },
+
+    signatureImagesChanged(image) {
+      if(image) {
+        this.personalSignature = image;
+      } else {
+        this.personalSignature = null;
+      }
+    },
+
+    getImageUrl(image) {
+      return URL.createObjectURL(image)
     },
 
     showChangePasswordDialog() {
@@ -436,10 +588,31 @@ export default {
           this.personalUpdate.personalPrefix = this.personalUpdate.personalPrefixOther
         }
         let result = await this.$axios.$post('personal.update.php', this.personalUpdate)
-        if(result.message == 'Success') {
+
+        let result2 = {message: null}
+
+        if(this.personalSignature) {
+            let formData = new FormData()
+            formData.append('token', this.personalUpdate.token)
+            formData.append('function', 'signatureImageUpload')
+            formData.append('signatureType', 'Personal')
+            formData.append('signatureID', this.personalUpdate.personalIDcard)
+            formData.append('signatureImage', this.personalSignature)
+            result2 = await this.$axios.$post('signature.image.php', formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+            });
+        }
+
+        if(result.message == 'Success' || result2.message == 'Success') {
+          let msg = result.msg;
+          if(result2.message == 'Success') {
+            msg = result2.msg
+          }
           swal({
             title: 'เรียบร้อย',
-            text: result.msg,
+            text: msg,
             icon: 'success'
           }).then(async ()=> {
             await this.getPersonal()
@@ -499,7 +672,46 @@ export default {
         }
       }
       this.changePasswordProgress = false
-    }
+    },
+
+    showDeleteSignatureDialog(imageName) {
+      this.signatureDeleteName = imageName
+      this.deleteDialog = true
+    },
+
+    async deletePersonalSignature() {
+        if(this.signatureDeleteName) {
+          let formData = new FormData()
+          formData.append('token', this.$store.state.jwtToken)
+          formData.append('function', 'signatureImageDelete')
+          formData.append('signatureImage', this.signatureDeleteName)
+          let result = await this.$axios.$post('signature.image.php', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+          });
+
+          if(result.message == 'Success') {
+            swal({
+              title: 'สำเร็จ',
+              text: result.msg,
+              icon: 'success'
+            })
+            delete this.personal.personalSignature
+            delete this.personal.imagePath
+            delete this.personalUpdate.personalSignature
+            delete this.personalUpdate.imagePath
+            this.signature = false
+          } else {
+            swal({
+              title: 'ผิดพลาด',
+              text: result.msg,
+              icon: 'error'
+            })
+          }
+        }
+        this.deleteDialog = false
+    },
   },
 
   watch: {

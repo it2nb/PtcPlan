@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-row justify="center" class="mt-3">
       <v-col cols="12">
         <h3 class="fontBold">รายงานผลการดำเนินโครงการ ประจำปีงบประมาณ พ.ศ. 2565</h3>
@@ -58,7 +58,7 @@
               <v-btn color="info" icon  small @click="showInfoDialog(item)" v-if="item.pjsummaryStatus>0">
                 <v-icon small class="mr-1">fas fa-search</v-icon>
               </v-btn>
-              <v-btn color="primary" icon  small :to="'print/pjsummaryReport/?id='+project.projectID" target="_blank" v-if="item.pjsummaryStatus==item.pjsummaryStatusAll && item.imageQty>=4">
+              <v-btn color="primary" icon  small :to="'print/pjsummaryReport/?id='+item.projectID" target="_blank" v-if="item.pjsummaryStatus==item.pjsummaryStatusAll && item.imageQty>=4">
                 <v-icon small class="mr-1">fas fa-print</v-icon>
               </v-btn>
             </div>
@@ -853,14 +853,12 @@ export default {
 
     showDeleteImageDialog(imageName) {
       this.imageDeleteName = imageName
-      console.log(this.imageDeleteName)
       this.deleteDialog = true
     },
 
     async deletePjsummary() {
         this.project.token = this.$store.state.jwtToken
         if(this.imageDeleteName.length > 0) {
-          console.log(this.imageDeleteName)
           let formData = new FormData()
           formData.append('token', this.project.token)
           formData.append('function', 'projectImageDelete')

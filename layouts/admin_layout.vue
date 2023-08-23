@@ -5,9 +5,10 @@
       clipped
       fixed
       app
+      color="grey lighten-5"
     >
       <v-list class="pt-0">
-        <v-list-item class="px-1" style="background: linear-gradient(135deg, rgba(73,194,241,1) 0%, rgba(233,249,255,1) 31%, rgba(181,240,252,1) 100%);">
+        <v-list-item class="px-1 elevation-1" style="background: linear-gradient(135deg, rgba(0,137,123,1) 0%, rgba(224,242,241,1) 31%, rgba(77,182,172,1) 100%);">
           <v-list-item-content>
             <v-row class="pa-0 col-12 align-center">
               <v-col cols="9" class="text-right">
@@ -28,7 +29,7 @@
               </v-col>
               <v-col cols="3" class="text-center">
                 <v-avatar
-                  color="primary"
+                  color="blue-grey darken-2"
                   size="48"
                 >
                   <v-icon color="grey lighten-2">
@@ -47,6 +48,7 @@
           :to="item.to"
           router
           exact
+          color="teal darken-2"
         >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -57,21 +59,9 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar
-      clipped-left
-      clipped-right
-      fixed
-      app
-      class="elevation-1 white"
-      style="background: linear-gradient(0deg, rgba(252,151,34,1) 0%, rgba(252,151,34,1) 8%, rgba(255,255,255,1) 12%);"
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="col-12">
-        <Headerapp />
-      </v-toolbar-title>
-    </v-app-bar>
+    <Headerapp :drawer="drawer" @getDrawer="drawerChange" />
     <v-main>
-      <v-container>
+      <v-container fluid class="mt-1 pa-0">
         <Nuxt />
       </v-container>
     </v-main>
@@ -101,8 +91,33 @@ export default {
       items: [
         {
           icon: 'fas fa-dot-circle ',
+          title: 'Info',
+          to: '/Admin/',
+        },
+        {
+          icon: 'fas fa-dot-circle ',
+          title: 'ข้อมูลส่วนตัว',
+          to: '/Admin/me',
+        },
+        {
+          icon: 'fas fa-dot-circle ',
+          title: 'ปีงบประมาณ',
+          to: '/Admin/period',
+        },
+        {
+          icon: 'fas fa-dot-circle ',
           title: 'ยุทธศาสตร์สถานศึกษา',
           to: '/Admin/orgstrategic',
+        },
+        {
+          icon: 'fas fa-dot-circle ',
+          title: 'นโยบายที่เกี่ยวข้อง',
+          to: '/Admin/policy',
+        },
+        {
+          icon: 'fas fa-dot-circle',
+          title: 'แผนงบประมาณ',
+          to: '/Admin/budgetplan'
         },
         {
           icon: 'fas fa-dot-circle',
@@ -111,14 +126,24 @@ export default {
         },
         {
           icon: 'fas fa-dot-circle',
-          title: 'แผนกงาน',
-          to: '/Admin/department'
+          title: 'จัดซื้อ/เบิกเงิน',
+          to: '/Admin/disburse'
         },
         {
-          icon: 'fas fa-dot-circle ',
-          title: 'นโยบายที่เกี่ยวข้อง',
-          to: '/Admin/strategic',
+          icon: 'fas fa-dot-circle',
+          title: 'ข้อมูลผู้ใช้ระบบ',
+          to: '/Admin/users'
         },
+        // {
+        //   icon: 'fas fa-dot-circle',
+        //   title: 'แผนกงาน',
+        //   to: '/Admin/department'
+        // },
+        // {
+        //   icon: 'fas fa-dot-circle ',
+        //   title: 'นโยบายที่เกี่ยวข้อง',
+        //   to: '/Admin/strategic',
+        // },
       ],
     }
   },
@@ -133,6 +158,10 @@ export default {
   },
 
   methods: {
+    drawerChange(data) {
+      this.drawer = data.drawer
+    },
+
     logout() {
       sessionStorage.clear()
       this.$router.replace('/')

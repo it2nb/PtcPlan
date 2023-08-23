@@ -1,24 +1,26 @@
 <template>
-  <div>
+  <div class="mt-3">
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6" class="mt-5 text-center">
         <v-card rounded elevation="3" class="">
-          <v-card-title>
-            <h3 class="col-12 fontBold text-center">ลงชื่อเข้าสู่ระบบ</h3>
+          <v-card-title class="ptcBg">
+            <h3 class="col-12 fontBold text-center white--text">ลงชื่อเข้าสู่ระบบ</h3>
           </v-card-title>
           <v-divider class="mb-5"></v-divider>
           <v-tabs
             v-model="loginTypeTab"
             color="orange darken-4"
+            background-color="green lighten-5"
             fixed-tabs
           >
-            <v-tab><b>ครูและบุคลากรทางการศึกษา</b></v-tab>
-            <v-tab><b>ผู้ดูแลระบบ</b></v-tab>
+            <!-- <v-tab><b>ครูและบุคลากรทางการศึกษา</b></v-tab> -->
+            <!-- <v-tab><b>แผนก/งาน/ฝ่าย/ผู้ดูแลระบบ</b></v-tab> -->
+            <v-tab><b>Login</b></v-tab>
           </v-tabs>
           <v-tabs-items
             v-model="loginTypeTab"
           >
-            <v-tab-item>
+            <!-- <v-tab-item>
               <v-form
                 ref="loginpersonalForm"
                 lazy-validation
@@ -60,9 +62,9 @@
                       type="submit"
                       color="success"
                     >เข้าสู่ระบบ</v-btn>
-                    <!-- <div class="mt-3">
-                      <v-btn text color="primary" @click="showForgetPassword('User')">ลืมรหัสผ่าน</v-btn>
-                    </div> -->
+                    <div class="mt-3">
+                      <v-btn small text color="primary" @click="showForgetPassword('Personal')">ลืมรหัสผ่าน</v-btn>
+                    </div>
                     <v-divider class="mt-3"></v-divider>
                     <div class="mt-3">
                       <v-btn rounded outlined color="success" @click="showPersonalRegis">ลงทะเบียน</v-btn>
@@ -70,7 +72,7 @@
                   </div>
                 </v-card-actions>
               </v-form>
-            </v-tab-item>
+            </v-tab-item> -->
             <v-tab-item>
               <v-form
                 ref="loginuserForm"
@@ -113,9 +115,9 @@
                       type="submit"
                       color="success"
                     >เข้าสู่ระบบ</v-btn>
-                    <!-- <div class="mt-3">
-                      <v-btn text color="primary" @click="showForgetPassword('User')">ลืมรหัสผ่าน</v-btn>
-                    </div> -->
+                    <div class="mt-3">
+                      <v-btn small text color="primary" @click="showForgetPassword('User')">ลืมรหัสผ่าน</v-btn>
+                    </div>
                     <!-- <v-divider class="mt-3"></v-divider>
                     <div class="mt-3">
                       <v-btn rounded outlined color="success" @click="showPersonalRegis">ลงทะเบียน</v-btn>
@@ -131,12 +133,81 @@
 
     <v-row justify="center">
       <v-dialog
+        v-model="forgetPersonalPasswordDialog"
+        fullscreen
+        overlay-color="black"
+      >
+        <v-card style="background-color: rgba(0, 0, 0, 0.5)">
+          <v-container class="col-12 col-md-5">
+            <div class="text-right">
+              <v-btn
+                icon
+                dark
+                @click="forgetPersonalPasswordDialog = false"
+              >
+                <v-icon>fas fa-times-circle</v-icon>
+              </v-btn>
+            </div>
+            <v-card>
+              <v-card-title class="elevation-3 primary--text text--darken-2">
+                <b>รีเซ็ตรหัสผ่าน สำหรับครูและบุคลากรทางการศึกษา</b>
+              </v-card-title>
+              <v-form
+                ref="forgetpersonalpasswordForm"
+                lazy-validation
+                @submit.prevent="forgetPersonalPassword"
+              >
+                <v-card-text class="pa-5">
+                  <v-row>
+                    <v-col cols="12">
+                      <h3 class="mb-2 fontBold">เลขประจำตัวประชาชน</h3>
+                      <v-text-field
+                        v-model="repasswordID"
+                        label="เลขประจำตัวประชาชน"
+                        dense
+                        outlined
+                        :rules="[
+                          ()=> !!repasswordID || 'กรุณากรอกข้อมูล',
+                          ()=> checkIDcard(repasswordID || '') || 'เลขประจำตัวประชาชนไม่ถูกต้อง'
+                        ]"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions class="pa-5" v-if="forgetPersonalProgress">
+                  <v-spacer></v-spacer>
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
+                </v-card-actions>
+                <v-card-actions class="pa-5" v-else>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    type="submit"
+                    color="warning"
+                  >
+                    ขอกำหนดรหัสผ่านใหม่
+                  </v-btn>
+                  <v-btn @click="forgetPersonalPasswordDialog = false">
+                    ยกเลิก
+                  </v-btn>
+                </v-card-actions>
+              </v-form>
+            </v-card>
+          </v-container>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
+    <v-row justify="center">
+      <v-dialog
         v-model="forgetUserPasswordDialog"
         fullscreen
         overlay-color="black"
       >
         <v-card style="background-color: rgba(0, 0, 0, 0.5)">
-          <v-container class="col-12 col-md-4">
+          <v-container class="col-12 col-md-5">
             <div class="text-right">
               <v-btn
                 icon
@@ -159,18 +230,25 @@
                   <v-row>
                     <v-col cols="12">
                       <v-text-field
-                        v-model="user.userUsername"
+                        v-model="repasswordName"
                         label="ชื่อผู้ใช้"
                         outlined
                         dense
                         :rules="[
-                          ()=>!!user.userUsername || 'กรุณากรอกชื่อผู้ใช้'
+                          ()=>!!repasswordName || 'กรุณากรอกชื่อผู้ใช้'
                         ]"
                       ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-card-text>
-                <v-card-actions class="pa-5">
+                <v-card-actions class="pa-5" v-if="forgetUserProgress">
+                  <v-spacer></v-spacer>
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
+                </v-card-actions>
+                <v-card-actions class="pa-5" v-else>
                   <v-spacer></v-spacer>
                   <v-btn
                     type="submit"
@@ -371,13 +449,17 @@ export default {
       user: {},
       loginTypeTab: 0,
       personal: {},
+      repasswordID: null,
+      repasswordName: null,
       passwordShow: false,
       regisPasswordShow: false,
       registerDialog: false,
       registerProgress: false,
       personalRegisterValidate: null,
       forgetUserPasswordDialog: false,
-      forgetCollegePasswordDialog: false,
+      forgetUserProgress: false,
+      forgetPersonalPasswordDialog: false,
+      forgetPersonalProgress: false,
     }
   },
 
@@ -425,6 +507,16 @@ export default {
 
           if(user.userStatus === 'Admin') {
             this.$router.push('/Admin')
+          } else if(user.userStatus === 'Department') {
+            this.$router.push('/Department')
+          } else if(user.userStatus === 'Party') {
+            this.$router.push('/Party')
+          } else if(user.userStatus === 'Director') {
+            this.$router.push('/Director')
+          } else if(user.userStatus === 'Plan') {
+            this.$router.push('/Plan')
+          } else if(user.userStatus === 'Finance') {
+            this.$router.push('/Finance')
           } else {
             sessionStorage.clear()
             this.$router.push('/')
@@ -440,63 +532,146 @@ export default {
     },
 
     showForgetPassword(type) {
+      this.repasswordID = null
+      this.repasswordName = null
       if(type === 'User') {
         this.forgetUserPasswordDialog = true
+      } else if(type === 'Personal') {
+        this.forgetPersonalPasswordDialog = true
+      }
+    },
+
+    async forgetPersonalPassword() {
+      if(this.$refs.forgetpersonalpasswordForm.validate()) {
+        this.forgetPersonalProgress = true
+        let result = await this.$axios.$get('personal.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            personalIDcard: this.repasswordID
+          }
+        })
+
+        if(result.message === 'Success') {
+          let personal = JSON.parse(JSON.stringify(result.personal))
+          if(personal) {
+            let pPass = personal.personalPassword
+            let otpnum = ''
+            let otp = ''
+            let rand = 0;
+            for (let i = 0; i < 6; i++) {
+                rand = Math.floor(Math.random() * pPass.length)
+                otp += rand.toString()
+                if(i<5) {
+                  otp += '.'
+                }
+                otpnum += pPass.charAt(rand);
+            }
+            let rescode = otpnum + (parseInt(personal.personalIDcard)+1234567890123)
+            let emailMessage = '<b>รีเซตรหัสผ่าน</b><br>'
+            emailMessage += '<b>ชื่อ-สกุล</b> '+personal.personalName+'<br>'
+            emailMessage += '<hr>'
+            emailMessage += '<b>ชื่อผู้ใช้</b> '+personal.personalIDcard+'<br><br>'
+            emailMessage += 'เปลี่ยนรหัสผ่านใหม่ คลิ๊ก <a href="http://plan.technicphrae.ac.th/resetpassword/?rescode='+rescode+'&otp='+otp+'&restype=Personal">plan.technicphrae.ac.th</a> '
+            await this.$axios.$post('sendemail.php', {
+              token: this.$store.state.jwtToken,
+              emailFrom: 'app.technicphrae@gmail.com',
+              emailTo: personal.personalEmail,
+              emailSubject: 'รีเซตรหัสผ่านระบบบริหารจัดการแผนปฏิบัติราชการ วิทยาลัยเทคนิคแพร่',
+              emailMessage: emailMessage
+            })
+            swal({
+              title: 'เรียบร้อย',
+              text: 'ส่งช่องทางการเปลี่ยนรหัสผ่านใหม่ ไปยัง '+personal.personalEmail+' เป็นที่เรียบร้อยแล้ว',
+              icon: 'success'
+            })
+            this.forgetPersonalProgress = false
+          } else {
+            swal({
+              title: 'ผิดพลาด',
+              text: 'ไม่พบข้อมูลท่านในระบบ',
+              icon: 'error'
+            })
+            this.forgetPersonalProgress = false
+          }
+        } else {
+          swal({
+            title: 'ผิดพลาด',
+            text: 'ไม่พบข้อมูลท่านในระบบ',
+            icon: 'error'
+          })
+          this.forgetPersonalProgress = false
+        }
       }
     },
 
     async forgetUserPassword() {
       if(this.$refs.forgetuserpasswordForm.validate()) {
+        this.forgetUserProgress = true
         let result = await this.$axios.$get('user.php', {
           params: {
             token: this.$store.state.jwtToken,
-            userUsername: this.user.userUsername
+            userName: this.repasswordName
           }
         })
 
         if(result.message === 'Success') {
-          let user = result.user
+          let user = JSON.parse(JSON.stringify(result.user))
           if(user) {
-            let otpnum = '123456789'
+            let uPass = user.userPassword
+            let otpnum = ''
             let otp = ''
+            let rand = 0;
             for (let i = 0; i < 6; i++) {
-                otp += otpnum.charAt(Math.floor(Math.random() * otpnum.length));
+              rand = Math.floor(Math.random() * uPass.length)
+                otp += rand.toString()
+                if(i<5) {
+                  otp += '.'
+                }
+                otpnum += uPass.charAt(rand);
             }
 
-            result = await this.$axios.$post('user.update.php', {
-              token: this.$store.state.jwtToken,
-              userID: user.userID,
-              userOTP: otp,
-              userOTPDatetime: new Date().toISOString().slice(0, 19).replace('T', ' ')
-            })
-
-            let rescode = otp + user.userID
-            rescode = parseInt(rescode) + 99
+            let rescode = otpnum + parseInt(user.userID).toString()
             let emailMessage = '<b>รีเซตรหัสผ่าน</b><br>'
-            emailMessage += '<b>ชื่อ-สกุล</b> '+user.userName+'<br>'
-            emailMessage += '<b>หน่วยงาน</b> '+user.userOrg+'<br>'
-            emailMessage += '<hr>'
-            emailMessage += '<b>ชื่อผู้ใช้</b> '+user.userUsername+'<br><br>'
-            emailMessage += 'เปลี่ยนรหัสผ่านใหม่ คลิ๊ก <a href="https://bvcas.org/resetpassword/?rescode='+rescode+'&restype=User">bvcas.org</a> '
+            emailMessage += '<b>ชื่อผู้ใช้</b> '+user.userName+'<br><br>'
+            emailMessage += 'เปลี่ยนรหัสผ่านใหม่ คลิ๊ก <a href="http://plan.technicphrae.ac.th/resetpassword/?rescode='+rescode+'&otp='+otp+'&restype=User">plan.technicphrae.ac.th</a> '
             await this.$axios.$post('sendemail.php', {
               token: this.$store.state.jwtToken,
-              emailFrom: 'noreply@bvcas.org',
+              emailFrom: 'app.technicphrae@gmail.com',
               emailTo: user.userEmail,
-              emailSubject: 'รีเซตรหัสผ่านระบบประเมินสถานศึกษาอาชีวศึกษาวิถีพุทธ',
+              emailSubject: 'รีเซตรหัสผ่านระบบบริหารจัดการแผนปฏิบัติราชการ วิทยาลัยเทคนิคแพร่',
               emailMessage: emailMessage
             })
-            swal({
-              title: 'เรียบร้อย',
-              text: 'ส่งช่องทางการเปลี่ยนรหัสผ่านใหม่ ไปยัง '+user.userEmail+' เป็นที่เรียบร้อยแล้ว',
-              icon: 'success'
-            })
+
+            if(user.userEmail) {
+              swal({
+                title: 'เรียบร้อย',
+                text: 'ส่งช่องทางการเปลี่ยนรหัสผ่านใหม่ ไปยัง '+user.userEmail+' เป็นที่เรียบร้อยแล้ว',
+                icon: 'success'
+              })
+              this.forgetUserProgress = false
+            } else {
+              swal({
+                title: 'ผิดพลาด',
+                text: 'ไม่สามารถส่งข้อมูลการรีเซตรหัสผ่านของท่านได้ เนื่องจากไม่พบข้อมูล Email ในระบบ',
+                icon: 'error'
+              })
+              this.forgetUserProgress = false
+            }
           } else {
             swal({
               title: 'ผิดพลาด',
-              text: 'ไม่พบข้อมูลสถานศึกษาท่านในระบบ',
+              text: 'ไม่พบข้อมูลท่านในระบบ',
               icon: 'error'
             })
+            this.forgetUserProgress = false
           }
+        } else {
+          swal({
+            title: 'ผิดพลาด',
+            text: 'ไม่พบข้อมูลท่านในระบบ',
+            icon: 'error'
+          })
+          this.forgetUserProgress = false
         }
       }
     },

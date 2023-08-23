@@ -1,5 +1,5 @@
 <template>
-  <div if="personalIDcard">
+  <div v-if="personalIDcard" class="mt-5">
     <PersonalInfoVue :personalIDcard="personalIDcard"/>
   </div>
 </template>

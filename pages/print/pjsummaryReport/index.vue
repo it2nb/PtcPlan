@@ -25,7 +25,7 @@
         </v-col>
         <v-col cols="12" class="mt-3 px-5">
           <div class="mb-2 fontBold font18">3. งบประมาณ</div>
-          <pre class="font18 ml-5">{{ moneyFormat(project.pjbudgetMoney) }} บาท</pre>
+          <pre class="font18 ml-5">{{ moneyFormat(project.disburseMoney) }} บาท</pre>
         </v-col>
         <v-col cols="12" class="mt-3 px-5">
           <div class="mb-2 fontBold font18">4. ผลการดำเนินงาน/กิจกรรม</div>
@@ -39,11 +39,15 @@
           </div>
         </v-col>
         <v-col cols="12" class="mt-3 px-5">
-          <div class="mb-2 fontBold font18">5. ปัญหาอุปสรรค</div>
+          <div class="mb-2 fontBold font18">5. ประโยชน์ที่คาดว่าจะได้รับ</div>
+          <pre class="font18 ml-5">{{ project.projectBenefit }}</pre>
+        </v-col>
+        <v-col cols="12" class="mt-3 px-5">
+          <div class="mb-2 fontBold font18">6. ปัญหาอุปสรรค</div>
           <pre class="font18 ml-5">{{ project.pjsummaryProblem }}</pre>
         </v-col>
         <v-col cols="12" class="mt-3 px-5">
-          <div class="mb-2 fontBold font18">6. ข้อเสนอแนะ</div>
+          <div class="mb-2 fontBold font18">7. ข้อเสนอแนะ</div>
           <pre class="font18 ml-5">{{ project.pjsummarySuggestion }}</pre>
         </v-col>
       </v-row>
@@ -115,3 +119,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  @page {
+    size: A4;
+  }
+</style>

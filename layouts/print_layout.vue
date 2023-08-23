@@ -5,12 +5,12 @@
         <v-btn dark href="javascript:window.print()" class="title mr-2 rounded" color="primary">
           <v-icon class="mr-1" color="white">fas fa-print</v-icon>พิมพ์
         </v-btn>
-        <!-- <v-btn @click.stop="Export2Doc('exportContent','word-content')" class="title elevation-0" color="grey darken-1">
-          Export to Word
-        </v-btn> -->
+        <v-btn dark @click.stop="Export2Doc('exportContent','ระบบบริหารจัดการแผนปฏิบัติราชการExport')" class="title mr-2 rounded" color="primary">
+          <v-icon class="mr-1" color="white">fas fa-file-word</v-icon> Ms Word
+        </v-btn>
       </v-toolbar-items>
     </v-system-bar>
-    <nuxt />
+    <nuxt id="exportContent" />
   </v-app>
 </template>
 
@@ -63,9 +63,3 @@
   }
 
 </script>
-
-<style>
-  @page {
-    size: A4;
-  }
-</style>
