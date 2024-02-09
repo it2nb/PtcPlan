@@ -86,7 +86,7 @@ export default {
   watch: {
     async projectYear() {
       let result = await this.periodYears.find(period => period.periodYear==this.projectYear)
-      let intime = (Date.now() >= new Date(result.periodProjectStart.replace('-', '/')).getTime() && Date.now() <= new Date(result.periodProjectEnd.replace('-', '/')).getTime())
+      let intime = (Date.now() >= new Date(result.periodProjectStart.replace('-', '/')+' 00:00:00').getTime() && Date.now() <= new Date(result.periodProjectEnd.replace('-', '/')+' 23:59:59').getTime())
       if(intime && result.periodEnable == 1) {
         this.insertBt = 1;
       } else {

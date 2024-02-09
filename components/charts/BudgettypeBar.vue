@@ -135,56 +135,59 @@ export default {
       let result = await this.$axios.$get('budgettype.php', {params})
 
       if(result.message=="Success") {
-        this.budgettypes = JSON.parse(JSON.stringify(result.budgettype))
-        let indata = {
-          name: 'ได้รับจัดสรร',
-          color: '#B0BEC5',
-          data: []
+        if(result.budgettype.length > 0) {
+          this.budgettypes = JSON.parse(JSON.stringify(result.budgettype))
+          let indata = {
+            name: 'ได้รับจัดสรร',
+            color: '#B0BEC5',
+            data: []
+          }
+          let betweendata = {
+            name: 'อยู่ระหว่างจัดซื้อ',
+            color: '#9FA8DA',
+            data: []
+          }
+          let outdata = {
+            name: 'เบิกจ่าย',
+            color: '#80CBC4',
+            data: []
+          }
+          let categories = []
+          let osm = this.budgettypes.map( budgettype => {
+            let budgetin = parseFloat(budgettype.budgetslipMoney) || 0
+            let budgetbetween = parseFloat(budgettype.disbursePlanMoney) || 0
+            let budgetout = parseFloat(budgettype.disburseCompleteMoney) || 0
+            categories.push(budgettype.budgettypeName)
+            indata.data.push(budgetin)
+            betweendata.data.push(budgetbetween)
+            outdata.data.push(budgetout)
+            // data.push(
+            //   {
+            //     x: budgettype.budgettypeName,
+            //     y: budgetout,
+            //     goals: [
+            //       {
+            //         name: 'ได้รับจัดสรร',
+            //         value: budgetin,
+            //         strokeHeight: 5,
+            //         strokeColor: '#2E7D32'
+            //       }
+            //     ]
+            //   }
+            // )
+          })
+          await Promise.all(osm)
+          this.chartOptionsAll.xaxis.categories = categories
+          this.seriesAll = [indata, betweendata, outdata]
+          this.showChart = true
         }
-        let betweendata = {
-          name: 'อยู่ระหว่างจัดซื้อ',
-          color: '#9FA8DA',
-          data: []
-        }
-        let outdata = {
-          name: 'เบิกจ่าย',
-          color: '#80CBC4',
-          data: []
-        }
-        let categories = []
-        let osm = this.budgettypes.map( budgettype => {
-          let budgetin = parseFloat(budgettype.budgetslipMoney) || 0
-          let budgetbetween = parseFloat(budgettype.disbursePlanMoney) || 0
-          let budgetout = parseFloat(budgettype.disburseCompleteMoney) || 0
-          categories.push(budgettype.budgettypeName)
-          indata.data.push(budgetin)
-          betweendata.data.push(budgetbetween)
-          outdata.data.push(budgetout)
-          // data.push(
-          //   {
-          //     x: budgettype.budgettypeName,
-          //     y: budgetout,
-          //     goals: [
-          //       {
-          //         name: 'ได้รับจัดสรร',
-          //         value: budgetin,
-          //         strokeHeight: 5,
-          //         strokeColor: '#2E7D32'
-          //       }
-          //     ]
-          //   }
-          // )
-        })
-        await Promise.all(osm)
-        this.chartOptionsAll.xaxis.categories = categories
-        this.seriesAll = [indata, betweendata, outdata]
-        this.showChart = true
       }
     },
   },
 
   watch: {
     async periodYear() {
+      this.showChart = false
       await this.getBudgettype()
     }
   }

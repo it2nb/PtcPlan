@@ -16,7 +16,7 @@
       </v-col>
     </v-row>
     <div v-if="projectYear" class="mt-2">
-      <ProjectInfoTableVue :projectYear="projectYear" userType="Public"/>
+      <ProjectInfoTableVue :projectYear="parseInt(projectYear)" userType="Public"/>
       <h2 class="col-12 px-0 text-center fontBold">ความก้าวหน้าในการดำเนินโครงการแยกตามยุทธศาสตร์</h2>
       <OrgstrategicDonutVue :periodYear="parseInt(projectYear)" />
     </div>

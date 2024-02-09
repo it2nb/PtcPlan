@@ -29,34 +29,34 @@
               {{ budgetplan.budgetplanDes }}
             </td>
             <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px">{{ moneyFormat(budgetplan.budgetplanMoney) }}</td>
-            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px">{{ moneyFormat(budgetplan.budgetrealMoney) }}</td>
-            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px">{{ moneyFormat(budgetplan.disbursePlanMoney) }}</td>
-            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px">{{ moneyFormat(budgetplan.disburseRealMoney) }}</td>
+            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px; background-color: #EEEEEE;">{{ moneyFormat(budgetplan.budgetrealMoney) }}</td>
+            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px; background-color: #EDE7F6;" >{{ moneyFormat(budgetplan.disbursePlanMoney) }}</td>
+            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px; background-color: #E8F5E9;">{{ moneyFormat(budgetplan.disburseRealMoney) }}</td>
             <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px">
               <div v-if="parseFloat(budgetplan.budgetplanMoney) > parseFloat(budgetplan.budgetrealMoney)">
-                <span class="success--text fontBold" v-if="(parseFloat(budgetplan.budgetplanMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) > 0">
+                <span class="success--text" v-if="(parseFloat(budgetplan.budgetplanMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) > 0">
                   {{ moneyFormat(parseFloat(budgetplan.budgetplanMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) }}
                 </span>
-                <span class="red--text fontBold" v-else-if="(parseFloat(budgetplan.budgetplanMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) < 0">
+                <span class="red--text" v-else-if="(parseFloat(budgetplan.budgetplanMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) < 0">
                   {{ moneyFormat(parseFloat(budgetplan.budgetplanMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) }}
                 </span>
-                <span class="fontBold" v-else>
+                <span class="" v-else>
                   {{ moneyFormat(parseFloat(budgetplan.budgetplanMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) }}
                 </span>
               </div>
               <div v-else>
-                <span class="success--text fontBold" v-if="(parseFloat(budgetplan.budgetrealMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) > 0">
+                <span class="success--text" v-if="(parseFloat(budgetplan.budgetrealMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) > 0">
                   {{ moneyFormat(parseFloat(budgetplan.budgetrealMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) }}
                 </span>
-                <span class="red--text fontBold" v-else-if="(parseFloat(budgetplan.budgetrealMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) < 0">
+                <span class="red--text" v-else-if="(parseFloat(budgetplan.budgetrealMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) < 0">
                   {{ moneyFormat(parseFloat(budgetplan.budgetrealMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) }}
                 </span>
-                <span class="fontBold" v-else>
+                <span class="" v-else>
                   {{ moneyFormat(parseFloat(budgetplan.budgetrealMoney)-(parseFloat(budgetplan.disbursePlanMoney)+parseFloat(budgetplan.disburseRealMoney))) }}
                 </span>
               </div>
             </td>
-            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px">
+            <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 3px; background-color: #E1F5FE;">
               <span class="success--text fontBold" v-if="(parseFloat(budgetplan.budgetrealMoney)-parseFloat(budgetplan.disburseRealMoney)) > 0">
                 {{ moneyFormat(parseFloat(budgetplan.budgetrealMoney)-parseFloat(budgetplan.disburseRealMoney)) }}
               </span>
@@ -68,20 +68,20 @@
               </span>
             </td>
           </tr>
-          <tr class="grey lighten-2">
+          <tr class="">
             <td colspan="3" class="pa-2 text-center font16 fontBold" style="border: solid 1px black; padding: 3px">
               รวมทั้งสิ้น {{ budgetSum.budgetplanQty }} รายการ
             </td>
             <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px">
              {{ moneyFormat(budgetSum.budgetplanMoney) }}
             </td>
-            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px">
+            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px; background-color: #EEEEEE;">
              {{ moneyFormat(budgetSum.budgetrealMoney) }}
             </td>
-            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px">
+            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px; background-color: #EDE7F6">
              {{ moneyFormat(budgetSum.disbursePlanMoney) }}
             </td>
-            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px">
+            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px; background-color: #E8F5E9">
              {{ moneyFormat(budgetSum.disburseRealMoney) }}
             </td>
             <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px">
@@ -108,7 +108,7 @@
                 </span>
               </div>
             </td>
-            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px">
+            <td class="pa-2 text-right text-no-wrap font16 fontBold" style="border: solid 1px black; padding: 3px; background-color: #E1F5FE;">
              <span class="success--text fontBold" v-if="(parseFloat(budgetSum.budgetrealMoney)-parseFloat(budgetSum.disburseRealMoney)) > 0">
                 {{ moneyFormat(parseFloat(budgetSum.budgetrealMoney)-parseFloat(budgetSum.disburseRealMoney)) }}
               </span>

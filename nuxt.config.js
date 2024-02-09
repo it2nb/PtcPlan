@@ -4,7 +4,7 @@ import th from 'vuetify/lib/locale/th'
 
 export default {
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // router: {
   //   base: '/plan/'
@@ -65,11 +65,12 @@ export default {
     // baseURL: 'http://localhost/ptcplan-api/',
     // baseURL: 'http://113.53.238.204/PlanApi/',
     baseURL: '/Api/',
-    prefix: '/Api/',
+    prefix: '/Local/',
     proxy: true,
   },
   proxy: {
-    '/Api/': { target: 'http://localhost/ptcplan-api/', pathRewrite: {'^/Api/': ''} }
+    '/Local/': { target: 'http://localhost/ptcplan-api/', pathRewrite: {'^/Local/': ''} },
+    '/Api/': { target: 'http://113.53.238.204/', pathRewrite: {'^/Api/': '/planmis/Api/'} }
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

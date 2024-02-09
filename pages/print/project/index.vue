@@ -2,10 +2,22 @@
   <div style="line-height: 1.8">
     <div class="printPage">
       <div class="mb-2 font16 text-right">{{ project.projectCode }}</div>
-      <div class="font16 text-center"><span class="font16 fontBold">ชื่อโครงการ: </span>{{ project.projectName }}</div>
+      <div class="font18 text-center"><span class="font18 fontBold">ชื่อโครงการ: </span>{{ project.projectName }}</div>
       <div class="font16 text-center"><span class="font16 fontBold">ผู้รับผิดชอบโครงการ: </span>{{ project.departmentName }}</div>
-      <div class="font16 text-center"><span class="font16 fontBold">ระยะเวลาดำเนินการ: </span>{{ thaiDate(projectPeriod.pjsubactivityStart) }} - {{ thaiDate(projectPeriod.pjsubactivityEnd) }}</div>
+      <div class="font16 text-center"><span class="font16 fontBold">ระยะเวลาดำเนินการ: </span>ปีงบประมาณ พ.ศ. {{ parseInt(project.projectYear)+543 }} ({{ thaiDate(projectPeriod.pjsubactivityStart) }} - {{ thaiDate(projectPeriod.pjsubactivityEnd) }})</div>
       <div class="mt-5 font16 fontBold">1. ความสอดคล้องกับนโยบาย</div>
+      <div>
+        <div class="pa-1 font16 fontBold grey lighten-3">
+          ยุทธศาสตร์สถานศึกษา
+        </div>
+        <div class="ml-3" v-for="orgstrategic in orgstrategics" :key="orgstrategic.key">
+          <div class="font16">
+            <v-icon small class="mr-1" color="black" v-if="orgstrategic.orgstrategicID==project.orgstrategicID">far fa-check-square</v-icon>
+            <v-icon small class="mr-1" color="black" v-else>far fa-square</v-icon>
+            ยุทธศาสตร์ที่ {{ orgstrategic.orgstrategicNum }} {{ orgstrategic.orgstrategicName }}
+          </div>
+        </div>
+      </div>
       <div v-for="pjpolicy in pjpolicies" :key="pjpolicy.key">
         <div class="pa-1 font16 fontBold grey lighten-3" v-if="pjpolicy.strategic.length <= 0">
           <v-icon small class="mr-1" color="black" v-if="pjpolicy.policyChk=='1'">far fa-check-square</v-icon>
@@ -168,9 +180,9 @@
       <pre class="ml-4 font16">{{ project.projectBenefit }}</pre>
     </div>
 
-    <div class="printPage">
+    <div class="printPage" v-if="project.projectStatus=='อนุมัติ'">
       <div class="mb-2 font16 text-right">{{ project.projectCode }}</div>
-      <div class="font16 text-center"><span class="font18 fontBold">ใบอนุมัติโครงการ ประจำปีงบประมาณ พ.ศ.{{parseInt(project.projectYear)+543}}</span></div>
+      <div class="font18 text-center"><span class="font18 fontBold">ใบอนุมัติโครงการ ประจำปีงบประมาณ พ.ศ.{{parseInt(project.projectYear)+543}}</span></div>
       <div class="font16 text-center"><span class="font16 fontBold">ชื่อโครงการ: </span>{{ project.projectName }}</div>
       <div class="font16 text-center"><span class="font16 fontBold">ผู้รับผิดชอบโครงการ: </span>{{ project.departmentName }}</div>
       <div class="font16 text-center">
@@ -194,7 +206,7 @@
         ผู้เสนอโครงการ <img :src="personalSignature" width="150" v-if="personalSignature" /><span v-else>...........................................................</span><br>({{ project.personalPrefix+project.personalName+" "+project.personalSer }})
       </div> -->
       <div class="mt-10 font16 text-center">
-        ผู้เสนอโครงการ <img :src="departmentSignature" width="150" v-if="departmentSignature" />
+        ผู้เสนอโครงการ <img :src="departmentSignature" width="150" v-if="departmentSignature && (project.departmentSignName==project.departmentHead)" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.departmentSignName">({{ project.departmentSignName }})</span>
         <span class="font16" v-else-if="project.departmentHead">({{ project.departmentHead }})</span>
@@ -202,7 +214,7 @@
         หัวหน้า{{project.departmentName}}
       </div>
       <div class="mt-10 font16 text-center">
-        ผู้เห็นชอบโครงการ <img :src="partySignature" width="150" v-if="partySignature" />
+        ผู้เห็นชอบโครงการ <img :src="partySignature" width="150" v-if="partySignature && (project.partySignName==project.partyHead)" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.partySignName">({{ project.partySignName }})</span>
         <span class="font16" v-else-if="project.partyHead">({{ project.partyHead }})</span>
@@ -210,7 +222,7 @@
         รองผู้อำนวยการฝ่าย{{project.partyName}}
       </div>
       <div class="mt-10 font16 text-center">
-        ผู้อนุมัติโครงการ <img :src="directorSignature" width="150" v-if="directorSignature" />
+        ผู้อนุมัติโครงการ <img :src="directorSignature" width="150" v-if="directorSignature && (project.directorSignName==project.partyHead)" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.directorSignName">({{ project.directorSignName }})</span>
         <span class="font16" v-else-if="bossparty.partyHead">({{ bossparty.partyHead }})</span>
@@ -230,6 +242,7 @@ export default {
       projectID: null,
       project: {},
       projectPeriod: {},
+      orgstrategics: [],
       pjpolicies: [],
       totalBudget: 0,
       budgets: [],
@@ -248,6 +261,7 @@ export default {
     await this.getBossParty()
     await this.getProject()
     await this.getProjectPeriod()
+    await this.getOrgstrategic()
     await this.getPjpolicy()
     await this.getPjactivity()
     await this.getBudgets()
@@ -272,6 +286,7 @@ export default {
         projectID: this.projectID
       }
       let result = await this.$axios.$get('project.php', {params})
+      console.log(result)
       if(result.message == 'Success') {
         this.project = JSON.parse(JSON.stringify(result.project))
         await this.getPersonalSignature(this.project.personalIDcard)
@@ -298,6 +313,18 @@ export default {
       if(result.message == 'Success') {
         this.projectPeriod = JSON.parse(JSON.stringify(result.pjsubactivity))
       }
+    },
+
+    async getOrgstrategic() {
+      let params = {
+        token: this.$store.state.jwtToken,
+        orgstrategicYear: this.project.projectYear,
+      }
+      let result = await this.$axios.$get('orgstrategic.php', {params})
+      if(result.message == 'Success') {
+        this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
+      }
+      console.log(this.orgstrategics)
     },
 
     async getPjpolicy() {

@@ -8,6 +8,10 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
+            <v-btn color="success" text @click="showInsertDialog" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance' || userType=='Department'" class="mb-2">
+            <!-- <v-btn color="success" text @click="showInsertDialog"  class="mb-2"> -->
+              <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มรายการจัดซื้อ/เบิกเงิน
+            </v-btn>
             <v-tabs
               v-model="tab"
               grow
@@ -15,118 +19,25 @@
               background-color="green lighten-5"
             >
               <v-tab>
-                <b class="grey--text text--darken-2">ทั้งหมด</b>
+                <b class="primary--text">ตัดแผนแล้ว({{ PlanDisburses.length }})</b>
               </v-tab>
               <v-tab>
-                <b class="primary--text">ตัดแผนแล้ว</b>
-              </v-tab>
-              <v-tab>
-                <b class="success--text">เบิกจ่ายแล้ว</b>
+                <b class="success--text">เบิกจ่ายแล้ว({{ CompleteDisburses.length }})</b>
               </v-tab>
               <v-tab class="red--text text--darken-3">
-                <b>ยกเลิก</b>
+                <b>ยกเลิก({{ CancelDisburses.length }})</b>
+              </v-tab>
+              <v-tab>
+                <b class="grey--text text--darken-2">ทั้งหมด({{ disburses.length }})</b>
               </v-tab>
             </v-tabs>
             <v-tabs-items
               v-model="tab"
             >
               <v-tab-item class="py-5">
-                <!-- ทั้งหมด -->
-                <v-data-table
-                  :headers="headers"
-                  :items="disburses"
-                  :search="search"
-                  :items-per-page="50"
-                  :loading="disbursesLoading"
-                  :footer-props="{
-                    showFirstLastPage: true,
-                  }"
-                >
-                  <template v-slot:top>
-                    <v-row>
-                      <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการทั้งหมด {{ budgetSum.disburseQty }} รายการ {{ moneyFormat(budgetSum.disburseMoney) }} บาท</h3>
-                        <v-btn color="success" text @click="showInsertDialog" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'">
-                          <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มรายการจัดซื้อ/เบิกเงิน
-                        </v-btn>
-                        <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=all'" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'" class="ml-2">
-                          <v-icon>fas fa-print</v-icon>
-                        </v-btn>
-
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-text-field
-                          v-model="search"
-                          append-icon="mdi-magnify"
-                          label="ค้นหา"
-                          hide-details
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </template>
-
-                  <template v-slot:item.disburseID="{ item }">
-                    <div  class="text-no-wrap">DB-{{ parseInt(item.disburseID) }}</div>
-                  </template>
-                  <template v-slot:item.disburseYear="{ item }">
-                    {{ parseInt(item.disburseYear)+543 }}
-                  </template>
-                  <template v-slot:item.disburseMoney="{ item }">
-                    {{ moneyFormat(item.disburseMoney) }}
-                  </template>
-                  <template v-slot:item.disburseDate="{ item }">
-                    {{ thaiDateBf(item.disburseDate) }}
-                  </template>
-                  <template v-slot:item.disburseStatus="{ item }">
-                    <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว')">
-                      <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
-                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
-                      </v-chip>
-                      <v-chip color="primary" x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
-                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
-                      </v-chip>
-                      <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
-                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
-                      </v-chip>
-                    </v-btn>
-                    <div v-else>
-                      <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
-                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
-                      </v-chip>
-                      <v-chip color="primary" x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
-                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
-                      </v-chip>
-                      <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
-                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
-                      </v-chip>
-                    </div>
-                  </template>
-                  <template v-slot:item.actions="{ item }">
-                    <div  class="text-no-wrap">
-                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว'">
-                        <v-icon small class="mr-1">fas fa-edit</v-icon>
-                      </v-btn>
-                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="(deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว'">
-                        <v-icon small class="mr-1">fas fa-trash</v-icon>
-                      </v-btn>
-                    </div>
-                  </template>
-                  <template slot="body.append">
-                    <tr>
-                      <td colspan="3" class="fontBold text-center">รวม</td>
-                      <td class="fontBold text-right">{{ moneyFormat(budgetSum.disburseMoney) }}</td>
-                      <!-- <td class="fontBold text-right">{{ moneyFormat(budgetSum.budgetrealMoney) }} บาท</td> -->
-                      <td></td>
-                    </tr>
-                  </template>
-                </v-data-table>
-              </v-tab-item>
-              <v-tab-item class="py-5">
                 <!-- ตัดแผนแล้ว -->
                 <v-data-table
-                  :headers="headers"
+                  :headers="Planheaders"
                   :items="PlanDisburses"
                   :search="Plansearch"
                   :items-per-page="50"
@@ -163,7 +74,7 @@
                     {{ parseInt(item.disburseYear)+543 }}
                   </template>
                   <template v-slot:item.disburseMoney="{ item }">
-                    {{ moneyFormat(item.disburseMoney) }}
+                    <span class="primary--text text--darken-2">{{ moneyFormat(item.disburseMoney) }}</span>
                   </template>
                   <template v-slot:item.disburseDate="{ item }">
                     {{ thaiDateBf(item.disburseDate) }}
@@ -215,7 +126,7 @@
               <v-tab-item class="py-5">
                 <!-- เบิกจ่ายแล้ว -->
                 <v-data-table
-                  :headers="headers"
+                  :headers="Completeheaders"
                   :items="CompleteDisburses"
                   :search="Completesearch"
                   :items-per-page="50"
@@ -251,11 +162,11 @@
                   <template v-slot:item.disburseYear="{ item }">
                     {{ parseInt(item.disburseYear)+543 }}
                   </template>
-                  <template v-slot:item.disburseMoney="{ item }">
-                    {{ moneyFormat(item.disburseMoney) }}
+                  <template v-slot:item.disburseFinMoney="{ item }">
+                    <span class="success--text text--darken-3 font-weight-bold" v-if="item.disburseFinMoney > 0">{{ moneyFormat(item.disburseFinMoney) }}</span>
                   </template>
-                  <template v-slot:item.disburseDate="{ item }">
-                    {{ thaiDateBf(item.disburseDate) }}
+                  <template v-slot:item.disburseFinDate="{ item }">
+                    {{ thaiDateBf(item.disburseFinDate) }}
                   </template>
                   <template v-slot:item.disburseStatus="{ item }">
                     <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว')">
@@ -304,7 +215,7 @@
               <v-tab-item class="py-5">
                 <!-- ยกเลิก -->
                 <v-data-table
-                  :headers="headers"
+                  :headers="Cancelheaders"
                   :items="CancelDisburses"
                   :search="Cancelsearch"
                   :items-per-page="50"
@@ -341,7 +252,7 @@
                     {{ parseInt(item.disburseYear)+543 }}
                   </template>
                   <template v-slot:item.disburseMoney="{ item }">
-                    {{ moneyFormat(item.disburseMoney) }}
+                    <span class="error--text text--darken-2">{{ moneyFormat(item.disburseMoney) }}</span>
                   </template>
                   <template v-slot:item.disburseDate="{ item }">
                     {{ thaiDateBf(item.disburseDate) }}
@@ -371,6 +282,28 @@
                     </div>
                   </template>
                   <template v-slot:item.actions="{ item }">
+                    <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว')">
+                      <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="primary" x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
+                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                    </v-btn>
+                    <div v-else>
+                      <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="primary" x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
+                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                    </div>
                     <div  class="text-no-wrap">
                       <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว'">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
@@ -384,6 +317,131 @@
                     <tr>
                       <td colspan="3" class="fontBold text-center">รวม</td>
                       <td class="fontBold text-right">{{ moneyFormat(budgetSum.disburseCancelMoney) }}</td>
+                      <!-- <td class="fontBold text-right">{{ moneyFormat(budgetSum.budgetrealMoney) }} บาท</td> -->
+                      <td></td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </v-tab-item>
+              <v-tab-item class="py-5">
+                <!-- ทั้งหมด -->
+                <v-data-table
+                  :headers="headers"
+                  :items="disburses"
+                  :search="search"
+                  :items-per-page="50"
+                  :loading="disbursesLoading"
+                  :footer-props="{
+                    showFirstLastPage: true,
+                  }"
+                >
+                  <template v-slot:top>
+                    <v-row>
+                      <v-col cols="12" md="6" class="text-center">
+                        <h3 class="mb-2 fontBold text-center">รายการทั้งหมด {{ budgetSum.disburseQty }} รายการ {{ moneyFormat(budgetSum.disburseMoney) }} บาท</h3>
+                        <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=all'" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'" class="ml-2">
+                          <v-icon>fas fa-print</v-icon>
+                        </v-btn>
+
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-text-field
+                          v-model="search"
+                          append-icon="mdi-magnify"
+                          label="ค้นหา"
+                          hide-details
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </template>
+
+                  <template v-slot:item.disburseID="{ item }">
+                    <div  class="text-no-wrap">DB-{{ parseInt(item.disburseID) }}</div>
+                  </template>
+                  <template v-slot:item.disburseYear="{ item }">
+                    {{ parseInt(item.disburseYear)+543 }}
+                  </template>
+                  <template v-slot:item.disburseMoney="{ item }">
+                    <span class="error--text text--darken-2" v-if="item.disburseStatus=='ยกเลิก'">{{ moneyFormat(item.disburseMoney) }}</span>
+                    <span class="primary--text text--darken-2" v-else>{{ moneyFormat(item.disburseMoney) }}</span>
+                  </template>
+                  <template v-slot:item.disburseDate="{ item }">
+                    {{ thaiDateBf(item.disburseDate) }}
+                  </template>
+                  <template v-slot:item.disburseFinMoney="{ item }">
+                    <span class="success--text text--darken-3 font-weight-bold" v-if="item.disburseFinMoney > 0">{{ moneyFormat(item.disburseFinMoney) }}</span>
+                  </template>
+                  <template v-slot:item.disburseFinDate="{ item }">
+                    {{ thaiDateBf(item.disburseFinDate) }}
+                  </template>
+                  <template v-slot:item.disburseStatus="{ item }">
+                    <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว')">
+                      <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="primary" x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
+                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                    </v-btn>
+                    <div v-else>
+                      <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="primary" x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
+                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                    </div>
+                  </template>
+                  <template v-slot:item.actions="{ item }">
+                    <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว')">
+                      <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="primary" x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
+                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                    </v-btn>
+                    <div v-else>
+                      <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus==''">
+                        <v-icon x-small class="mr-1">fas fa-pen</v-icon> กำลังเขียนขอซื้อฯ
+                      </v-chip>
+                      <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="primary" outlined x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                      <v-chip color="red darken-2" outlined x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
+                        <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
+                      </v-chip>
+                    </div>
+                    <div  class="text-no-wrap">
+                      <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
+                        <v-icon small class="mr-1">fas fa-list</v-icon>
+                      </v-btn>
+                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='' || item.disburseStatus=='แก้ไข')">
+                        <v-icon small class="mr-1">fas fa-edit</v-icon>
+                      </v-btn>
+                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='' || item.disburseStatus=='แก้ไข')">
+                        <v-icon small class="mr-1">fas fa-trash</v-icon>
+                      </v-btn>
+                    </div>
+                  </template>
+                  <template slot="body.append">
+                    <tr>
+                      <td colspan="3" class="fontBold text-center">รวม</td>
+                      <td class="fontBold text-right">{{ moneyFormat(budgetSum.disburseMoney) }}</td>
                       <!-- <td class="fontBold text-right">{{ moneyFormat(budgetSum.budgetrealMoney) }} บาท</td> -->
                       <td></td>
                     </tr>
@@ -412,7 +470,8 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburseInsertVue :disburse="disburseData" @getInsertStatus="insertDisburse"/>
+                <DisburseInsertVue :disburse="disburseData" @getInsertStatus="insertDisburse" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'" />
+                <DisburseDepInsertVue :disburse="disburseData" @getInsertStatus="insertDisburse" v-else-if="userType=='Department'" />
               </v-card>
             </v-col>
           </v-row>
@@ -436,7 +495,8 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburseUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"/>
+                <DisburseUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"  v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'"/>
+                <DisburseDepUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"  v-else-if="userType=='Department'"/>
               </v-card>
             </v-col>
           </v-row>
@@ -492,21 +552,53 @@
       </v-dialog>
     </v-row>
 
+    <v-row justify="center">
+      <v-dialog
+        v-model="disburselistListDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-10 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="amber lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="disburselistListDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <DisburselistListVue :disburse="disburseData"/>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
+
   </div>
 </template>
 
 <script>
 import DisburseInsertVue from './DisburseInsert.vue'
+import DisburseDepInsertVue from './DisburseDepInsert.vue'
 import DisburseUpdateVue from './DisburseUpdate.vue'
+import DisburseDepUpdateVue from './DisburseDepUpdate.vue'
 import DisburseDeleteVue from './DisburseDelete.vue'
 import DisburseUpdateStatusVue from './DisburseUpdateStatus.vue'
+import DisburselistListVue from './DisburselistList.vue'
 import numeral from 'numeral'
 export default {
   components: {
     DisburseInsertVue,
+    DisburseDepInsertVue,
+    DisburseDepInsertVue,
     DisburseUpdateVue,
+    DisburseDepUpdateVue,
     DisburseDeleteVue,
     DisburseUpdateStatusVue,
+    DisburselistListVue,
   },
 
   props: {
@@ -553,18 +645,68 @@ export default {
           sortable: false,
           value: 'disburseID',
         },
-        // { text: 'ปีงบประมาณ พ.ศ.', value: 'disburseYear', align: 'center', class: 'text-center' },
         { text: 'รายการ', value: 'disburseDes', align: 'left', class: 'text-center' },
-        { text: 'ค่าใช้จ่าย/โครงการ', value: 'disburseName', align: 'left', class: 'text-center' },
-        // { text: 'โครงการ', value: 'projectName', align: 'left', class: 'text-center' },
-        // { text: 'ค่าใช้จ่าย', value: 'expenseplanDes', align: 'left', class: 'text-center' },
-        { text: 'หมวดค่าใช้จ่าย', value: 'expenseName', align: 'left', class: 'text-center' },
+        { text: 'หมวดค่าใช้จ่าย : ค่าใช้จ่าย/โครงการ', value: 'disburseName', align: 'left', class: 'text-center' },
+        // { text: 'หมวดค่าใช้จ่าย', value: 'expenseName', align: 'left', class: 'text-center' },
+        { text: 'ตัดแผน(บาท)', value: 'disburseMoney', align: 'right', class: 'text-center' },
+        { text: 'วันที่ตัด', value: 'disburseDate', align: 'center', class: 'text-center' },
+        { text: 'เบิกจ่าย(บาท)', value: 'disburseFinMoney', align: 'right', class: 'text-center' },
+        { text: 'วันที่เบิก', value: 'disburseFinDate', align: 'center', class: 'text-center' },
+        { text: 'หมวดงบประมาณรายรับ', value: 'budgetplanFullname', align: 'left', class: 'text-center' },
+        { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class: 'text-center' },
+
+        // { text: 'สถานะ', value: 'disburseStatus', align: 'center', class: 'text-center' },
+        { text: '', value: 'actions', align: 'center' },
+      ],
+      Planheaders: [
+        {
+          text: '#',
+          align: 'center',
+          sortable: false,
+          value: 'disburseID',
+        },
+        { text: 'รายการ', value: 'disburseDes', align: 'left', class: 'text-center' },
+        { text: 'หมวดค่าใช้จ่าย : ค่าใช้จ่าย/โครงการ', value: 'disburseName', align: 'left', class: 'text-center' },
+        // { text: 'หมวดค่าใช้จ่าย', value: 'expenseName', align: 'left', class: 'text-center' },
+        { text: 'ตัดแผน(บาท)', value: 'disburseMoney', align: 'right', class: 'text-center' },
+        { text: 'วันที่ตัด', value: 'disburseDate', align: 'center', class: 'text-center' },
+        { text: 'หมวดงบประมาณรายรับ', value: 'budgetplanFullname', align: 'left', class: 'text-center' },
+        { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class: 'text-center' },
+        { text: '', value: 'disburseStatus', align: 'center', class: 'text-center' },
+        { text: '', value: 'actions', align: 'center' },
+      ],
+      Completeheaders: [
+        {
+          text: '#',
+          align: 'center',
+          sortable: false,
+          value: 'disburseID',
+        },
+        { text: 'รายการ', value: 'disburseDes', align: 'left', class: 'text-center' },
+        { text: 'หมวดค่าใช้จ่าย : ค่าใช้จ่าย/โครงการ', value: 'disburseName', align: 'left', class: 'text-center' },
+        // { text: 'หมวดค่าใช้จ่าย', value: 'expenseName', align: 'left', class: 'text-center' },
+        { text: 'เบิกจ่าย(บาท)', value: 'disburseFinMoney', align: 'right', class: 'text-center' },
+        { text: 'วันที่เบิก', value: 'disburseFinDate', align: 'center', class: 'text-center' },
+        { text: 'หมวดงบประมาณรายรับ', value: 'budgetplanFullname', align: 'left', class: 'text-center' },
+        { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class: 'text-center' },
+        { text: '', value: 'disburseStatus', align: 'center', class: 'text-center' },
+        // { text: '', value: 'actions', align: 'center' },
+      ],
+      Cancelheaders: [
+        {
+          text: '#',
+          align: 'center',
+          sortable: false,
+          value: 'disburseID',
+        },
+        { text: 'รายการ', value: 'disburseDes', align: 'left', class: 'text-center' },
+        { text: 'หมวดค่าใช้จ่าย : ค่าใช้จ่าย/โครงการ', value: 'disburseName', align: 'left', class: 'text-center' },
+        // { text: 'หมวดค่าใช้จ่าย', value: 'expenseName', align: 'left', class: 'text-center' },
         { text: 'จำนวนเงิน', value: 'disburseMoney', align: 'right', class: 'text-center' },
         { text: 'หมวดงบประมาณรายรับ', value: 'budgetplanFullname', align: 'left', class: 'text-center' },
         { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class: 'text-center' },
-        // { text: 'เจ้าของรายการ', value: 'disburseReqName', align: 'left', class: 'text-center' },
         { text: 'วันที่', value: 'disburseDate', align: 'center', class: 'text-center' },
-        { text: 'สถานะ', value: 'disburseStatus', align: 'center', class: 'text-center' },
+        // { text: 'สถานะ', value: 'disburseStatus', align: 'center', class: 'text-center' },
         { text: '', value: 'actions', align: 'center' },
       ],
       search: '',
@@ -594,6 +736,8 @@ export default {
       updateStatusDialog: false,
       updateStatusProgress: false,
       disburseUpdateStatusValidate: null,
+
+      disburselistListDialog: false,
     }
   },
 
@@ -640,18 +784,29 @@ export default {
     },
 
     showInsertDialog() {
-      let disburseStatus = ''
-      if(this.userType=='Plan') {
-        disburseStatus = 'ตัดแผนแล้ว'
-      } else if(this.userType=='Finance') {
-        disburseStatus = 'เบิกจ่ายแล้ว'
+      if(this.userType=='Department') {
+        this.disburseData = {
+          token: this.$store.state.jwtToken,
+          disburseYear: this.disburseYear,
+          personalIDcardCreate: this.personalIDcard,
+          departmentID: this.departmentID,
+          disburseStatus: ''
+        }
+      } else {
+        let disburseStatus = ''
+        if(this.userType=='Plan') {
+          disburseStatus = 'ตัดแผนแล้ว'
+        } else if(this.userType=='Finance') {
+          disburseStatus = 'เบิกจ่ายแล้ว'
+        }
+        this.disburseData = {
+          token: this.$store.state.jwtToken,
+          disburseYear: this.disburseYear,
+          personalIDcardCreate: this.personalIDcard,
+          disburseStatus: disburseStatus,
+        }
       }
-      this.disburseData = {
-        token: this.$store.state.jwtToken,
-        disburseYear: this.disburseYear,
-        personalIDcardCreate: this.personalIDcard,
-        disburseStatus: disburseStatus,
-      }
+
       this.insertDialog = true
     },
 
@@ -704,6 +859,12 @@ export default {
       this.disburseData = disburse
       this.disburseData.token = this.$store.state.jwtToken
       this.updateStatusDialog = true
+    },
+
+    showDisburselistListDialog(disburse) {
+      this.disburseData = disburse
+      this.disburseData.token = this.$store.state.jwtToken
+      this.disburselistListDialog = true
     },
 
     moneyFormat(money) {

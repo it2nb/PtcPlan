@@ -4,6 +4,7 @@
         <v-col cols="12" md="4" v-for="orgstrategic in orgstrategics" :key="orgstrategic.key">
           <h6><b>ยุทธศาสตร์ที่ {{ orgstrategic.orgstrategicNum }}</b> {{ orgstrategic.orgstrategicName }}</h6>
         </v-col>
+        <v-col cols="12" class="my-2"></v-col>
         <v-col cols="12" md="6">
           <apexchart type="radar" height="450" :options="chartOptions" :series="series" class="mt-2" v-if="showChart"></apexchart>
         </v-col>
@@ -165,29 +166,32 @@ export default {
       let result = await this.$axios.$get('orgstrategic.php', {params})
 
       if(result.message=="Success") {
-        this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
-        let osm = this.orgstrategics.map( orgstrategic => {
-          this.chartOptions.xaxis.categories.push('ยุทธศาสตร์ที่ '+orgstrategic.orgstrategicNum)
-          let projectQty = parseInt(orgstrategic.projectQty) || 0
-          let doProgress = parseInt(orgstrategic.doProgress) || 0
-          let doneProgress = parseInt(orgstrategic.doneProgress) || 0
-          this.series[0].data.push(projectQty)
-          this.series[1].data.push(doProgress+doneProgress)
+        if(result.orgstrategic.length > 0) {
+          this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
+          let osm = this.orgstrategics.map( orgstrategic => {
+            this.chartOptions.xaxis.categories.push('ยุทธศาสตร์ที่ '+orgstrategic.orgstrategicNum)
+            let projectQty = parseInt(orgstrategic.projectQty) || 0
+            let doProgress = parseInt(orgstrategic.doProgress) || 0
+            let doneProgress = parseInt(orgstrategic.doneProgress) || 0
+            this.series[0].data.push(projectQty)
+            this.series[1].data.push(doProgress+doneProgress)
 
-          this.chartOptions2.xaxis.categories.push('ยุทธศาสตร์ที่ '+orgstrategic.orgstrategicNum)
-          let orgstrategicMoney = parseFloat(orgstrategic.orgstrategicMoney) || 0
-          let orgstrategicDisburseMoney = parseFloat(orgstrategic.orgstrategicDisburseMoney) || 0
-          this.series2[0].data.push(orgstrategicMoney)
-          this.series2[1].data.push(orgstrategicDisburseMoney)
-        })
-        Promise.all(osm)
-        this.showChart = true
+            this.chartOptions2.xaxis.categories.push('ยุทธศาสตร์ที่ '+orgstrategic.orgstrategicNum)
+            let orgstrategicMoney = parseFloat(orgstrategic.orgstrategicMoney) || 0
+            let orgstrategicDisburseMoney = parseFloat(orgstrategic.orgstrategicDisburseMoney) || 0
+            this.series2[0].data.push(orgstrategicMoney)
+            this.series2[1].data.push(orgstrategicDisburseMoney)
+          })
+          Promise.all(osm)
+          this.showChart = true
+        }
       }
     },
   },
 
   watch: {
     async periodYear() {
+      this.showChart = false
       this.orgstrategics = []
       this.series = [{
         name: 'โครงการทั้งหมด',
@@ -196,6 +200,14 @@ export default {
         name: 'โครงการที่ดำเนินการ',
         data: [],
       }]
+
+      this.series2 = [{
+          name: 'งบประมาณทั้งหมด',
+          data: [],
+        }, {
+          name: 'งบประมาณที่ดำเนินการ',
+          data: [],
+        }],
       await this.getOrgstrategic()
     }
   }

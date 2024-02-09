@@ -16,7 +16,7 @@
         </v-col>
         <v-col cols="12" class="mt-2"><v-divider class="black"></v-divider></v-col>
         <v-col cols="12" class="mt-5 px-5">
-          <div class="mb-2 fontBold font18">1. ที่มาและความสำคัญ</div>
+          <div class="mb-2 fontBold font18">1. หลักการและเหตุผล</div>
           <pre class="font18 ml-5">{{ project.projectPrinciple }}</pre>
         </v-col>
         <v-col cols="12" class="mt-3 px-5">

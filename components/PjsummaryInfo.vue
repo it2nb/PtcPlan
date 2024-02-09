@@ -11,7 +11,7 @@
         <b>แผนก/งาน</b> {{project.departmentName}}
       </v-col>
       <v-col cols="12">
-        <div class="mb-2 fontBold">1. ที่มาและความสำคัญ</div>
+        <div class="mb-2 fontBold">1. หลักการและเหตุผล</div>
         <pre class="fontPrompt ml-5">{{ project.projectPrinciple }}</pre>
       </v-col>
       <v-col cols="12">

@@ -2,7 +2,7 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="projects"
+      :items="projectDatas"
       :search="search"
       :items-per-page="-1"
       :loading="projectsLoading"
@@ -11,23 +11,37 @@
       <template v-slot:top>
         <v-row>
           <v-col cols="12" class="text-center fontBold">
-            ทั้งหมดจำนวน {{ projects.length }} โครงการ งบประมาณ {{ moneyFormat(projectSum.pjbudgetMoney) }} บาท
+            ทั้งหมดจำนวน {{ projectDatas.length }} โครงการ งบประมาณ
+            <span v-if="projectDatas.length>0">
+              <span class="fontBold" v-if="projectDatas[0].projectStatus=='เสนอโครงการ'">{{ moneyFormat(projectSum.pjbudgetWaitApproveMoney) }} </span>
+              <span class="fontBold" v-else-if="status=='ฝ่ายเห็นชอบ'">{{ moneyFormat(projectSum.pjbudgetParApproveMoney) }} </span>
+              <span class="fontBold" v-else-if="status=='อนุมัติ'">{{ moneyFormat(projectSum.pjbudgetApproveMoney) }} </span>
+              <span class="fontBold" v-else>{{ moneyFormat(projectSum.pjbudgetMoney) }} </span>
+            </span>
+            <span class="fontBold" v-else>
+              0
+            </span>
+            บาท
           </v-col>
-          <v-col cols="12" md="6" v-if="insertBt">
-            <!-- <v-select
-              v-model="projectID"
-              label="ยุทธศาสตร์"
-              :items="projects"
-              item-text="projectFullname"
-              item-value="projectID"
-              outlined
-              @change="filterProjects"
-            ></v-select> -->
+          <v-col cols="12" md="4" v-if="insertBt">
             <v-btn color="success" text @click="showInsertDialog">
               <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มโครงการ
             </v-btn>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="4">
+            <v-autocomplete
+              v-model="strategicID"
+              label="ยุทธศาสตร์"
+              :items="strategics"
+              item-text="orgstrategicName"
+              item-value="orgstrategicID"
+              hide-details
+              outlined
+              dense
+              @change="getProjects"
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="4">
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
@@ -97,7 +111,7 @@
             <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.projectStatus }}
             <v-icon x-small class="ml-1" v-if="item.projectPlanStatus=='อนุมัติหลักการ'">fas fa-check-circle</v-icon>
           </v-chip> -->
-          <v-chip color="red" x-small dark class="py-3" v-else-if="item.projectStatus=='ไม่อนุมัติ' ||  item.projectStatus=='ฝ่ายไม่เห็นชอบ'">
+          <v-chip color="red" x-small dark class="py-3" v-else-if="item.projectStatus=='ไม่อนุมัติ' ||  item.projectStatus=='ฝ่ายไม่เห็นชอบ' ||  item.projectStatus=='ไม่ผ่าน'">
             <v-icon small class="mr-1">fas fa-exclamation</v-icon> {{ item.projectStatus }}
             <!-- <v-icon x-small class="ml-1" v-if="item.projectPlanStatus=='อนุมัติหลักการ'">fas fa-check-circle</v-icon> -->
           </v-chip>
@@ -113,6 +127,7 @@
           text
           rounded
           @click="showUpdateProgressDialog(item)"
+          v-if="item.projectStatus=='อนุมัติ'"
         >
           <v-chip x-small color="success" class="py-3" v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'">
             <v-icon small class="mr-1">fas fa-check-circle</v-icon> {{ item.projectProgress }}
@@ -195,18 +210,19 @@
                     <v-row dense>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">ฝ่าย</h3>
-                        <v-select
+                        <v-autocomplete
                           v-model="projectData.partyID"
                           :items="parties"
                           item-text="partyName"
                           item-value="partyID"
                           label="ฝ่าย"
                           outlined
+                          :readonly="userType=='Department' || userType=='Party'"
                           :rules="[
                             () => !!projectData.partyID || 'กรุณากรอกข้อมูล'
                           ]"
                           @change="partyChange"
-                        ></v-select>
+                        ></v-autocomplete>
                       </v-col>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">แผนก/งาน</h3>
@@ -217,6 +233,7 @@
                           item-value="departmentID"
                           label="แผนก/งาน"
                           outlined
+                          :readonly="userType=='Department'"
                           :rules="[
                             () => !!projectData.departmentID || 'กรุณากรอกข้อมูล'
                           ]"
@@ -268,7 +285,7 @@
                         <h3 class="mb-2 fontBold">หลักการและเหตุผล</h3>
                         <v-textarea
                           v-model="projectData.projectPrinciple"
-                          label="ที่มาและความสำคัญ"
+                          label="หลักการและเหตุผล"
                           outlined
                           :rules="[
                             () => !!projectData.projectPrinciple || 'กรุณากรอกข้อมูล'
@@ -475,9 +492,9 @@
                 >
                   <v-card-text>
                     <v-row dense>
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="4">
                         <h3 class="mb-2 fontBold">ฝ่าย</h3>
-                        <v-select
+                        <v-autocomplete
                           v-model="projectData.partyID"
                           :items="parties"
                           item-text="partyName"
@@ -489,9 +506,9 @@
                             () => !!projectData.partyID || 'กรุณากรอกข้อมูล'
                           ]"
                           @change="partyChange"
-                        ></v-select>
+                        ></v-autocomplete>
                       </v-col>
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="4">
                         <h3 class="mb-2 fontBold">แผนก/งาน</h3>
                         <v-autocomplete
                           v-model="projectData.departmentID"
@@ -506,6 +523,17 @@
                           ]"
                         ></v-autocomplete>
                       </v-col>
+                      <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ชื่อหัวหน้างานผู้เสนอโครงการ</h3>
+                        <v-text-field
+                          v-model="projectData.departmentSignName"
+                          label="ชื่อหัวหน้างานผู้เสนอโครงการ"
+                          outlined
+                          :rules="[
+                            () => (!!projectData.departmentSignName || userType=='Admin' || userType=='Plan') || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-text-field>
+                      </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ยุทธศาสตร์สถานศึกษา</h3>
                         <v-select
@@ -516,13 +544,14 @@
                           item-value="orgstrategicID"
                           outlined
                           required
+                          :readonly="(userType=='Department' || userType=='Party') && (projectData.projectType=='ในแผน'||projectData.projectType=='เพิ่มเติม')"
                           :rules="[
                             ()=>!!projectData.orgstrategicID || 'กรุณากรอกข้อมูล'
                           ]"
                           @change="orgstrategicChange"
                         ></v-select>
                       </v-col>
-                      <v-col cols="12">
+                      <!-- <v-col cols="12">
                         <h3 class="mb-2 fontBold">กลยุทธ์สถานศึกษา</h3>
                         <v-select
                           v-model="projectData.orgstrategyID"
@@ -536,13 +565,14 @@
                             ()=>!!projectData.orgstrategyID || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-select>
-                      </v-col>
+                      </v-col> -->
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ชื่อโครงการ</h3>
                         <v-text-field
                           v-model="projectData.projectName"
                           label="ชื่อโครงการ"
                           outlined
+                          :readonly="(userType=='Department' || userType=='Party') && (projectData.projectType=='ในแผน'||projectData.projectType=='เพิ่มเติม')"
                           :rules="[
                             () => !!projectData.projectName || 'กรุณากรอกข้อมูล'
                           ]"
@@ -552,7 +582,7 @@
                         <h3 class="mb-2 fontBold">หลักการและเหตุผล</h3>
                         <v-textarea
                           v-model="projectData.projectPrinciple"
-                          label="ที่มาและความสำคัญ"
+                          label="หลักการและเหตุผล"
                           outlined
                           :rules="[
                             () => !!projectData.projectPrinciple || 'กรุณากรอกข้อมูล'
@@ -616,7 +646,7 @@
                         <h3 class="mb-2 fontBold">ประโยชน์ที่คาดว่าจะได้รับ</h3>
                         <v-textarea
                           v-model="projectData.projectBenefit"
-                          label="วัตถุประสงค์"
+                          label="ประโยชน์ที่คาดว่าจะได้รับ"
                           outlined
                           :rules="[
                             () => !!projectData.projectBenefit || 'กรุณากรอกข้อมูล'
@@ -629,7 +659,8 @@
                           v-model="projectData.projectType"
                           :items="[
                             'ในแผน',
-                            'เพิ่มเติม'
+                            'เพิ่มเติม',
+                            'เข้าแผน'
                           ]"
                           label="ประเภท"
                           outlined
@@ -644,6 +675,7 @@
                           v-model="projectData.projectStatus"
                           :items="[
                             {text: 'เสนอโครงการ', value: 'เสนอโครงการ'},
+                            {text: 'ไม่ผ่าน', value: 'ไม่ผ่าน'},
                             {text: 'อนุมัติ', value: 'อนุมัติ'}
 
                           ]"
@@ -1037,14 +1069,14 @@
                         <b  class="ml-3 fontBold">เชิงปริมาณ</b>
                         <pre class="ml-3 fontPrompt">{{ projectData.projectQuantityGoal }}</pre>
                         <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
-                        <pre class="ml-3 fontPrompt">{{ projectData.projectQuantityGoal }}</pre>
+                        <pre class="ml-3 fontPrompt">{{ projectData.projectQualityGoal }}</pre>
                       </v-col>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">ตัวชี้วัดความสำเร็จโครงการ</h3>
                         <b  class="ml-3 fontBold">เชิงปริมาณ</b>
                         <pre class="ml-3 fontPrompt">{{ projectData.projectQuantityKpi }}</pre>
                         <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
-                        <pre class="ml-3 fontPrompt">{{ projectData.projectQuantityKpi }}</pre>
+                        <pre class="ml-3 fontPrompt">{{ projectData.projectQualityKpi }}</pre>
                       </v-col>
                       <v-col cols="12">
                         <v-divider class="my-2"></v-divider>
@@ -1135,14 +1167,14 @@
                         <b  class="ml-3 fontBold">เชิงปริมาณ</b>
                         <pre class="ml-3 fontPrompt">{{ projectSummaryData.projectQuantityGoal }}</pre>
                         <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
-                        <pre class="ml-3 fontPrompt">{{ projectSummaryData.projectQuantityGoal }}</pre>
+                        <pre class="ml-3 fontPrompt">{{ projectSummaryData.projectQualityGoal }}</pre>
                       </v-col>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">ตัวชี้วัดความสำเร็จโครงการ</h3>
                         <b  class="ml-3 fontBold">เชิงปริมาณ</b>
                         <pre class="ml-3 fontPrompt">{{ projectSummaryData.projectQuantityKpi }}</pre>
                         <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
-                        <pre class="ml-3 fontPrompt">{{ projectSummaryData.projectQuantityKpi }}</pre>
+                        <pre class="ml-3 fontPrompt">{{ projectSummaryData.projectQualityKpi }}</pre>
                       </v-col>
                       <v-col cols="12">
                         <v-divider class="my-2"></v-divider>
@@ -1494,6 +1526,14 @@ export default {
       type: Array,
       default: ()=>[]
     },
+    projectSum: {
+      type: Object,
+      default: ()=>{}
+    },
+    strategics: {
+      type: Array,
+      default: ()=>[]
+    },
     projectsLoading: {
       type: Boolean,
       default: true
@@ -1562,6 +1602,8 @@ export default {
         { text: 'งบประมาณ (แผน/ผล)', value: 'pjbudgetMoney', align: 'center' },
         { text: '', value: 'actions', align: 'center' },
       ],
+      projectDatas: [],
+      strategicID: "all",
       parties: [],
       party: {},
       budgetInsertBt: 0,
@@ -1573,7 +1615,6 @@ export default {
       imagePath: null,
       imageInsertNames: [],
       imageDeleteName: null,
-      projectSum: {},
       search: '',
       projectData: {},
       projectSummaryData: {},
@@ -1616,10 +1657,19 @@ export default {
   },
 
   async mounted() {
+    await this.getProjects()
     await this.getParties()
   },
 
   methods: {
+    async getProjects() {
+      if(this.strategicID == "all") {
+        this.projectDatas = JSON.parse(JSON.stringify(this.projects))
+      } else {
+        this.projectDatas = this.projects.filter(project => project.orgstrategicID==this.strategicID)
+      }
+    },
+
     async getParties() {
       let result = await this.$axios.$get('party.php', {
         params: {
@@ -1719,12 +1769,26 @@ export default {
       this.orgstrategics = []
       this.orgstrategies = []
       await this.getOrgstrategic()
+
       if(this.userType=='Admin' || this.userType=='Plan') {
         this.projectData.projectType = 'ในแผน'
       } else {
         this.projectData.projectType = 'เข้าแผน'
         this.projectData.projectStatus = 'เสนอโครงการ'
         this.projectData.projectProgress = 'ยังไม่ได้ดำเนินการ'
+      }
+
+      if(this.userType=='Department') {
+        if(this.projectData.departmentSignDate==null || this.projectData.departmentSignDate=='')
+          this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        await this.getDepartment()
+        this.projectData.partyID = this.department.partyID
+        await this.getDepartments(this.projectData.partyID)
+        this.projectData.departmentID = this.department.departmentID
+        if(this.projectData.departmentSign==null || this.projectData.departmentSign=='')
+          this.projectData.departmentSign = this.userID
+        if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='')
+          this.projectData.departmentSignName = this.department.departmentHead
       }
       this.insertDialog = true
     },
@@ -1736,6 +1800,13 @@ export default {
         this.projectData.token = this.$store.state.jwtToken
         this.projectData.projectYear = this.projectYear
         this.projectData.personalIDcard = this.personalIDcard
+
+        if(this.userType=='Department') {
+          this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+          await this.getDepartment()
+          this.projectData.departmentSign = this.userID
+          this.projectData.departmentSignName = this.department.departmentHead
+        }
 
         let result = await this.$axios.$post('project.insert.php', this.projectData)
 
@@ -1764,6 +1835,15 @@ export default {
     async showUpdateDialog(project) {
       this.projectData = JSON.parse(JSON.stringify(project))
       this.projectStatus = project.projectStatus
+      if(this.userType=='Department') {
+        if(this.projectData.departmentSignDate==null || this.projectData.departmentSignDate=='')
+          this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        await this.getDepartment()
+        if(this.projectData.departmentSign==null || this.projectData.departmentSign=='')
+          this.projectData.departmentSign = this.userID
+        if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='')
+          this.projectData.departmentSignName = this.department.departmentHead
+      }
       this.departments = []
       await this.getDepartments(this.projectData.partyID)
       this.orgstrategics = []
@@ -2158,7 +2238,24 @@ export default {
 
   },
 
-  // watch: {
+  computed: {
+    project() {
+      return this.projects.length
+    }
+  },
+
+  watch: {
+    async projectsLoading() {
+      if(this.projectsLoading == false) {
+        await this.getProjects()
+      }
+    },
+
+    async projectYear() {
+      this.strategicID = 'all'
+      // await this.getProjects()
+      await this.getParties()
+    }
   //   async projectYear() {
   //     await this.getProjects()
   //   },
@@ -2166,6 +2263,6 @@ export default {
   //   async personalIDcard() {
   //     await this.getProjects()
   //   }
-  // }
+  }
 }
 </script>

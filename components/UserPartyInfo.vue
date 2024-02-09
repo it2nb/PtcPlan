@@ -21,6 +21,15 @@
               <v-col cols="12" md="8" class="py-2">
                 Email <b>{{ user.userEmail }}</b>
               </v-col>
+              <v-col cols="12" md="8" class="py-2">
+                (1-on-1) Line TOKEN
+                <span v-if="user.userLineToken">
+                  <v-icon color="success" class="ml-1">fas fa-check-circle</v-icon>
+                </span>
+                <span v-else>
+                  <v-icon small color="grey" class="ml-1">fas fa-minus-circle</v-icon>
+                </span>
+              </v-col>
               <v-col cols="12"><v-divider></v-divider></v-col>
               <v-col cols="12" md="4" class="py-2">
                 ฝ่าย <b>{{ party.partyName }}</b>
@@ -109,6 +118,15 @@
                         <v-text-field
                           v-model="userUpdate.userEmail"
                           label="Email"
+                          dense
+                          outlined
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">(1-on-1) Line TOKEN</h3>
+                        <v-text-field
+                          v-model="userUpdate.userLineToken"
+                          label="Line TOKEN"
                           dense
                           outlined
                         ></v-text-field>
@@ -530,6 +548,12 @@ export default {
             });
         }
         if(result.message == 'Success' || result2.message == 'Success' || result3.message == 'Success') {
+          if(this.userUpdate.userLineToken && (this.user.userLineToken!=this.userUpdate.userLineToken)) {
+            await this.$axios.$post('sendline.php', {
+              token: this.userUpdate.userLineToken,
+              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Notify ของคุณเรียบร้อยแล้ว'
+            })
+          }
           let msg = result.msg
           if(result2.message == 'Success') {
             msg = result2.msg

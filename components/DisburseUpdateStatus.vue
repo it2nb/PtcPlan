@@ -85,6 +85,39 @@
               <v-radio label="ยกเลิก" value="ยกเลิก"  color="red darken-2" v-if="userType=='Finance'"></v-radio>
             </v-radio-group>
           </v-col>
+          <v-col cols="12" md="6" v-if="updateData.disburseStatus=='เบิกจ่ายแล้ว'">
+            <h3 class="mb-2 fontBold">จำนวนเงิน(บาท)</h3>
+            <v-text-field
+              v-model="updateData.disburseFinMoney"
+              label="จำนวนเงิน (บาท)"
+              outlined
+              required
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6" v-if="updateData.disburseStatus=='เบิกจ่ายแล้ว'">
+            <h3 class="mb-2 fontBold">วันที่เบิกจ่าย</h3>
+            <v-text-field
+              v-model="updateData.disburseFinDate"
+              label="วันที่เบิกจ่าย"
+              type="date"
+              outlined
+              required
+              persistent-hint
+              :hint="thaiDate(updateData.disburseFinDate)"
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" v-if="updateData.disburseStatus=='เบิกจ่ายแล้ว' || updateData.disburseStatus=='ยกเลิก'">
+            <h3 class="mb-2 fontBold">หมายเหตุ</h3>
+            <v-text-field
+              v-model="updateData.disburseFinDes"
+              label="หมายเหตุ"
+              outlined
+              required
+              dense
+            ></v-text-field>
+          </v-col>
         </v-row>
       </v-card-text>
       <v-divider class="green lighten-2"></v-divider>
@@ -229,6 +262,7 @@ export default {
         this.updateProgress = true
 
         this.updateData.disburseMoney = numeral(this.updateData.disburseMoney).value()
+        this.updateData.disburseFinMoney = numeral(this.updateData.disburseFinMoney).value()
         if(this.expensebudgets.length > 0) {
           let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.updateData.expenseplanID)
           if(budgetplan) {

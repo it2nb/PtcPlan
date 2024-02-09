@@ -6,12 +6,18 @@
           <v-card-title class="ptcBg white--text">
             <b>โครงการ ประจำปีงบประมาณ พ.ศ.{{ parseInt(projectYear)+543 }}</b>
             <v-spacer></v-spacer>
-              <span class="mr-md-3 text-center caption" v-if="userType=='Admin'|| userType=='Director'|| userType=='Plan'">
+            <!-- <span class="mr-md-3 text-center caption" v-if="userType=='Admin'|| userType=='Director'|| userType=='Plan'">
               <v-btn fab small color="white" :href="'/print/projecttableReport/?year='+projectYear" target="_blank">
                 <v-icon color="primary">fas fa-print</v-icon>
               </v-btn><br>
-              รายชื่อ
-            </span>
+              รายชื่อโครงการ
+            </span> -->
+            <!-- <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+              <v-btn fab small color="white" :href="'/print/projecttableBrefReport/?year='+projectYear" target="_blank">
+                <v-icon color="primary">fas fa-print</v-icon>
+              </v-btn><br>
+              รายละเอียดย่อ
+            </span> -->
             <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
               <v-btn fab small color="white" :href="'/print/projecttableResultReport/?year='+projectYear" target="_blank">
                 <v-icon color="primary">fas fa-print</v-icon>
@@ -50,9 +56,34 @@
               v-model="tab"
             >
               <v-tab-item class="pt-5">
-                <div v-if="projectYear && userType && projects" class="mt-2">
+                <div v-if="projectYear && userType && projects && orgstrategics" class="mt-2">
+                  <v-card elevation="0">
+                    <v-card-title class="pt-0 pb-2">
+                      <v-spacer></v-spacer>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'|| userType=='Director'|| userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableReport/?year='+projectYear" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายชื่อโครงการ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableBrefReport/?year='+projectYear" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายละเอียดย่อ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableStatusReport/?year='+projectYear" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        สถานะดำเนินงาน
+                      </span>
+                    </v-card-title>
+                  </v-card>
                   <ProjectTableFormVue
                     :projects="projects"
+                    :projectSum="projectSum"
+                    :strategics="orgstrategics"
                     :projectsLoading="projectsLoading"
                     :userID="userID"
                     :userType="userType"
@@ -72,9 +103,34 @@
               </v-tab-item>
               <!-- เสนอโครงการ -->
               <v-tab-item class="pt-5">
-                <div v-if="projectYear && userType && projects" class="mt-2">
+                <div v-if="projectYear && userType && projects && orgstrategics" class="mt-2">
+                  <v-card elevation="0">
+                    <v-card-title class="pt-0 pb-2">
+                      <v-spacer></v-spacer>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'|| userType=='Director'|| userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableReport/?year='+projectYear+'&status=เสนอโครงการ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายชื่อโครงการ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableBrefReport/?year='+projectYear+'&status=เสนอโครงการ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายละเอียดย่อ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableStatusReport/?year='+projectYear+'&status=เสนอโครงการ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        สถานะดำเนินงาน
+                      </span>
+                    </v-card-title>
+                  </v-card>
                   <ProjectTableFormVue
                     :projects="projectsProp"
+                    :projectSum="projectSum"
+                    :strategics="orgstrategics"
                     :projectsLoading="projectsLoading"
                     :userID="userID"
                     :userType="userType"
@@ -116,9 +172,34 @@
               </v-tab-item> -->
               <!-- ฝ่ายเห็นชอบ -->
               <v-tab-item class="pt-5">
-                <div v-if="projectYear && userType && projects" class="mt-2">
+                <div v-if="projectYear && userType && projects && orgstrategics" class="mt-2">
+                  <v-card elevation="0">
+                    <v-card-title class="pt-0 pb-2">
+                      <v-spacer></v-spacer>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'|| userType=='Director'|| userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableReport/?year='+projectYear+'&status=ฝ่ายเห็นชอบ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายชื่อโครงการ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableBrefReport/?year='+projectYear+'&status=ฝ่ายเห็นชอบ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายละเอียดย่อ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableStatusReport/?year='+projectYear+'&status=ฝ่ายเห็นชอบ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        สถานะดำเนินงาน
+                      </span>
+                    </v-card-title>
+                  </v-card>
                   <ProjectTableFormVue
                     :projects="projectsPart"
+                    :projectSum="projectSum"
+                    :strategics="orgstrategics"
                     :projectsLoading="projectsLoading"
                     :userID="userID"
                     :userType="userType"
@@ -138,9 +219,34 @@
               </v-tab-item>
               <!-- อนุมัติ -->
               <v-tab-item class="pt-5">
-                <div v-if="projectYear && userType && projects" class="mt-2">
+                <div v-if="projectYear && userType && projects && orgstrategics" class="mt-2">
+                  <v-card elevation="0">
+                    <v-card-title class="pt-0 pb-2">
+                      <v-spacer></v-spacer>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'|| userType=='Director'|| userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableReport/?year='+projectYear+'&status=อนุมัติ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายชื่อโครงการ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableBrefReport/?year='+projectYear+'&status=อนุมัติ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        รายละเอียดย่อ
+                      </span>
+                      <span class="mr-md-3 text-center caption" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'">
+                        <v-btn fab small color="white" :href="'/print/projecttableStatusReport/?year='+projectYear+'&status=อนุมัติ'" target="_blank">
+                          <v-icon color="primary">fas fa-print</v-icon>
+                        </v-btn><br>
+                        สถานะดำเนินงาน
+                      </span>
+                    </v-card-title>
+                  </v-card>
                   <ProjectTableFormVue
                     :projects="projectsAppr"
+                    :projectSum="projectSum"
+                    :strategics="orgstrategics"
                     :projectsLoading="projectsLoading"
                     :userID="userID"
                     :userType="userType"
@@ -234,6 +340,7 @@ export default {
 
   data() {
     return {
+      orgstrategics: [],
       projects: [],
       projectsProp: [],
       projectsDept: [],
@@ -246,10 +353,28 @@ export default {
   },
 
   async mounted() {
+    await this.getOrgstrategics()
     await this.getProjects()
   },
 
   methods: {
+    async getOrgstrategics() {
+      let params = {
+        token: this.$store.state.jwtToken,
+          orgstrategicYear: this.projectYear
+      }
+
+      let result = await this.$axios.$get('orgstrategic.php', {params: params})
+
+      if(result.message == 'Success') {
+        this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
+        this.orgstrategics.unshift({
+          orgstrategicID: "all",
+          orgstrategicName: "ทุกยุทธ์ศาสตร์"
+        })
+      }
+    },
+
     async getProjects() {
       this.projectsLoading = true
       let params = {
@@ -305,6 +430,20 @@ export default {
       this.projectsLoading = false
     },
 
+    // async getSummary() {
+    //   let params = {
+    //     token: this.$store.state.jwtToken,
+    //     projectYear: this.projectYear,
+    //     fn: 'getSummaryByYear'
+    //   }
+    //   let result = await this.$axios.$get('project.php', {
+    //     params: params
+    //   })
+    //   if(result.message == 'Success') {
+    //     this.projectSum = JSON.parse(JSON.stringify(result.project))
+    //   }
+    // },
+
     moneyFormat(money) {
       return numeral(money).format('0,0.00')
     },
@@ -313,10 +452,18 @@ export default {
 
   watch: {
     async projectYear() {
+      this.orgstrategics = [
+        {
+          orgstrategicID: "all",
+          orgstrategicName: "ทุกยุทธ์ศาสตร์"
+        }
+      ]
+      await this.getOrgstrategics()
       await this.getProjects()
     },
 
     async personalIDcard() {
+      await this.getOrgstrategics()
       await this.getProjects()
     }
   }

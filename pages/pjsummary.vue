@@ -14,7 +14,7 @@
           <template v-slot:top>
             <v-row>
               <v-col cols="12" md="6">
-                <v-select
+                <v-autocomplete
                   v-model="orgstrategicID"
                   label="ยุทธศาสตร์"
                   :items="orgstrategics"
@@ -22,7 +22,7 @@
                   item-value="orgstrategicID"
                   outlined
                   @change="filterProjects"
-                ></v-select>
+                ></v-autocomplete>
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field
@@ -101,7 +101,7 @@
                     <v-row>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">ฝ่าย</h3>
-                        <v-select
+                        <v-autocomplete
                           v-model="project.partyID"
                           :items="parties"
                           item-text="partyName"
@@ -112,7 +112,7 @@
                             () => !!project.partyID || 'กรุณากรอกข้อมูล'
                           ]"
                           @change="getDepartments(project.partyID)"
-                        ></v-select>
+                        ></v-autocomplete>
                       </v-col>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">แผนก/งาน</h3>
@@ -129,10 +129,10 @@
                         ></v-autocomplete>
                       </v-col>
                       <v-col cols="12">
-                        <h3 class="mb-2 fontBold">1. ที่มาและความสำคัญ</h3>
+                        <h3 class="mb-2 fontBold">1. หลักการและเหตุผล</h3>
                         <v-textarea
                           v-model="project.projectPrinciple"
-                          label="ที่มาและความสำคัญ"
+                          label="หลักการและเหตุผล"
                           outlined
                           :rules="[
                             () => !!project.projectPrinciple || 'กรุณากรอกข้อมูล'
@@ -299,7 +299,7 @@
                     <v-row>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">ฝ่าย</h3>
-                        <v-select
+                        <v-autocomplete
                           v-model="project.partyID"
                           :items="parties"
                           item-text="partyName"
@@ -310,7 +310,7 @@
                             () => !!project.partyID || 'กรุณากรอกข้อมูล'
                           ]"
                           @change="getDepartments(project.partyID)"
-                        ></v-select>
+                        ></v-autocomplete>
                       </v-col>
                       <v-col cols="12" md="6">
                         <h3 class="mb-2 fontBold">แผนก/งาน</h3>
@@ -327,10 +327,10 @@
                         ></v-autocomplete>
                       </v-col>
                       <v-col cols="12">
-                        <h3 class="mb-2 fontBold">1. ที่มาและความสำคัญ</h3>
+                        <h3 class="mb-2 fontBold">1. หลักการและเหตุผล</h3>
                         <v-textarea
                           v-model="project.projectPrinciple"
-                          label="ที่มาและความสำคัญ"
+                          label="หลักการและเหตุผล"
                           outlined
                           :rules="[
                             () => !!project.projectPrinciple || 'กรุณากรอกข้อมูล'

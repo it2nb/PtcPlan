@@ -15,7 +15,7 @@
         <v-row dense>
           <v-col cols="12">
             <h3 class="mb-2 fontBold">กิจกรรมย่อย</h3>
-            <v-select
+            <v-autocomplete
               v-model="updateData.pjsubactivityID"
               label="กิจกรรมย่อย"
               :items="pjsubactivities"
@@ -26,11 +26,11 @@
               :rules="[
                 () => !!updateData.pjsubactivityID || 'กรุณากรอกข้อมูล'
               ]"
-            ></v-select>
+            ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">หมวดค่าใช้จ่าย</h3>
-            <v-select
+            <v-autocomplete
               v-model="updateData.expenseID"
               label="หมวดค่าใช้จ่าย"
               :items="expenses"
@@ -42,11 +42,11 @@
               :rules="[
                 () => !!updateData.expenseID || 'กรุณากรอกข้อมูล'
               ]"
-            ></v-select>
+            ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
-            <v-select
+            <v-autocomplete
               v-model="updateData.budgetplanID"
               label="หมวดงบประมาณ"
               :items="budgetplans"
@@ -66,7 +66,7 @@
                   <v-divider class="my-1"></v-divider>
                 </div>
               </template>
-            </v-select>
+            </v-autocomplete>
           </v-col>
           <v-col cols="12" md="9">
             <h3 class="mb-2 fontBold">รายการ</h3>

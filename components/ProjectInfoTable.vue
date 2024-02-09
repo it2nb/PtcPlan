@@ -31,7 +31,7 @@
                   </v-card-text>
                 </v-card>
               </v-col> -->
-              <v-col cols="12" md="3">
+              <!-- <v-col cols="12" md="3">
                 <v-card elevation="1" color="primary">
                   <v-card-subtitle class="elevation-1 white--text">เสนอโครงการทั้งสิ้น</v-card-subtitle>
                   <v-card-text class="py-2 text-right primary lighten-3 black--text">
@@ -46,15 +46,16 @@
                     {{ moneyFormat(parseFloat(projectSum.pjbudgetMoney) - parseFloat(projectSum.pjbudgetHintAndApproveMoney)) }} บาท
                   </v-card-text>
                 </v-card>
-              </v-col>
-              <v-col cols="12" md="9">
-                <v-card elevation="1" color="success">
-                  <v-card-subtitle class="elevation-1 white--text">อนุมัติโครงการแล้ว</v-card-subtitle>
-                  <v-card-text class="py-2 text-right light-green lighten-3 black--text">
+              </v-col> -->
+              <!-- <v-col cols="12" md="9"> -->
+              <v-col cols="12">
+                <v-card elevation="1" color="primary">
+                  <v-card-subtitle class="elevation-1 white--text">โครงการทั้งหมด</v-card-subtitle>
+                  <v-card-text class="py-2 text-right primary lighten-4 black--text">
                     {{ projectSum.projectHinAndApproveQty }} โครงการ<br>
                     {{ moneyFormat(projectSum.pjbudgetHintAndApproveMoney) }} บาท
                   </v-card-text>
-                  <v-row no-gutters class="pa-2">
+                  <v-row no-gutters class="pa-2 light-green lighten-3">
                     <v-col cols="12" md="4">
                       <v-card elevation="1" color="red darken-2">
                         <v-card-subtitle class="elevation-1 white--text">ยังไม่ได้ดำเนินการ</v-card-subtitle>
@@ -65,7 +66,7 @@
                       </v-card>
                     </v-col>
                     <v-col cols="12" md="4">
-                      <v-card elevation="1" color="yellow darken-2">
+                      <v-card elevation="1" color="yellow darken-3">
                         <v-card-subtitle class="elevation-1 white--text">อยู่ระหว่างดำเนินการ</v-card-subtitle>
                         <v-card-text class="py-2 text-right yellow lighten-4 black--text">
                           {{ projectSum.projectInProgressQty }} โครงการ<br>
@@ -446,7 +447,7 @@
     <v-row justify="center">
       <v-dialog
         v-model="imageDialog"
-        scrollable="false"
+        :scrollable="false"
       >
         <v-row>
           <v-col cols="12" class="text-right">
@@ -502,7 +503,7 @@ export default {
       default: null
     },
     projectYear: {
-      type: String,
+      type: Number,
       default: null
     },
     insertBt: {

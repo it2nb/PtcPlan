@@ -144,30 +144,33 @@ export default {
       let result = await this.$axios.$get('disburse.php', {params})
 
       if(result.message=="Success") {
-        this.disburses = JSON.parse(JSON.stringify(result.disburse))
-        let outdata = {
-          name: 'จัดซื้อ',
-          color: '#EF9A9A',
-          data: []
+        if(result.disburse.length > 0) {
+          this.disburses = JSON.parse(JSON.stringify(result.disburse))
+          let outdata = {
+            name: 'จัดซื้อ',
+            color: '#EF9A9A',
+            data: []
+          }
+          let categories = []
+          if(this.disburses) {
+            let osm = this.disburses.map( disburse => {
+              let disburseMoney = parseFloat(disburse.disburseMoney) || 0
+              categories.push(disburse.departmentName)
+              outdata.data.push(disburseMoney)
+            })
+            await Promise.all(osm)
+            this.chartOptionsAll.xaxis.categories = categories
+            this.seriesAll = [outdata]
+          }
+          this.showChart = true
         }
-        let categories = []
-        if(this.disburses) {
-          let osm = this.disburses.map( disburse => {
-            let disburseMoney = parseFloat(disburse.disburseMoney) || 0
-            categories.push(disburse.departmentName)
-            outdata.data.push(disburseMoney)
-          })
-          await Promise.all(osm)
-          this.chartOptionsAll.xaxis.categories = categories
-          this.seriesAll = [outdata]
-        }
-        this.showChart = true
       }
     },
   },
 
   watch: {
     async periodYear() {
+      this.showChart = false
       await this.getDisburse()
     }
   }

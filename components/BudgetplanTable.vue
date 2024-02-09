@@ -6,7 +6,7 @@
           <v-card-title class="ptcBg white--text">
             <b>แผนงบประมาณรายรับ ประจำปีงบประมาณ พ.ศ.{{ parseInt(budgetplanYear)+543 }}</b>
             <v-spacer></v-spacer>
-            <v-btn fab small color="white" :to="'/print/budgetplantableReport/?year='+budgetplanYear" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'">
+            <v-btn fab small color="white" :to="'/print/budgetplantableReport/?year='+budgetplanYear" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'||userType=='Party'">
               <v-icon color="primary">fas fa-print</v-icon>
             </v-btn>
           </v-card-title>
@@ -50,7 +50,7 @@
                 {{ moneyFormat(item.budgetplanMoney) }}
               </template>
               <template v-slot:item.budgetrealMoney="{ item }">
-                <div class="text-no-wrap">
+                <div class="text-no-wrap grey lighten-3">
                   {{ moneyFormat(item.budgetrealMoney) }}
                   <v-btn icon @click="showBudgetslipDialog(item)">
                     <v-icon color="success">fas fa-wallet</v-icon>
@@ -61,37 +61,38 @@
                 <!-- <span class="black--text" v-if="parseInt(item.disburseRealMoney) > 0">{{ moneyFormat(item.disburseMoney) }}</span>
                 <span class="grey--text" v-else><i>{{ moneyFormat(item.disburseMoney) }}</i></span> -->
                 <div class="py-2">
-                  <span class="grey--text"><i>{{ moneyFormat(item.disbursePlanMoney) }}</i></span>
+                  <div class="px-1 grey--text deep-purple lighten-5"><i>{{ moneyFormat(item.disbursePlanMoney) }}</i></div>
                   <v-divider></v-divider>
-                  <span class="black--text">{{ moneyFormat(item.disburseRealMoney) }}</span>
+                  <div class="px-1 black--text green lighten-4">{{ moneyFormat(item.disburseRealMoney) }}</div>
                 </div>
               </template>
               <template v-slot:item.budgetdifplanMoney="{ item }">
                 <div v-if="parseFloat(item.budgetplanMoney) > parseFloat(item.budgetrealMoney)">
-                  <span class="success--text fontBold" v-if="(parseFloat(item.budgetplanMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) > 0">
+                  <span class="success--text " v-if="(parseFloat(item.budgetplanMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) > 0">
                     {{ moneyFormat(parseFloat(item.budgetplanMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) }}
                   </span>
-                  <span class="red--text fontBold" v-else-if="(parseFloat(item.budgetplanMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) < 0">
+                  <span class="red--text " v-else-if="(parseFloat(item.budgetplanMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) < 0">
                     {{ moneyFormat(parseFloat(item.budgetplanMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) }}
                   </span>
-                  <span class="fontBold" v-else>
+                  <span class="" v-else>
                     {{ moneyFormat(parseFloat(item.budgetplanMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) }}
                   </span>
                 </div>
                 <div v-else>
-                  <span class="success--text fontBold" v-if="(parseFloat(item.budgetrealMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) > 0">
+                  <span class="success--text " v-if="(parseFloat(item.budgetrealMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) > 0">
                     {{ moneyFormat(parseFloat(item.budgetrealMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) }}
                   </span>
-                  <span class="red--text fontBold" v-else-if="(parseFloat(item.budgetrealMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) < 0">
+                  <span class="red--text " v-else-if="(parseFloat(item.budgetrealMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) < 0">
                     {{ moneyFormat(parseFloat(item.budgetrealMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) }}
                   </span>
-                  <span class="fontBold" v-else>
+                  <span class="" v-else>
                     {{ moneyFormat(parseFloat(item.budgetrealMoney)-(parseFloat(item.disbursePlanMoney)+parseFloat(item.disburseRealMoney))) }}
                   </span>
                 </div>
               </template>
               <template v-slot:item.budgetdifrealMoney="{ item }">
-                <span class="success--text fontBold" v-if="(parseFloat(item.budgetrealMoney)-parseFloat(item.disburseRealMoney)) > 0">
+                <div class="pa-1 blue lighten-5">
+                  <span class="success--text fontBold" v-if="(parseFloat(item.budgetrealMoney)-parseFloat(item.disburseRealMoney)) > 0">
                   {{ moneyFormat(parseFloat(item.budgetrealMoney)-parseFloat(item.disburseRealMoney)) }}
                 </span>
                 <span class="red--text fontBold" v-else-if="(parseFloat(item.budgetrealMoney)-parseFloat(item.disburseRealMoney)) < 0">
@@ -100,6 +101,8 @@
                 <span class="fontBold" v-else>
                   {{ moneyFormat(parseFloat(item.budgetrealMoney)-parseFloat(item.disburseRealMoney)) }}
                 </span>
+                </div>
+
               </template>
               <template v-slot:item.actions="{ item }">
                 <div  class="text-no-wrap">
@@ -115,18 +118,18 @@
                 <tr class="d-none d-md-table-row">
                   <td colspan="3" class="fontBold text-center">รวม</td>
                   <td class="fontBold text-right">{{ moneyFormat(budgetSum.budgetplanMoney) }}</td>
-                  <td class="fontBold text-right">{{ moneyFormat(budgetSum.budgetrealMoney) }}</td>
+                  <td class="fontBold text-right grey lighten-3">{{ moneyFormat(budgetSum.budgetrealMoney) }}</td>
                   <td class="py-2 fontBold text-right">
-                    <span class="grey--text"><i class="fontBold">{{ moneyFormat(budgetSum.disbursePlanMoney) }}</i></span>
+                    <div class="px-1 grey--text deep-purple lighten-5"><i class="fontBold">{{ moneyFormat(budgetSum.disbursePlanMoney) }}</i></div>
                     <v-divider></v-divider>
-                    {{ moneyFormat(budgetSum.disburseRealMoney) }}
+                    <div class="px-1 fontBold green lighten-4">{{ moneyFormat(budgetSum.disburseRealMoney) }}</div>
                     </td>
                   <td class="fontBold text-right">
                     <div v-if="parseFloat(budgetSum.budgetplanMoney) > parseFloat(budgetSum.budgetrealMoney)">
-                      <span class="success--text fontBold" v-if="(parseFloat(budgetSum.budgetplanMoney)-(parseInt(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) > 0">
+                      <span class="success--text " v-if="(parseFloat(budgetSum.budgetplanMoney)-(parseInt(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) > 0">
                         {{ moneyFormat(parseFloat(budgetSum.budgetplanMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) }}
                       </span>
-                      <span class="red--text fontBold" v-else-if="(parseFloat(budgetSum.budgetplanMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) < 0">
+                      <span class="red--text " v-else-if="(parseFloat(budgetSum.budgetplanMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) < 0">
                         {{ moneyFormat(parseFloat(budgetSum.budgetplanMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) }}
                       </span>
                       <span class="fontBold" v-else>
@@ -134,18 +137,18 @@
                       </span>
                     </div>
                     <div v-else>
-                      <span class="success--text fontBold" v-if="(parseFloat(budgetSum.budgetrealMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) > 0">
+                      <span class="success--text " v-if="(parseFloat(budgetSum.budgetrealMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) > 0">
                         {{ moneyFormat(parseFloat(budgetSum.budgetrealMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) }}
                       </span>
-                      <span class="red--text fontBold" v-else-if="(parseFloat(budgetSum.budgetrealMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) < 0">
+                      <span class="red--text " v-else-if="(parseFloat(budgetSum.budgetrealMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) < 0">
                         {{ moneyFormat(parseFloat(budgetSum.budgetrealMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) }}
                       </span>
-                      <span class="fontBold" v-else>
+                      <span class="" v-else>
                         {{ moneyFormat(parseFloat(budgetSum.budgetrealMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) }}
                       </span>
                     </div>
                   </td>
-                  <td class="fontBold text-right">
+                  <td class="fontBold text-right blue lighten-5">
                     <span class="success--text fontBold" v-if="(parseFloat(budgetSum.budgetrealMoney)-parseFloat(budgetSum.disburseRealMoney)) > 0">
                       {{ moneyFormat(parseFloat(budgetSum.budgetrealMoney)-parseFloat(budgetSum.disburseRealMoney)) }}
                     </span>

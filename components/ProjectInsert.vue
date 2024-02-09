@@ -30,7 +30,7 @@
                   <v-row dense>
                     <v-col cols="12" md="6">
                       <h3 class="mb-2 fontBold">ฝ่าย</h3>
-                      <v-select
+                      <v-autocomplete
                         v-model="projectData.partyID"
                         :items="parties"
                         item-text="partyName"
@@ -41,7 +41,7 @@
                           () => !!projectData.partyID || 'กรุณากรอกข้อมูล'
                         ]"
                         @change="partyChange"
-                      ></v-select>
+                      ></v-autocomplete>
                     </v-col>
                     <v-col cols="12" md="6">
                       <h3 class="mb-2 fontBold">แผนก/งาน</h3>
@@ -59,7 +59,7 @@
                     </v-col>
                     <v-col cols="12">
                       <h3 class="mb-2 fontBold">ยุทธศาสตร์สถานศึกษา</h3>
-                      <v-select
+                      <v-autocomplete
                         v-model="projectData.orgstrategicID"
                         label="ยุทธศาสตร์สถานศึกษา"
                         :items="orgstrategics"
@@ -71,11 +71,11 @@
                           ()=>!!projectData.orgstrategicID || 'กรุณากรอกข้อมูล'
                         ]"
                         @change="orgstrategicChange"
-                      ></v-select>
+                      ></v-autocomplete>
                     </v-col>
                     <v-col cols="12">
                       <h3 class="mb-2 fontBold">กลยุทธ์สถานศึกษา</h3>
-                      <v-select
+                      <v-autocomplete
                         v-model="projectData.orgstrategyID"
                         label="กลยุทธ์สถานศึกษา"
                         :items="orgstrategies"
@@ -86,7 +86,7 @@
                         :rules="[
                           ()=>!!projectData.orgstrategyID || 'กรุณากรอกข้อมูล'
                         ]"
-                      ></v-select>
+                      ></v-autocomplete>
                     </v-col>
                     <v-col cols="12">
                       <h3 class="mb-2 fontBold">ชื่อโครงการ</h3>
@@ -103,7 +103,7 @@
                       <h3 class="mb-2 fontBold">หลักการและเหตุผล</h3>
                       <v-textarea
                         v-model="projectData.projectPrinciple"
-                        label="ที่มาและความสำคัญ"
+                        label="หลักการและเหตุผล"
                         outlined
                         :rules="[
                           () => !!projectData.projectPrinciple || 'กรุณากรอกข้อมูล'
@@ -167,7 +167,7 @@
                       <h3 class="mb-2 fontBold">ประโยชน์ที่คาดว่าจะได้รับ</h3>
                       <v-textarea
                         v-model="projectData.projectBenefit"
-                        label="วัตถุประสงค์"
+                        label="ประโยชน์ที่คาดว่าจะได้รับ"
                         outlined
                         :rules="[
                           () => !!projectData.projectBenefit || 'กรุณากรอกข้อมูล'

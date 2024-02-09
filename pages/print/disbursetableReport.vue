@@ -18,25 +18,24 @@
           <tr class="grey lighten-2">
             <th width="2%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">ลำดับ</th>
             <th width="5%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">รหัสอ้างอิง</th>
-            <th width="13%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">วันที่</th>
             <th width="16%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">รายการ</th>
-            <th class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">ค่าใช้จ่าย/โครงการ</th>
-            <th width="10%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">หมวดค่าใช้จ่าย</th>
+            <th class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">หมวดค่าใช้จ่าย : ค่าใช้จ่าย/โครงการ</th>
+            <!-- <th width="10%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">หมวดค่าใช้จ่าย</th> -->
             <th width="8%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">จำนวนเงิน (บาท)</th>
             <th width="13%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">หมวดงบประมาณ</th>
             <th width="10%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">สถานะเบิกจ่าย</th>
+            <th width="10%" class="pa-2 font16 fontBold" style="border: solid 1px black; padding: 2px">วันที่</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="disburse in ShowDisburses" :key="disburse.disburseID">
             <td class="text-center text-no-wrap font16" style="border: solid 1px black; padding: 2px">{{ ShowDisburses.indexOf(disburse)+1 }}</td>
             <td class="text-center text-no-wrap font16" style="border: solid 1px black; padding: 2px">DB-{{ parseInt(disburse.disburseID) }}</td>
-            <td class="text-left font16" style="border: solid 1px black; padding: 2px">{{ thaiDate(disburse.disburseDate) }}</td>
             <td class="text-left font16" style="border: solid 1px black; padding: 2px">
               {{ disburse.disburseDes }}
             </td>
             <td class="text-left font16" style="border: solid 1px black; padding: 2px">{{ disburse.disburseName }}</td>
-            <td class="text-left font16" style="border: solid 1px black; padding: 2px">{{ disburse.expenseName }}</td>
+            <!-- <td class="text-left font16" style="border: solid 1px black; padding: 2px">{{ disburse.expenseName }}</td> -->
             <td class="text-right text-no-wrap font16" style="border: solid 1px black; padding: 2px">{{ moneyFormat(disburse.disburseMoney) }}</td>
             <td class="text-left font16" style="border: solid 1px black; padding: 2px">{{ disburse.budgetplanFullname }}</td>
             <td class="text-center text-no-wrap font16" style="border: solid 1px black; padding: 2px">
@@ -48,6 +47,14 @@
               </span>
               <span class="red--text text--darken-2 font16" x-small dark v-else-if="disburse.disburseStatus=='ยกเลิก'">
                 {{ disburse.disburseStatus }}
+              </span>
+            </td>
+            <td class="text-center font16" style="border: solid 1px black; padding: 2px">
+              <span v-if="disburse.disburseStatus=='เบิกจ่ายแล้ว'">
+                {{ thaiDateShort(disburse.disburseFinDate) }}
+              </span>
+              <span v-else>
+                {{ thaiDateShort(disburse.disburseDate) }}
               </span>
             </td>
           </tr>
@@ -141,6 +148,19 @@ export default {
         result = thdate.toLocaleDateString('th-TH', {
           year: 'numeric',
           month: 'long',
+          day: 'numeric',
+        })
+      }
+      return result
+    },
+
+    thaiDateShort(inDate) {
+      let result = ''
+      if(inDate) {
+        let thdate = new Date(inDate)
+        result = thdate.toLocaleDateString('th-TH', {
+          year: 'numeric',
+          month: 'short',
           day: 'numeric',
         })
       }

@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="light-green lighten-2">
-      <span class="fontBold">เพิ่มข้อมูลจัดซื้อ/เบิกเงิน ปีงบประมาณ พ.ศ.{{ parseInt(disburse.disburseYear)+543 }}</span>
+      <span class="fontBold">เพิ่มข้อมูลขอจัดซื้อ/เบิกเงิน ปีงบประมาณ พ.ศ.{{ parseInt(disburse.disburseYear)+543 }}</span>
     </v-card-title>
     <v-divider class="green"></v-divider>
     <v-form
@@ -15,18 +15,22 @@
         <v-row dense>
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">แผนก/งาน</h3>
-            <v-autocomplete
+            <v-select
              v-model="insertData.departmentID"
               label="แผนก/งาน"
-              :items="departments"
-              item-text="departmentName"
-              item-value="departmentID"
+              :items="[
+                {
+                  text: department.departmentName,
+                  value: department.departmentID
+                }
+              ]"
               outlined
               required
               :rules="[
                 ()=>!!insertData.departmentID || 'กรุณากรอกข้อมูล'
               ]"
-            ></v-autocomplete>
+              readonly
+            ></v-select>
           </v-col>
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">ผู้ขอจัดซื้อ/เบิกเงิน</h3>
@@ -38,6 +42,7 @@
               :rules="[
                 ()=>!!insertData.disburseReqName || 'กรุณากรอกข้อมูล'
               ]"
+              readonly
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -200,11 +205,11 @@
               </template>
             </v-autocomplete>
           </v-col>
-          <v-col cols="12" md="8" v-if="insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย'">
-            <h3 class="mb-2 fontBold">รายการ</h3>
+          <v-col cols="12" v-if="insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">วัตถุประสงค์เพื่อ</h3>
             <v-text-field
               v-model="insertData.disburseDes"
-              label="รายการ"
+              label="เพื่อ"
               outlined
               required
               :rules="[
@@ -212,7 +217,7 @@
               ]"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4" v-if="insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย'">
+          <!-- <v-col cols="12" md="4" v-if="insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย'">
             <h3 class="mb-2 fontBold">จำนวนเงิน(บาท)</h3>
             <v-text-field
               v-model="insertData.disburseMoney"
@@ -246,7 +251,7 @@
                 ()=>!!insertData.disburseFinDate || 'กรุณากรอกข้อมูล'
               ]"
             ></v-text-field>
-          </v-col>
+          </v-col> -->
         </v-row>
       </v-card-text>
       <v-divider class="green lighten-2"></v-divider>
@@ -294,7 +299,7 @@ export default {
       expenseplans: [],
       projects: [],
       pjbudgets: [],
-      departments: [],
+      department: {},
       insertData: {},
       insertProgress: false,
       insertValidate: null,
@@ -307,17 +312,25 @@ export default {
       await this.getDepartment()
       await this.getExpaeseplan()
       await this.getProject()
+      //let nowdatetime = new Date().toISOString().slice(0, 19).replace('T', ' ')
+      //let nowdt = nowdatetime.split(" ")
+      //this.insertData.disburseDate = nowdt[0]
     }
   },
 
   methods: {
     async getDepartment() {
       let params = {
-        token: this.$store.state.jwtToken
+        token: this.$store.state.jwtToken,
+        departmentID: this.insertData.departmentID
       }
       let result = await this.$axios.$get('department.php', {params})
       if(result.message == 'Success') {
-        this.departments = JSON.parse(JSON.stringify(result.department))
+        this.department = JSON.parse(JSON.stringify(result.department))
+        this.insertData.disburseReqName = this.department.departmentHead
+        let nowdatetime = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        let nowdt = nowdatetime.split(" ")
+        this.insertData.disburseDate = nowdt[0]
       }
     },
 
@@ -341,7 +354,8 @@ export default {
         token: this.$store.state.jwtToken,
         projectStatus: 'อนุมัติ',
         projectPlanStatus: 'อนุมัติหลักการ',
-        projectYear: this.insertData.disburseYear
+        projectYear: this.insertData.disburseYear,
+        departmentID: this.insertData.departmentID
       }
       let result = await this.$axios.$get('project.php', {params})
       if(result.message == 'Success') {
@@ -379,10 +393,8 @@ export default {
       await this.$refs.insertForm.validate()
       if(this.insertValidate) {
         this.insertProgress = true
-        this.insertData.disburseMoney = numeral(this.insertData.disburseMoney).value()
-        if(this.insertData.disburseStatus == 'เบิกจ่ายแล้ว') {
-          this.insertData.disburseFinMoney = this.insertData.disburseMoney
-        }
+        this.insertData.disburseMoney = 0
+
         if(this.expensebudgets.length > 0) {
           let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.insertData.expenseplanID)
           if(budgetplan) {
@@ -396,7 +408,7 @@ export default {
             this.insertData.expenseID = pjbudget.expenseID
           }
         }
-        // this.insertData.disburseStatus = 'ตัดแผนแล้ว'
+        this.insertData.disburseStatus = ''
         let result = await this.$axios.$post('disburse.insert.php', this.insertData)
 
         if(result.message == 'Success') {
