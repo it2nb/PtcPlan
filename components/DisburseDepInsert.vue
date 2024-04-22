@@ -408,7 +408,7 @@ export default {
             this.insertData.expenseID = pjbudget.expenseID
           }
         }
-        this.insertData.disburseStatus = ''
+
         let result = await this.$axios.$post('disburse.insert.php', this.insertData)
 
         if(result.message == 'Success') {
