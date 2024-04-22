@@ -117,6 +117,7 @@
                       v-model="insertData.disburselistName"
                       label="รายการ"
                       outlined
+                      dense
                       required
                       :rules="[
                         ()=>!!insertData.disburselistName || 'กรุณากรอกข้อมูล'
@@ -129,6 +130,7 @@
                       label="จำนวน"
                       outlined
                       type="number"
+                      dense
                       required
                       :rules="[
                         ()=>!!insertData.disburselistQty || 'กรุณากรอกข้อมูล'
@@ -140,6 +142,7 @@
                       v-model="insertData.disburselistUnit"
                       label="หน่วยนับ"
                       outlined
+                      dense
                       required
                       :rules="[
                         ()=>!!insertData.disburselistUnit || 'กรุณากรอกข้อมูล'
@@ -151,6 +154,7 @@
                       v-model="insertData.disburselistPrice"
                       label="ราคา"
                       outlined
+                      dense
                       required
                       :rules="[
                         ()=>!!insertData.disburselistPrice || 'กรุณากรอกข้อมูล'
@@ -172,12 +176,38 @@
               {text: 'จำนวน', value: 'disburselistQty', align: 'right', class: 'text-center'},
               {text: 'หน่วยนับ', value: 'disburselistUnit', align: 'center', class: 'text-center'},
               {text: 'ราคา', value: 'disburselistPrice', align: 'right', class: 'text-center'},
-              {text: 'รวม', value: 'disburselistSumPrice', align: 'right', class: 'text-center'}
+              {text: 'รวม', value: 'disburselistSumPrice', align: 'right', class: 'text-center'},
+              {text: '', value:'actions', align: 'right'}
             ]"
             :items="disburselists"
             :items-per-page="-1"
             hide-default-footer
-          ></v-data-table>
+          >
+            <template v-slot:item.disburselistQty="{ item }">
+              {{ qtyFormat(item.disburselistQty) }}
+            </template>
+            <template v-slot:item.disburselistPrice="{ item }">
+              {{ moneyFormat(item.disburselistPrice) }}
+            </template>
+            <template v-slot:item.disburselistSumPrice="{ item }">
+              {{ moneyFormat(item.disburselistSumPrice) }}
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-btn color="warning" icon  small>
+                <v-icon small class="mr-1">fas fa-edit</v-icon>
+              </v-btn>
+              <v-btn color="red darken-2" icon  smal>
+                <v-icon small class="mr-1">fas fa-trash</v-icon>
+              </v-btn>
+            </template>
+            <template slot="foot">
+              <tr class="grey lighten-3">
+                <td colspan="4" class="px-4 py-2 text-center font-weight-bold">รวม</td>
+                <td class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(disburseSum) }}</td>
+                <td class="px-4 py-2 text-right font-weight-bold"></td>
+              </tr>
+            </template>
+          </v-data-table>
           </v-col>
         </v-row>
       </v-card-text>
@@ -222,6 +252,7 @@ export default {
   data() {
     return {
       disburselists: [],
+      disburseSum: [],
       insertData: {},
       expensebudgets: [],
       expenseplans: [],
@@ -251,6 +282,7 @@ export default {
 
       if(result.message == 'Success') {
         this.disburselists = JSON.parse(JSON.stringify(result.disburselist))
+        this.disburseSum = this.disburselists.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.disburselistSumPrice), 0);
       }
     },
 
@@ -288,6 +320,10 @@ export default {
 
     moneyFormat(money) {
       return numeral(money).format('0,0.00')
+    },
+
+    qtyFormat(qty) {
+      return numeral(qty).format('0,0')
     },
 
   },
