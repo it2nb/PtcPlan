@@ -18,7 +18,7 @@
               slider-color="orange darken-3"
               background-color="green lighten-5"
             >
-              <v-tab v-if="userType=='Department'">
+              <v-tab>
                 <b class="primary--text">เขียนขอซื้อฯ({{ ReqDisburses.length }})</b>
               </v-tab>
               <v-tab>
@@ -82,7 +82,7 @@
                   <template v-slot:item.disburseDate="{ item }">
                     {{ thaiDateBf(item.disburseDate) }}
                   </template>
-                  <template v-slot:item.actions="{ item }">
+                  <template v-slot:item.actions="{ item }" v-if="userType=='Department'">
                     <div>
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
@@ -695,6 +695,10 @@ export default {
       type: String,
       default: null,
     },
+    userID: {
+      type: String,
+      default : null
+    },
     personalIDcard: {
       type: String,
       default: null
@@ -752,7 +756,7 @@ export default {
         },
         { text: 'รายการ', value: 'disburseDes', align: 'left', class: 'text-center' },
         { text: 'หมวดค่าใช้จ่าย : ค่าใช้จ่าย/โครงการ', value: 'disburseName', align: 'left', class: 'text-center' },
-        { text: 'ตัดแผน(บาท)', value: 'disburseMoney', align: 'right', class: 'text-center' },
+        { text: 'จำนวนเงิน(บาท)', value: 'disburseMoney', align: 'right', class: 'text-center' },
         { text: 'วันที่ตัด', value: 'disburseDate', align: 'center', class: 'text-center' },
         { text: 'หมวดงบประมาณรายรับ', value: 'budgetplanFullname', align: 'left', class: 'text-center' },
         { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class: 'text-center' },
@@ -891,6 +895,7 @@ export default {
         this.disburseData = {
           token: this.$store.state.jwtToken,
           disburseYear: this.disburseYear,
+          userID: this.userID,
           personalIDcardCreate: this.personalIDcard,
           departmentID: this.departmentID,
           disburseStatus: 'ขอซื้อ'

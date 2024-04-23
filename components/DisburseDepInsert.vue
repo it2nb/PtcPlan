@@ -205,7 +205,7 @@
               </template>
             </v-autocomplete>
           </v-col>
-          <v-col cols="12" v-if="insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย'">
+          <v-col cols="12">
             <h3 class="mb-2 fontBold">วัตถุประสงค์เพื่อ</h3>
             <v-text-field
               v-model="insertData.disburseDes"
@@ -217,41 +217,48 @@
               ]"
             ></v-text-field>
           </v-col>
-          <!-- <v-col cols="12" md="4" v-if="insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย'">
-            <h3 class="mb-2 fontBold">จำนวนเงิน(บาท)</h3>
+          <v-col cols="12" md="6">
+            <h3 class="mb-2 fontBold">วันที่เริ่มต้น</h3>
             <v-text-field
-              v-model="insertData.disburseMoney"
-              label="จำนวนเงิน (บาท)"
-              outlined
-              required
-              :rules="[
-                ()=>!!insertData.disburseMoney || 'กรุณากรอกข้อมูล'
-              ]"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="8" v-if="(insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย') && insertData.disburseStatus == 'เบิกจ่ายแล้ว'">
-            <h3 class="mb-2 fontBold">หมายเหตุ</h3>
-            <v-text-field
-              v-model="insertData.disburseFinDes"
-              label="หมายเหตุ"
-              outlined
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" v-if="(insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย') && insertData.disburseStatus == 'เบิกจ่ายแล้ว'">
-            <h3 class="mb-2 fontBold">วันที่เบิกจ่าย</h3>
-            <v-text-field
-              v-model="insertData.disburseFinDate"
-              label="วันที่เบิกจ่าย"
+              v-model="insertData.disburseStart"
+              label="วันที่เริ่มต้น"
               type="date"
               outlined
               required
               persistent-hint
-              :hint="thaiDate(insertData.disburseFinDate)"
+              :hint="thaiDate(insertData.disburseStart)"
               :rules="[
-                ()=>!!insertData.disburseFinDate || 'กรุณากรอกข้อมูล'
+                ()=>!!insertData.disburseStart || 'กรุณากรอกข้อมูล'
               ]"
             ></v-text-field>
-          </v-col> -->
+          </v-col>
+          <v-col cols="12" md="6">
+            <h3 class="mb-2 fontBold">วันที่สิ้นสุด</h3>
+            <v-text-field
+              v-model="insertData.disburseEnd"
+              label="วันที่สิ้นสุด"
+              type="date"
+              outlined
+              required
+              persistent-hint
+              :hint="thaiDate(insertData.disburseEnd)"
+              :rules="[
+                ()=>!!insertData.disburseEnd || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
+            <v-textarea
+              v-model="insertData.disburseProduct"
+              label="ระบุผลผลิต และจำนวน(หน่วย)"
+              outlined
+              required
+              :rules="[
+                ()=>!!insertData.disburseProduct || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-textarea>
+          </v-col>
         </v-row>
       </v-card-text>
       <v-divider class="green lighten-2"></v-divider>
@@ -309,6 +316,7 @@ export default {
   async mounted() {
     if(this.disburse) {
       this.insertData = JSON.parse(JSON.stringify(this.disburse))
+      console.log(this.insertData)
       await this.getDepartment()
       await this.getExpaeseplan()
       await this.getProject()

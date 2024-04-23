@@ -3,6 +3,14 @@
     <v-card>
       <v-card-title class="amber lighten-2">
         <span class="fontBold">เพิ่มรายการ{{ disburse.expenseName }}</span>
+        <v-spacer></v-spacer>
+        <v-btn 
+          color="white"
+          :to="'/print/disburseForm1/?id='+disburse.disburseID" 
+          target="_blank"
+        >
+          <v-icon class="mr-1" color="primary">fas fa-print</v-icon> พิมพ์
+        </v-btn>
       </v-card-title>
       <v-divider class="green"></v-divider>
         <v-card-text>

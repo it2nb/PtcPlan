@@ -214,18 +214,48 @@
               ]"
             ></v-text-field>
           </v-col>
-          <!-- <v-col cols="12" md="4" v-if="updateData.disburseType=='โครงการ'||updateData.disburseType=='ค่าใช้จ่าย'">
-            <h3 class="mb-2 fontBold">จำนวนเงิน(บาท)</h3>
+          <v-col cols="12" md="6">
+            <h3 class="mb-2 fontBold">วันที่เริ่มต้น</h3>
             <v-text-field
-              v-model="updateData.disburseMoney"
-              label="จำนวนเงิน (บาท)"
+              v-model="updateData.disburseStart"
+              label="วันที่เริ่มต้น"
+              type="date"
+              outlined
+              required
+              persistent-hint
+              :hint="thaiDate(updateData.disburseStart)"
+              :rules="[
+                ()=>!!updateData.disburseStart || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <h3 class="mb-2 fontBold">วันที่สิ้นสุด</h3>
+            <v-text-field
+              v-model="updateData.disburseEnd"
+              label="วันที่สิ้นสุด"
+              type="date"
+              outlined
+              required
+              persistent-hint
+              :hint="thaiDate(updateData.disburseEnd)"
+              :rules="[
+                ()=>!!updateData.disburseEnd || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
+            <v-textarea
+              v-model="updateData.disburseProduct"
+              label="ระบุผลผลิต และจำนวน(หน่วย)"
               outlined
               required
               :rules="[
-                ()=>!!updateData.disburseMoney || 'กรุณากรอกข้อมูล'
+                ()=>!!updateData.disburseProduct || 'กรุณากรอกข้อมูล'
               ]"
-            ></v-text-field>
-          </v-col> -->
+            ></v-textarea>
+          </v-col>
         </v-row>
       </v-card-text>
       <v-divider class="green lighten-2"></v-divider>

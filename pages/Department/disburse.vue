@@ -16,7 +16,7 @@
       </v-col>
     </v-row>
     <div v-if="userID && disburseYear" class="mt-2">
-        <DisburseTableVue :departmentID="departmentID" :disburseYear="disburseYear" userType="Department" />
+        <DisburseTableVue :departmentID="departmentID" :userID="userID" :disburseYear="disburseYear" userType="Department" />
     </div>
   </div>
 </template>

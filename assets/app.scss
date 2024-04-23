@@ -102,6 +102,26 @@ pre {
   padding-left: 1cm;
 }
 
+.printPage3x2 {
+  font-family: Sarabun;
+  font-weight: 300;
+  font-size: 11px;
+  width: 21cm;
+  min-height: 29.7cm;
+  border: 1px #D3D3D3 solid;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin-top: 0cm;
+  margin-right: auto;
+  margin-bottom: 0cm;
+  margin-left: auto;
+  padding-top: 1.5cm;
+  padding-right: 1.5cm;
+  padding-bottom: 1.5cm;
+  padding-left: 2.5cm;
+}
+
 .printPageLand {
   font-family: Sarabun;
   font-weight: 300;
@@ -158,6 +178,11 @@ pre {
   font-size: 21px;
 }
 
+.font26 {
+  font-family: Sarabun;
+  font-size: 23px;
+}
+
 .printTable {
   border: solid thin black;
   border-spacing: 0;
@@ -166,6 +191,10 @@ pre {
 .printTable td,.printTable th {
   border: solid thin black;
   padding: 5px;
+}
+
+.krut {
+  height: 1.5cm;
 }
 
 @media print {
@@ -186,6 +215,23 @@ pre {
     // padding: initial;
     padding-left: initial;
     padding-right: initial;
+    page-break-after: always;
+    background-color: white;
+  }
+
+  .printPage3x2 {
+    font-family: Sarabun;
+    font-weight: 300;
+    font-size: 13px;
+    border: initial;
+    border-radius: initial;
+    /* width: initial; */
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    // padding: initial;
+    //padding-left: initial;
+    //padding-right: initial;
     page-break-after: always;
     background-color: white;
   }
@@ -247,6 +293,11 @@ pre {
     font-size: 23px;
   }
 
+  .font26 {
+    font-family: Sarabun;
+    font-size: 25px;
+  }
+
   .printTable {
     border: solid thin black;
   }
@@ -254,6 +305,10 @@ pre {
   .printTable td,.printTable th {
     border: solid thin black;
     padding: 5px;
+  }
+
+  .krut {
+    height: 1.5cm;
   }
 
   .noPrint {
