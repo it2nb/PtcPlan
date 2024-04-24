@@ -46,6 +46,7 @@
                 lazy-validation
                 @submit.prevent="insertDisburselist"
                 class="mt-4"
+                v-if="disburse.disburseStatus == 'ขอซื้อ'"
               >
                 <v-card-text>
                   <v-row dense>
@@ -98,6 +99,7 @@
                         ]"
                       />
                     </v-col>
+
                     <v-col class="text-center">
                       <v-progress-circular indeterminate color="primary" class="mx-auto" v-if="insertProgress"></v-progress-circular>
                       <v-btn large color="success" type="submit" class="col-12" v-else>
@@ -114,6 +116,7 @@
                 {text: 'หน่วยนับ', value: 'disburselistUnit', align: 'center', class: 'text-center'},
                 {text: 'ราคา', value: 'disburselistPrice', align: 'right', class: 'text-center'},
                 {text: 'รวม', value: 'disburselistSumPrice', align: 'right', class: 'text-center'},
+                {text: 'หมายเหตุ', value: 'disburselistStatus', align: 'left', class: 'text-center'},
                 {text: '', value:'actions', align: 'right'}
               ]"
               :items="disburselists"
@@ -129,7 +132,12 @@
               <template v-slot:item.disburselistSumPrice="{ item }">
                 {{ moneyFormat(item.disburselistSumPrice) }}
               </template>
-              <template v-slot:item.actions="{ item }">
+              <template v-slot:item.disburselistStatus="{ item}">
+                <v-icon small color="success" v-if="item.disburselistStatus=='ถูกต้อง'">fas fa-check</v-icon>
+                <v-icon small color="error" v-if="item.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
+                {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistCommment : '' }}
+              </template>
+              <template v-slot:item.actions="{ item }" v-if="disburse.disburseStatus == 'ขอซื้อ'">
                 <v-btn color="warning" icon  small @click="showUpdateDialog(item)">
                   <v-icon small class="mr-1">fas fa-edit</v-icon>
                 </v-btn>
@@ -142,6 +150,7 @@
                   <td colspan="4" class="px-4 py-2 text-center font-weight-bold">รวม</td>
                   <td class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(disburseSum) }}</td>
                   <td class="px-4 py-2 text-right font-weight-bold"></td>
+                  <td class="px-4 py-2 text-right font-weight-bold"></td>
                 </tr>
               </template>
             </v-data-table>
@@ -150,19 +159,30 @@
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
         <v-card-actions>
-          <div class="col-12 text-center">
+          <div class="col-12 text-center" v-if="disburse.disburseStatus == 'ขอซื้อ'">
             <v-progress-circular
               indeterminate
               color="success"
               v-if="updateProgress"
             ></v-progress-circular>
-            <v-btn
-              color="warning darken-1"
-              large
-              v-if="disburselists.length > 0"
-            >
-              ส่งตรวจสอบรายการ
-            </v-btn>
+            <div v-else-if="disburselists.length > 0">
+              <v-row class="mb-1 justify-center"  >
+                <v-checkbox
+                  v-model="confirmCheck"
+                  label="เมื่อยืนยันและส่งตรวจสอบรายการแล้วจะไม่สามารถแก้ไขได้"
+                ></v-checkbox>
+              </v-row>
+              <v-btn
+                color="warning darken-1"
+                large
+                @click="confirmList"
+                v-if="confirmCheck"
+              >
+                ยืนยันและส่งตรวจสอบรายการ
+              </v-btn>
+            </div>
+            
+            
           </div>
         </v-card-actions>
     </v-card>
@@ -375,6 +395,7 @@ export default {
       deleteValidate: null,
       updateDialog: false,
       deleteDialog: false,
+      confirmCheck: null,
     }
   },
 
@@ -473,8 +494,19 @@ export default {
       }
     },
 
-    cancelUpdate() {
-      this.$emit('getUpdateStatus', {'status': true})
+    async confirmList() {
+      this.updateProgress = true
+      let disburseUpdate = await this.$axios.$post('disburse.update.php', {
+        token: this.$store.state.jwtToken,
+        disburseID: this.disburse.disburseID,
+        disburseStatus: 'ตรวจสอบรายการ'
+      })
+
+      if(disburseUpdate.message == 'Success') {
+        this.$emit('getUpdateStatus', {'status': true})
+        this.disburse.disburseStatus = 'ตรวจสอบรายการ'
+      }
+      this.updateProgress = false
     },
 
     thaiDate(inDate) {

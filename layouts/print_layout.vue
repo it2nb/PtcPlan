@@ -2,7 +2,7 @@
   <v-app>
     <v-system-bar class="d-print-none pt-3" height="30" app lights-out>
       <v-toolbar-items class="mx-auto">
-        <v-btn dark href="javascript:window.print()" class="title mr-2 rounded" color="primary">
+        <v-btn dark @click="print" class="title mr-2 rounded" color="primary">
           <v-icon class="mr-1" color="white">fas fa-print</v-icon>พิมพ์
         </v-btn>
         <v-btn dark @click.stop="Export2Doc('exportContent','ระบบบริหารจัดการแผนปฏิบัติราชการExport')" class="title mr-2 rounded" color="primary">
@@ -20,6 +20,15 @@
 
     }),
     methods: {
+      print() {
+        try {
+          // Print for Safari browser
+          document.execCommand('print', false, null)
+        } catch {
+          window.print()
+        }
+      },
+
       Export2Doc(element, filename) {
         var preHtml =
           "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>"

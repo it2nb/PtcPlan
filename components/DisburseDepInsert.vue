@@ -316,7 +316,6 @@ export default {
   async mounted() {
     if(this.disburse) {
       this.insertData = JSON.parse(JSON.stringify(this.disburse))
-      console.log(this.insertData)
       await this.getDepartment()
       await this.getExpaeseplan()
       await this.getProject()

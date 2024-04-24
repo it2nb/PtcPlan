@@ -13,6 +13,13 @@ pre {
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+.tableNormal, .tableNormal td, .tableNormal th  {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 2px;
+
+}
+
 .headerBg {
   background-color: #B71C1C;
 }
@@ -158,6 +165,11 @@ pre {
   font-size: 13px;
 }
 
+.font17 {
+  font-family: Sarabun;
+  font-size: 14px;
+}
+
 .font18 {
   font-family: Sarabun;
   font-size: 15px;
@@ -176,6 +188,11 @@ pre {
 .font24 {
   font-family: Sarabun;
   font-size: 21px;
+}
+
+.font25 {
+  font-family: Sarabun;
+  font-size: 22px;
 }
 
 .font26 {
@@ -273,6 +290,11 @@ pre {
     font-size: 15px;
   }
 
+  .font17 {
+    font-family: Sarabun;
+    font-size: 16px;
+  }
+
   .font18 {
     font-family: Sarabun;
     font-size: 17px;
@@ -291,6 +313,11 @@ pre {
   .font24 {
     font-family: Sarabun;
     font-size: 23px;
+  }
+
+  .font25 {
+    font-family: Sarabun;
+    font-size: 24px;
   }
 
   .font26 {
