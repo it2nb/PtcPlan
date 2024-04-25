@@ -57,6 +57,27 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            <v-divider></v-divider>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-for="(item, i) in itemsSys"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+          color="teal darken-2"
+          v-if="user.departmentSys=='Parcel' || user.departmentSys=='Plan' || user.departmentSys=='Account' || user.departmentSys=='Finance'"
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" />
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <Headerapp :drawer="drawer" @getDrawer="drawerChange" />
@@ -86,6 +107,7 @@ export default {
   data () {
     return {
       user: {},
+      department: {},
       drawer: true,
       title: this.$store.state.appTitle,
       items: [
@@ -105,10 +127,17 @@ export default {
           to: '/Department/disburse'
         },
       ],
+      itemsSys: [
+        {
+          icon: 'fas fa-dot-circle',
+          title: 'ตรวจสอบรายการจัดซื้อ',
+          to: '/Department/disbursecheck'
+        },
+      ],
     }
   },
 
-  mounted() {
+  async mounted() {
     let loginUser = JSON.parse(sessionStorage.getItem("loginuser")) || {type: ''}
     if(loginUser.type == 'Department') {
       this.user = loginUser.user
@@ -118,6 +147,7 @@ export default {
   },
 
   methods: {
+
     drawerChange(data) {
       this.drawer = data.drawer
     },

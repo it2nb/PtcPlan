@@ -507,11 +507,11 @@ export default {
 
           if(user.userStatus === 'Admin') {
             this.$router.push('/Admin')
-          } else if(user.userStatus === 'Department') {
+          } else if(user.userStatus === 'Department' && user.departmentEnable==1) {
             this.$router.push('/Department')
-          } else if(user.userStatus === 'Party') {
+          } else if(user.userStatus === 'Party' && user.partyEnable==1) {
             this.$router.push('/Party')
-          } else if(user.userStatus === 'Director') {
+          } else if(user.userStatus === 'Director' && user.partyEnable==1) {
             this.$router.push('/Director')
           } else if(user.userStatus === 'Plan') {
             this.$router.push('/Plan')
