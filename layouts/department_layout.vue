@@ -63,8 +63,8 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
-          v-for="(item, i) in itemsSys"
-          :key="i"
+          v-for="(item) in itemsSys"
+          :key="item.key"
           :to="item.to"
           router
           exact

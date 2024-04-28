@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card>
+    <v-card v-if="departmentSys=='Parcel' || departmentSys=='Plan' || departmentSys=='Account' || departmentSys=='Finance'">
       <v-card-title class="amber lighten-2">
         <span class="fontBold">เพิ่มรายการ{{ disburse.expenseName }}</span>
         <v-spacer></v-spacer>
@@ -27,18 +27,6 @@
               <h3 class="mb-2 fontBold">วันที่ขอจัดซื้อ/เบิกเงิน</h3>
               {{ thaiDate(disburse.disburseDate) }}
             </v-col>
-            <!-- <v-col cols="12" v-if="disburse.disburseType=='โครงการ'">
-              <h3 class="mb-2 fontBold">โครงการ</h3>
-              {{  disburse.projectName }}
-            </v-col>
-            <v-col cols="12" v-if="disburse.disburseType=='โครงการ'">
-              <h3 class="mb-2 fontBold">หมวดค่าใช้จ่ายและงบประมาณ</h3>
-              {{ disburse.expenseName }}
-            </v-col>
-            <v-col cols="12" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
-              <h3 class="mb-2 fontBold">หมวดงบประมาณรายจ่าย</h3>
-              {{ disburse.expenseName }}( {{ disburse.expenseplanDes }} )
-            </v-col> -->
             <v-col cols="12">
               <h3 class="mb-2 fontBold">ค่าใช้จ่าย : โครงการ</h3>
               {{  disburse.disburseName }}
@@ -48,75 +36,6 @@
               {{ disburse.budgettypeName }} : {{ disburse.budgetplanFullname }}
             </v-col>
             <v-col>
-              <v-form
-                v-model="insertValidate"
-                ref="insertForm"
-                lazy-validation
-                @submit.prevent="insertDisburselist"
-                class="mt-4"
-                v-if="disburse.disburseStatus == 'ขอซื้อ'"
-              >
-                <v-card-text>
-                  <v-row dense>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="insertData.disburselistName"
-                        label="รายการ"
-                        outlined
-                        dense
-                        required
-                        :rules="[
-                          ()=>!!insertData.disburselistName || 'กรุณากรอกข้อมูล'
-                        ]"
-                      />
-                    </v-col>
-                    <v-col cols="6" md="1">
-                      <v-text-field
-                        v-model="insertData.disburselistQty"
-                        label="จำนวน"
-                        outlined
-                        type="number"
-                        dense
-                        required
-                        :rules="[
-                          ()=>!!insertData.disburselistQty || 'กรุณากรอกข้อมูล'
-                        ]"
-                      />
-                    </v-col>
-                    <v-col cols="6" md="2">
-                      <v-text-field
-                        v-model="insertData.disburselistUnit"
-                        label="หน่วยนับ"
-                        outlined
-                        dense
-                        required
-                        :rules="[
-                          ()=>!!insertData.disburselistUnit || 'กรุณากรอกข้อมูล'
-                        ]"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="2">
-                      <v-text-field
-                        v-model="insertData.disburselistPrice"
-                        label="ราคา"
-                        outlined
-                        dense
-                        required
-                        :rules="[
-                          ()=>!!insertData.disburselistPrice || 'กรุณากรอกข้อมูล'
-                        ]"
-                      />
-                    </v-col>
-
-                    <v-col class="text-center">
-                      <v-progress-circular indeterminate color="primary" class="mx-auto" v-if="insertProgress"></v-progress-circular>
-                      <v-btn large color="success" type="submit" class="col-12" v-else>
-                        <v-icon>fas fa-plus</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-form>
               <v-data-table
               :headers="[
                 {text: 'รายการ', value: 'disburselistName', align: 'left', class: 'text-center'},
@@ -127,7 +46,7 @@
                 {text: 'หมายเหตุ', value: 'disburselistStatus', align: 'left', class: 'text-center'},
                 {text: '', value:'actions', align: 'right'}
               ]"
-              :items="disburselists"
+              :items="disburselistcs"
               :items-per-page="-1"
               hide-default-footer
             >
@@ -143,15 +62,48 @@
               <template v-slot:item.disburselistStatus="{ item}">
                 <v-icon small color="success" v-if="item.disburselistStatus=='ถูกต้อง'">fas fa-check</v-icon>
                 <v-icon small color="error" v-if="item.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
-                {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistCommment : '' }}
+                {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistComment : '' }}
               </template>
-              <template v-slot:item.actions="{ item }" v-if="disburse.disburseStatus == 'ขอซื้อ'">
-                <v-btn color="warning" icon  small @click="showUpdateDialog(item)">
-                  <v-icon small class="mr-1">fas fa-edit</v-icon>
-                </v-btn>
-                <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)">
-                  <v-icon small class="mr-1">fas fa-trash</v-icon>
-                </v-btn>
+              <template v-slot:item.actions="{ item }">
+                <div v-if="disburse.disburseStatus == 'ตรวจสอบรายการ' && departmentSys=='Parcel'">
+                    <div v-if="disburselists[disburselistcs.indexOf(item)].disburselistStatus!='ถูกต้อง'&&disburselists[disburselistcs.indexOf(item)].disburselistStatus!='ไม่ถูกต้อง'">
+                        <v-radio-group
+                            v-model="item.disburselistStatus"
+                            row
+                        >
+                            <v-radio
+                                label="ถูกต้อง"
+                                value="ถูกต้อง"
+                            ></v-radio>
+                            <v-radio
+                                label="ไม่ถูกต้อง"
+                                value="ไม่ถูกต้อง"
+                            ></v-radio>
+                        </v-radio-group>
+                        <v-text-field
+                            v-model="item.disburselistComment"
+                            label="หมายเหตุ"
+                            outlined
+                            v-if="item.disburselistStatus=='ไม่ถูกต้อง'"
+                        ></v-text-field>
+                        <v-btn 
+                            color="success" 
+                            small 
+                            class="mb-1"
+                            @click="updateDisburselist(item)"
+                        >
+                            <v-icon small class="mr-1">fas fa-save</v-icon> บันทึก
+                        </v-btn>
+                    </div>
+                    <div v-else>
+                        <v-btn color="warning" icon  small @click="disburselists[disburselistcs.indexOf(item)].disburselistStatus=''">
+                        <v-icon small class="mr-1">fas fa-edit</v-icon>
+                        </v-btn>
+                        <!-- <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)">
+                        <v-icon small class="mr-1">fas fa-trash</v-icon>
+                        </v-btn> -->
+                    </div>
+                </div>
               </template>
               <template slot="foot">
                 <tr class="grey lighten-3">
@@ -381,11 +333,17 @@ export default {
       type: Object,
       default: () => {}
     },
+    departmentSys: {
+        type: String,
+        default: null
+    }
   },
 
   data() {
     return {
       disburselists: [],
+      disburselistcs: [],
+      disburselistQty: {},
       disburseSum: [],
       insertData: {},
       insertProgress: false,
@@ -408,8 +366,10 @@ export default {
   },
 
   async mounted() {
+    console.log(this.disburse)
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
+      await this.getDisburselistQty(this.disburse.disburseID)
     }
   },
 
@@ -424,29 +384,21 @@ export default {
 
       if(result.message == 'Success') {
         this.disburselists = JSON.parse(JSON.stringify(result.disburselist))
+        this.disburselistcs = JSON.parse(JSON.stringify(result.disburselist))
         this.disburseSum = this.disburselists.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.disburselistSumPrice), 0);
       }
     },
 
-    async insertDisburselist() {
-      await this.$refs.insertForm.validate()
-      if(this.insertValidate) {
-        this.insertProgress = true
-        this.insertData.token = this.$store.state.jwtToken
-        this.insertData.disburseID = this.disburse.disburseID
-        let result = await this.$axios.$post('disburselist.insert.php', this.insertData)
-        if(result.message == 'Success') {
-          this.insertData = {}
-          await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
-              await this.$axios.$post('disburse.update.php', {
-              token: this.$store.state.jwtToken,
-              disburseID: this.disburse.disburseID,
-              disburseMoney: this.disburseSum
-            })
-          })
-          this.$emit('getUpdateStatus', {'status': true})
+    async getDisburselistQty(disburseID) {
+        let result = await this.$axios.$get('disburselist.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          disburseID: disburseID,
+          fn: 'countCorrectWrong'
         }
-        this.insertProgress = false
+      })
+      if(result.message == 'Success') {
+        this.disburselistQty = JSON.parse(JSON.stringify(result.disburselist))
       }
     },
 
@@ -455,25 +407,40 @@ export default {
       this.updateDialog = true
     },
 
-    async updateDisburselist() {
-      await this.$refs.updateForm.validate()
-      if(this.updateValidate) {
+    async updateDisburselist(disburselist) {
         this.updateProgress = true
-        this.updateData.token = this.$store.state.jwtToken
-        let result = await this.$axios.$post('disburselist.update.php', this.updateData)
+        disburselist.token = this.$store.state.jwtToken
+        let result = await this.$axios.$post('disburselist.update.php', disburselist)
+        console.log(result)
         if(result.message == 'Success') {
-          await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
-              await this.$axios.$post('disburse.update.php', {
-              token: this.$store.state.jwtToken,
-              disburseID: this.disburse.disburseID,
-              disburseMoney: this.disburseSum
-            })
-          })
-          this.$emit('getUpdateStatus', {'status': true})
+        //   await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+        //       await this.$axios.$post('disburse.update.php', {
+        //       token: this.$store.state.jwtToken,
+        //       disburseID: this.disburse.disburseID,
+        //       disburseMoney: this.disburseSum
+        //     })
+        //   })
+        //   this.$emit('getUpdateStatus', {'status': true})
+        await this.getDisburselist(this.disburse.disburseID)
+        await this.getDisburselistQty(this.disburse.disburseID).then(async ()=>{
+            if(this.disburselistQty.wrongQty > 0) {
+                await this.$axios.$post('disburse.update.php', {
+                    token: this.$store.state.jwtToken,
+                    disburseID: this.disburse.disburseID,
+                    disburseParcCheck: 'ไม่ถูกต้อง'
+                })
+            } else if(this.disburselistQty.allQty == this.disburselistQty.correctQty) {
+                await this.$axios.$post('disburse.update.php', {
+                    token: this.$store.state.jwtToken,
+                    disburseID: this.disburse.disburseID,
+                    ddisburseParcCheck: 'ถูกต้อง'
+                })
+            }
+            this.$emit('getUpdateStatus', {'status': true})
+        })
         }
         this.updateProgress = false
         this.updateDialog = false
-      }
     },
 
     showDeleteDialog(disburselist) {
