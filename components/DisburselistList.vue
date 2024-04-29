@@ -54,7 +54,7 @@
                 lazy-validation
                 @submit.prevent="insertDisburselist"
                 class="mt-4"
-                v-if="disburse.disburseStatus == 'ขอซื้อ'"
+                v-if="disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง'"
               >
                 <v-card-text>
                   <v-row dense>
@@ -145,7 +145,7 @@
                 <v-icon small color="error" v-if="item.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                 {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistCommment : '' }}
               </template>
-              <template v-slot:item.actions="{ item }" v-if="disburse.disburseStatus == 'ขอซื้อ'">
+              <template v-slot:item.actions="{ item }" v-if="disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง'">
                 <v-btn color="warning" icon  small @click="showUpdateDialog(item)">
                   <v-icon small class="mr-1">fas fa-edit</v-icon>
                 </v-btn>
@@ -167,7 +167,7 @@
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
         <v-card-actions>
-          <div class="col-12 text-center" v-if="disburse.disburseStatus == 'ขอซื้อ'">
+          <div class="col-12 text-center" v-if="disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง'">
             <v-progress-circular
               indeterminate
               color="success"
@@ -460,6 +460,7 @@ export default {
       if(this.updateValidate) {
         this.updateProgress = true
         this.updateData.token = this.$store.state.jwtToken
+        this.updateData.disburselistStatus = ''
         let result = await this.$axios.$post('disburselist.update.php', this.updateData)
         if(result.message == 'Success') {
           await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
@@ -507,7 +508,11 @@ export default {
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
         token: this.$store.state.jwtToken,
         disburseID: this.disburse.disburseID,
-        disburseStatus: 'ตรวจสอบรายการ'
+        disburseStatus: 'ตรวจสอบรายการ',
+        disburseParcCheck: '',
+        disbursePlanCheck: '',
+        disburseAccoCheck: '',
+        disburseFinaCheck: ''
       })
 
       if(disburseUpdate.message == 'Success') {

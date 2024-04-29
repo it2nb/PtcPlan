@@ -8,8 +8,20 @@
           color="white"
           :to="'/print/disburseForm1/?id='+disburse.disburseID" 
           target="_blank"
+          small
+          class="mx-1"
         >
-          <v-icon class="mr-1" color="primary">fas fa-print</v-icon> พิมพ์
+          <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> ขออนุมัติ (สผ.1)
+        </v-btn>
+        <v-btn 
+          color="white"
+          :to="'/print/disburseForm2/?id='+disburse.disburseID" 
+          target="_blank"
+          small
+          class="mx-1"
+          v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง' && departmentSys=='Parcel'"
+        >
+          <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> ใบเบิก
         </v-btn>
       </v-card-title>
       <v-divider class="green"></v-divider>
@@ -74,10 +86,12 @@
                             <v-radio
                                 label="ถูกต้อง"
                                 value="ถูกต้อง"
+                                color="success"
                             ></v-radio>
                             <v-radio
                                 label="ไม่ถูกต้อง"
                                 value="ไม่ถูกต้อง"
+                                color="error"
                             ></v-radio>
                         </v-radio-group>
                         <v-text-field
@@ -140,9 +154,131 @@
               >
                 ยืนยันและส่งตรวจสอบรายการ
               </v-btn>
+            </div>  
+          </div>
+          <div class="col-12" v-else-if="disburse.disburseStatus == 'ตรวจสอบรายการ'">
+            <div v-if="departmentSys == 'Parcel'">
+              <v-row no-gutters>
+                <v-col cols="12" md="4" class="mx-auto">
+                  <v-radio-group
+                    v-model="disburse.disburseParcCheck"
+                    row
+                    readonly
+                    class="text-center justify-center"
+                  >
+                    <v-radio
+                      label="ถูกต้อง"
+                      value="ถูกต้อง"
+                      color="success"
+                    ></v-radio>
+                    <v-radio
+                      label="ไม่ถูกต้อง"
+                      value="ไม่ถูกต้อง"
+                      color="error"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12" md="10" class="mx-auto">
+                  <v-textarea
+                    v-model="disburse.disburseParcDes"
+                    label="หมายเหตุ"
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
             </div>
-            
-            
+            <div v-else-if="departmentSys=='Plan'">
+              <v-row no-gutters>
+                <v-col cols="12" md="4" class="mx-auto">
+                  <v-radio-group
+                    v-model="disburse.disbursePlanCheck"
+                    row
+                    class="text-center justify-center"
+                  >
+                    <v-radio
+                      label="ถูกต้อง"
+                      value="ถูกต้อง"
+                      color="success"
+                    ></v-radio>
+                    <v-radio
+                      label="ไม่ถูกต้อง"
+                      value="ไม่ถูกต้อง"
+                      color="error"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12" md="10" class="mx-auto">
+                  <v-textarea
+                    v-model="disburse.disbursePlanDes"
+                    label="หมายเหตุ"
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else-if="departmentSys=='Account'">
+              <v-row no-gutters>
+                <v-col cols="12" md="4" class="mx-auto">
+                  <v-radio-group
+                    v-model="disburse.disburseAccoCheck"
+                    row
+                    class="text-center justify-center"
+                  >
+                    <v-radio
+                      label="ถูกต้อง"
+                      value="ถูกต้อง"
+                      color="success"
+                    ></v-radio>
+                    <v-radio
+                      label="ไม่ถูกต้อง"
+                      value="ไม่ถูกต้อง"
+                      color="error"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12" md="10" class="mx-auto">
+                  <v-textarea
+                    v-model="disburse.disburseAccoDes"
+                    label="หมายเหตุ"
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else-if="departmentSys=='Finance'">
+              <v-row no-gutters>
+                <v-col cols="12" md="4" class="mx-auto">
+                  <v-radio-group
+                    v-model="disburse.disburseFinaCheck"
+                    row
+                    class="text-center justify-center"
+                  >
+                    <v-radio
+                      label="ถูกต้อง"
+                      value="ถูกต้อง"
+                      color="success"
+                    ></v-radio>
+                    <v-radio
+                      label="ไม่ถูกต้อง"
+                      value="ไม่ถูกต้อง"
+                      color="error"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12" md="10" class="mx-auto">
+                  <v-textarea
+                    v-model="disburse.disburseFinaDes"
+                    label="หมายเหตุ"
+                    outlined
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </div>
+            <div class="text-center">
+              <v-btn small color="success" @click="updateDisburseCheck(disburse)">
+                <v-icon small class="mr-1">fas fa-save</v-icon> บันทึก
+              </v-btn>
+            </div>
           </div>
         </v-card-actions>
     </v-card>
@@ -407,34 +543,53 @@ export default {
       this.updateDialog = true
     },
 
+    async updateDisburse(disburse) {
+      disburse.token = this.$store.state.jwtToken
+      let disburseUpdate = await this.$axios.$post('disburse.update.php', disburse)
+
+      if(disburseUpdate.message == 'Success') {
+        return true
+      } else {
+        return false
+      }
+    },
+
+    async updateDisburseCheck(disburse) {
+      if(disburse.disburseParcCheck=='ไม่ถูกต้อง' || disburse.disbursePlanCheck=='ไม่ถูกต้อง' || disburse.disburseAccoCheck=='ไม่ถูกต้อง' || disburse.disburseFinaCheck=='ไม่ถูกต้อง') {
+        disburse.disburseStatus = 'ไม่ถูกต้อง'
+      } else if(disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง') {
+        disburse.disburseStatus = 'ตัดแผนแล้ว'
+      }
+      let result = await this.updateDisburse(disburse)
+      if(result) {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
+          icon: 'success'
+        })
+        this.$emit('getUpdateStatus', {'status': true})
+      } else {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'บันทึกข้อมูลแล้ว',
+          icon: 'success'
+        })
+      }
+    },
+
     async updateDisburselist(disburselist) {
         this.updateProgress = true
         disburselist.token = this.$store.state.jwtToken
         let result = await this.$axios.$post('disburselist.update.php', disburselist)
-        console.log(result)
         if(result.message == 'Success') {
-        //   await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
-        //       await this.$axios.$post('disburse.update.php', {
-        //       token: this.$store.state.jwtToken,
-        //       disburseID: this.disburse.disburseID,
-        //       disburseMoney: this.disburseSum
-        //     })
-        //   })
-        //   this.$emit('getUpdateStatus', {'status': true})
         await this.getDisburselist(this.disburse.disburseID)
         await this.getDisburselistQty(this.disburse.disburseID).then(async ()=>{
             if(this.disburselistQty.wrongQty > 0) {
-                await this.$axios.$post('disburse.update.php', {
-                    token: this.$store.state.jwtToken,
-                    disburseID: this.disburse.disburseID,
-                    disburseParcCheck: 'ไม่ถูกต้อง'
-                })
+              this.disburse.disburseParcCheck = 'ไม่ถูกต้อง'
+              await this.updateDisburse(this.disburse)
             } else if(this.disburselistQty.allQty == this.disburselistQty.correctQty) {
-                await this.$axios.$post('disburse.update.php', {
-                    token: this.$store.state.jwtToken,
-                    disburseID: this.disburse.disburseID,
-                    ddisburseParcCheck: 'ถูกต้อง'
-                })
+              this.disburse.disburseParcCheck = 'ถูกต้อง'
+              await this.updateDisburse(this.disburse)
             }
             this.$emit('getUpdateStatus', {'status': true})
         })

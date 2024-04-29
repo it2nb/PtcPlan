@@ -90,6 +90,9 @@
                       <v-chip color="yellow" x-small v-if="item.disburseStatus=='ตรวจสอบรายการ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                      </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>
@@ -104,10 +107,10 @@
                       <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
                         <v-icon small class="mr-1">fas fa-list</v-icon>
                       </v-btn>
-                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='แก้ไข')">
+                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='ไม่ถูกต้อง')">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>
-                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='แก้ไข')">
+                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='ไม่ถูกต้อง')">
                         <v-icon small class="mr-1">fas fa-trash</v-icon>
                       </v-btn>
                     </div>
@@ -877,7 +880,7 @@ export default {
       if(result.message === 'Success') {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if(this.disburses) {
-          this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ')
+          this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง')
           this.PlanDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ตัดแผนแล้ว')
           this.CompleteDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'เบิกจ่ายแล้ว')
           this.CancelDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ยกเลิก')

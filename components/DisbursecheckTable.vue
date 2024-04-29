@@ -45,7 +45,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่ขอซื้อ {{ budgetSum.disburseReqQty }} รายการ {{ moneyFormat(budgetSum.disburseReqMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการที่ขอซื้อ {{ CheckDisburses.length }} รายการ {{ moneyFormat(budgetSum.disburseReqMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=plan'" target="_blank" v-if="departmentSys=='Admin'||departmentSys=='Director'||departmentSys=='Plan'||departmentSys=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -104,6 +104,9 @@
                       </v-chip>
                       <v-chip color="yellow" x-small v-if="item.disburseStatus=='ตรวจสอบรายการ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
+                      </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -146,7 +149,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่ตัดแผนแล้ว {{ budgetSum.disbursePlanQty }} รายการ {{ moneyFormat(budgetSum.disbursePlanMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">ตรวจสอบถูกต้องแล้ว {{ CorrectDisburses.length }} รายการ {{ moneyFormat(budgetSum.disbursePlanMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=plan'" target="_blank" v-if="departmentSys=='Admin'||departmentSys=='Director'||departmentSys=='Plan'||departmentSys=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -206,6 +209,9 @@
                       <v-chip color="yellow" x-small v-if="item.disburseStatus=='ตรวจสอบรายการ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                      </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>
@@ -247,7 +253,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่เบิกจ่ายแล้ว {{ budgetSum.disburseCompleteQty }} รายการ {{ moneyFormat(budgetSum.disburseCompleteMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการที่เบิกจ่ายแล้ว {{ WrongDisburses.length }} รายการ {{ moneyFormat(budgetSum.disburseCompleteMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=complete'" target="_blank" v-if="departmentSys=='Admin'||departmentSys=='Director'||departmentSys=='Plan'||departmentSys=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -306,6 +312,9 @@
                       </v-chip>
                       <v-chip color="yellow" x-small v-if="item.disburseStatus=='ตรวจสอบรายการ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
+                      </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -408,6 +417,9 @@
                       <v-chip color="yellow" x-small v-if="item.disburseStatus=='ตรวจสอบรายการ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                      </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>
@@ -479,7 +491,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburselistListCheckVue :disburse="disburseData" :departmentSys="departmentSys" @getUpdateStatus="getDisburses"/>
+                <DisburselistListCheckVue :disburse="JSON.parse(JSON.stringify(disburseData))" :departmentSys="departmentSys" @getUpdateStatus="getDisburses" v-if="disburselistListDialog"/>
               </v-card>
             </v-col>
           </v-row>
@@ -687,13 +699,13 @@ export default {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if(this.disburses) {
           if(this.departmentSys == 'Parcel') {
-            this.CheckDisburses = this.disburses.filter(disburse => disburse.disburseParcCheck === '' && disburse.disburseStatus=='ตรวจสอบรายการ')
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === '' ||disburse.disburseParcCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
           } else if(this.departmentSys == 'Plan') {
-            this.CheckDisburses = this.disburses.filter(disburse => disburse.disbursePlanCheck === '' && disburse.disburseStatus=='ตรวจสอบรายการ')
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disbursePlanCheck === '' || disburse.disbursePlanCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
           } else if(this.departmentSys == 'Account') {
-            this.CheckDisburses = this.disburses.filter(disburse => disburse.disburseAccoCheck === '' && disburse.disburseStatus=='ตรวจสอบรายการ')
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseAccoCheck === '' || disburse.disburseAccoCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
           } else if(this.departmentSys == 'Finance') {
-            this.CheckDisburses = this.disburses.filter(disburse => disburse.disburseFinaCheck === '' && disburse.disburseStatus=='ตรวจสอบรายการ')
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseFinaCheck === '' || disburse.disburseFinaCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
           }
           this.CorrectDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง'))
           this.WrongDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ไม่ถูกต้อง' || disburse.disbursePlanCheck === 'ไม่ถูกต้อง' || disburse.disburseAccoCheck === 'ไม่ถูกต้อง' || disburse.disburseFinaCheck === 'ไม่ถูกต้อง'))
