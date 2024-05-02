@@ -72,12 +72,16 @@
                 {{ moneyFormat(item.disburselistSumPrice) }}
               </template>
               <template v-slot:item.disburselistStatus="{ item}">
+                <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="item.disburselistStatus!='ถูกต้อง'">
+                  <v-icon small class="mr-1">fas fa-edit</v-icon>
+                </v-btn>
                 <v-icon small color="success" v-if="item.disburselistStatus=='ถูกต้อง'">fas fa-check</v-icon>
                 <v-icon small color="error" v-if="item.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                 {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistComment : '' }}
               </template>
               <template v-slot:item.actions="{ item }">
                 <div v-if="disburse.disburseStatus == 'ตรวจสอบรายการ' && departmentSys=='Parcel'">
+                  <v-progress-circular indeterminate color="primary" class="mx-auto" v-if="updateProgress"></v-progress-circular>
                     <div v-if="disburselists[disburselistcs.indexOf(item)].disburselistStatus!='ถูกต้อง'&&disburselists[disburselistcs.indexOf(item)].disburselistStatus!='ไม่ถูกต้อง'">
                         <v-radio-group
                             v-model="item.disburselistStatus"
@@ -502,7 +506,6 @@ export default {
   },
 
   async mounted() {
-    console.log(this.disburse)
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
       await this.getDisburselistQty(this.disburse.disburseID)
@@ -558,7 +561,7 @@ export default {
       if(disburse.disburseParcCheck=='ไม่ถูกต้อง' || disburse.disbursePlanCheck=='ไม่ถูกต้อง' || disburse.disburseAccoCheck=='ไม่ถูกต้อง' || disburse.disburseFinaCheck=='ไม่ถูกต้อง') {
         disburse.disburseStatus = 'ไม่ถูกต้อง'
       } else if(disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง') {
-        disburse.disburseStatus = 'ตัดแผนแล้ว'
+        disburse.disburseStatus = 'รอยืนยันจัดซื้อ'
       }
       let result = await this.updateDisburse(disburse)
       if(result) {
@@ -581,8 +584,8 @@ export default {
         this.updateProgress = true
         disburselist.token = this.$store.state.jwtToken
         let result = await this.$axios.$post('disburselist.update.php', disburselist)
-        if(result.message == 'Success') {
         await this.getDisburselist(this.disburse.disburseID)
+        //if(result.message == 'Success') {
         await this.getDisburselistQty(this.disburse.disburseID).then(async ()=>{
             if(this.disburselistQty.wrongQty > 0) {
               this.disburse.disburseParcCheck = 'ไม่ถูกต้อง'
@@ -590,10 +593,13 @@ export default {
             } else if(this.disburselistQty.allQty == this.disburselistQty.correctQty) {
               this.disburse.disburseParcCheck = 'ถูกต้อง'
               await this.updateDisburse(this.disburse)
+            } else {
+              this.disburse.disburseParcCheck = ''
+              await this.updateDisburse(this.disburse)
             }
             this.$emit('getUpdateStatus', {'status': true})
-        })
-        }
+          })
+        //}
         this.updateProgress = false
         this.updateDialog = false
     },

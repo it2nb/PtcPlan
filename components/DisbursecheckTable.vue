@@ -106,7 +106,10 @@
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
-                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -210,7 +213,10 @@
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
-                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -314,7 +320,10 @@
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
-                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -418,7 +427,10 @@
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
-                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -701,11 +713,11 @@ export default {
           if(this.departmentSys == 'Parcel') {
             this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === '' ||disburse.disburseParcCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
           } else if(this.departmentSys == 'Plan') {
-            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disbursePlanCheck === '' || disburse.disbursePlanCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disbursePlanCheck === '' || disburse.disbursePlanCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ' && disburse.disburseParcCheck == 'ถูกต้อง')
           } else if(this.departmentSys == 'Account') {
-            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseAccoCheck === '' || disburse.disburseAccoCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseAccoCheck === '' || disburse.disburseAccoCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ' && disburse.disbursePlanCheck == 'ถูกต้อง')
           } else if(this.departmentSys == 'Finance') {
-            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseFinaCheck === '' || disburse.disburseFinaCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseFinaCheck === '' || disburse.disburseFinaCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ' && disburse.disburseAccoCheck == 'ถูกต้อง')
           }
           this.CorrectDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง'))
           this.WrongDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ไม่ถูกต้อง' || disburse.disbursePlanCheck === 'ไม่ถูกต้อง' || disburse.disburseAccoCheck === 'ไม่ถูกต้อง' || disburse.disburseFinaCheck === 'ไม่ถูกต้อง'))

@@ -91,7 +91,10 @@
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
-                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> ไม่ถูกต้อง
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -510,6 +513,12 @@
                       <v-chip color="yellow" x-small v-if="item.disburseStatus=='ตรวจสอบรายการ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
                       </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
+                      </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>
@@ -880,7 +889,7 @@ export default {
       if(result.message === 'Success') {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if(this.disburses) {
-          this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง')
+          this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ')
           this.PlanDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ตัดแผนแล้ว')
           this.CompleteDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'เบิกจ่ายแล้ว')
           this.CancelDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ยกเลิก')
