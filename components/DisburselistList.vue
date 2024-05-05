@@ -2,7 +2,7 @@
   <div>
     <v-card>
       <v-card-title class="amber lighten-2">
-        <span class="fontBold">เพิ่มรายการ{{ disburse.expenseName }}</span>
+        <span class="fontBold">รายการ{{ disburse.expenseName }}</span>
         <v-spacer></v-spacer>
         <v-btn 
           color="white"
@@ -54,7 +54,7 @@
                 lazy-validation
                 @submit.prevent="insertDisburselist"
                 class="mt-4"
-                v-if="disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง'"
+                v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง') && userType=='Department'"
               >
                 <v-card-text>
                   <v-row dense>
@@ -145,7 +145,7 @@
                 <v-icon small color="error" v-if="item.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                 {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistCommment : '' }}
               </template>
-              <template v-slot:item.actions="{ item }" v-if="disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง'">
+              <template v-slot:item.actions="{ item }" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง') && userType=='Department'">
                 <v-btn color="warning" icon  small @click="showUpdateDialog(item)">
                   <v-icon small class="mr-1">fas fa-edit</v-icon>
                 </v-btn>
@@ -167,7 +167,7 @@
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
         <v-card-actions>
-          <div class="col-12 text-center" v-if="disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง'">
+          <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง') && userType=='Department'">
             <v-progress-circular
               indeterminate
               color="success"
@@ -188,9 +188,66 @@
               >
                 ยืนยันและส่งตรวจสอบรายการ
               </v-btn>
-            </div>
-            
-            
+            </div>  
+          </div>
+          <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอยืนยันจัดซื้อ' && userType=='Department'">
+            <v-progress-circular
+              indeterminate
+              color="success"
+              v-if="updateProgress"
+            ></v-progress-circular>
+            <div v-else-if="disburselists.length > 0">
+              <v-row class="mb-1 justify-center"  >
+                <v-checkbox
+                  v-model="confirmCheck"
+                  label="เมื่อยืนยันขอจัดซื้อแล้วจะไม่สามารถแก้ไขได้"
+                ></v-checkbox>
+              </v-row>
+              <v-btn
+                color="warning darken-1"
+                large
+                @click="confirmRequest"
+                v-if="confirmCheck"
+              >
+                ยืนยันขอจัดซื้อ
+              </v-btn>
+            </div>  
+          </div>
+          <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party'">
+            <v-progress-circular
+              indeterminate
+              color="success"
+              v-if="updateProgress"
+            ></v-progress-circular>
+            <div v-else-if="disburselists.length > 0">
+              <v-row class="mb-1 justify-center"  >
+                <v-radio-group
+                  v-model="disburseParStatus"
+                  row
+                >
+                  <v-radio 
+                    label="เห็นชอบ"
+                    value="ตัดแผนแล้ว"
+                    color="success"
+                  > 
+                  </v-radio>
+                  <v-radio 
+                    label="ไม่เห็นชอบ"
+                    value="ฝ่ายไม่เห็นชอบ"
+                    color="error"
+                  > 
+                  </v-radio>
+                </v-radio-group>
+              </v-row>
+              <v-btn
+                color="success"
+                large
+                @click="confirmParty"
+                v-if="disburseParStatus"
+              >
+                บันทึก
+              </v-btn>
+            </div>  
           </div>
         </v-card-actions>
     </v-card>
@@ -385,8 +442,11 @@ export default {
 
   data() {
     return {
+      user: {},
+      userType: null,
       disburselists: [],
       disburseSum: [],
+      disburseParStatus: null,
       insertData: {},
       insertProgress: false,
       insertValidate: null,
@@ -408,6 +468,10 @@ export default {
   },
 
   async mounted() {
+    let userlogin = JSON.parse(sessionStorage.getItem('loginuser'))
+    this.userType = userlogin.type
+    this.user = JSON.parse(JSON.stringify(userlogin.user))
+    console.log(this.user)
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
     }
@@ -477,6 +541,7 @@ export default {
       }
     },
 
+
     showDeleteDialog(disburselist) {
       this.deleteData = JSON.parse(JSON.stringify(disburselist))
       this.deleteDialog = true
@@ -516,8 +581,62 @@ export default {
       })
 
       if(disburseUpdate.message == 'Success') {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
+          icon: 'success'
+        })
         this.$emit('getUpdateStatus', {'status': true})
         this.disburse.disburseStatus = 'ตรวจสอบรายการ'
+        let result = await this.$axios.$post('disburselist.update.php', {
+          token: this.$store.state.jwtToken,
+          disburseID: this.disburse.disburseID,
+          disburselistStatus: '',
+          disburselistComment: '',
+          fn: 'byDisburse'
+        })
+      }
+      this.updateProgress = false
+    },
+
+    async confirmRequest() {
+      this.updateProgress = true
+      let disburseUpdate = await this.$axios.$post('disburse.update.php', {
+        token: this.$store.state.jwtToken,
+        disburseID: this.disburse.disburseID,
+        disburseStatus: 'รอฝ่ายเห็นชอบ',
+      })
+
+      if(disburseUpdate.message == 'Success') {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
+          icon: 'success'
+        })
+        this.$emit('getUpdateStatus', {'status': true})
+        this.disburse.disburseStatus = 'รอฝ่ายเห็นชอบ'
+      }
+      this.updateProgress = false
+    },
+
+    async confirmParty() {
+      console.log(this.user.partyHead)
+      this.updateProgress = true
+      let disburseUpdate = await this.$axios.$post('disburse.update.php', {
+        token: this.$store.state.jwtToken,
+        disburseID: this.disburse.disburseID,
+        disburseStatus: this.disburseParStatus,
+        disburseParReqName: this.user.partyHead
+      })
+
+      if(disburseUpdate.message == 'Success') {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
+          icon: 'success'
+        })
+        this.$emit('getUpdateStatus', {'status': true})
+        this.disburse.disburseStatus = this.disburseParStatus
       }
       this.updateProgress = false
     },

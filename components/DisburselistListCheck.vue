@@ -481,6 +481,7 @@ export default {
 
   data() {
     return {
+      user: {},
       disburselists: [],
       disburselistcs: [],
       disburselistQty: {},
@@ -506,6 +507,9 @@ export default {
   },
 
   async mounted() {
+    let loginuser = JSON.parse(sessionStorage.getItem('loginuser'))
+    this.user = JSON.parse(JSON.stringify(loginuser.user))
+    console.log(this.user)
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
       await this.getDisburselistQty(this.disburse.disburseID)
@@ -558,6 +562,26 @@ export default {
     },
 
     async updateDisburseCheck(disburse) {
+      if(this.departmentSys == 'Parcel') {
+        if(disburse.disburseParcCheck=='ถูกต้อง') {
+          disburse.disburseParcHead = this.user.departmentHead
+        }
+      } else if(this.departmentSys == 'Plan') {
+        if(disburse.disbursePlanCheck=='ถูกต้อง') {
+          disburse.disbursePlanHead = this.user.departmentHead
+        }
+      }
+      if(this.departmentSys == 'Account') {
+        if(disburse.disburseAccoCheck=='ถูกต้อง') {
+          disburse.disburseAccoHead = this.user.departmentHead
+        }
+      }
+      if(this.departmentSys == 'Finace') {
+        if(disburse.disburseFinaCheck=='ถูกต้อง') {
+          disburse.disburseFinaHead = this.user.departmentHead
+        }
+      }
+
       if(disburse.disburseParcCheck=='ไม่ถูกต้อง' || disburse.disbursePlanCheck=='ไม่ถูกต้อง' || disburse.disburseAccoCheck=='ไม่ถูกต้อง' || disburse.disburseFinaCheck=='ไม่ถูกต้อง') {
         disburse.disburseStatus = 'ไม่ถูกต้อง'
       } else if(disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง') {
@@ -589,13 +613,14 @@ export default {
         await this.getDisburselistQty(this.disburse.disburseID).then(async ()=>{
             if(this.disburselistQty.wrongQty > 0) {
               this.disburse.disburseParcCheck = 'ไม่ถูกต้อง'
-              await this.updateDisburse(this.disburse)
+
+              await this.updateDisburseCheck(this.disburse)
             } else if(this.disburselistQty.allQty == this.disburselistQty.correctQty) {
               this.disburse.disburseParcCheck = 'ถูกต้อง'
-              await this.updateDisburse(this.disburse)
+              await this.updateDisburseCheck(this.disburse)
             } else {
               this.disburse.disburseParcCheck = ''
-              await this.updateDisburse(this.disburse)
+              await this.updateDisburseCheck(this.disburse)
             }
             this.$emit('getUpdateStatus', {'status': true})
           })

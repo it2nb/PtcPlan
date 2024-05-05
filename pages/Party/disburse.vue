@@ -15,8 +15,8 @@
         </div>
       </v-col>
     </v-row>
-    <div v-if="disburseYear" class="mt-2">
-        <DisburseTableVue :disburseYear="disburseYear" userType="Party" />
+    <div v-if="disburseYear && user" class="mt-2">
+        <DisburseTableVue :disburseYear="disburseYear" :partyID="user.partyID" userType="Party" />
     </div>
   </div>
 </template>
@@ -38,7 +38,8 @@ export default {
       insertBt: 1,
       updateBt: 1,
       deleteBt: 1,
-      periodYears: []
+      periodYears: [],
+      user: {},
     }
   },
 
@@ -48,6 +49,7 @@ export default {
     if(this.$route.query.periodYear) {
       this.disburseYear = this.$route.query.periodYear
     } else {
+      this.user = JSON.parse(JSON.stringify(loginuser.user))
       await this.getPeriod()
       // if(this.periodYears.length > 0) {
       //   this.periodYears.reverse()

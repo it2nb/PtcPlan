@@ -432,6 +432,9 @@
                       <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
                       </v-chip>
+                      <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
+                      </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>

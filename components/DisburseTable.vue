@@ -82,7 +82,7 @@
                   <template v-slot:item.disburseDate="{ item }">
                     {{ thaiDateBf(item.disburseDate) }}
                   </template>
-                  <template v-slot:item.actions="{ item }" v-if="userType=='Department'">
+                  <template v-slot:item.actions="{ item }">
                     <div>
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
@@ -95,6 +95,9 @@
                       </v-chip>
                       <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
+                      </v-chip>
+                      <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -519,6 +522,9 @@
                       <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
                       </v-chip>
+                      <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
+                      </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>
@@ -573,8 +579,10 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburseInsertVue :disburse="disburseData" @getInsertStatus="insertDisburse" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'" />
-                <DisburseDepInsertVue :disburse="disburseData" @getInsertStatus="insertDisburse" v-else-if="userType=='Department'" />
+                <div v-if="insertDialog">
+                  <DisburseInsertVue :disburse="disburseData" @getInsertStatus="insertDisburse" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'" />
+                  <DisburseDepInsertVue :disburse="disburseData" @getInsertStatus="insertDisburse" v-else-if="userType=='Department'" />
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -598,8 +606,10 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburseUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"  v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'"/>
-                <DisburseDepUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"  v-else-if="userType=='Department'"/>
+                <div v-if="updateDialog">
+                  <DisburseUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"  v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'"/>
+                  <DisburseDepUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"  v-else-if="userType=='Department'"/>
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -623,7 +633,9 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburseDeleteVue :disburse="disburseData" @getDeleteStatus="deleteDisburse"/>
+                <div v-if="deleteDialog">
+                  <DisburseDeleteVue :disburse="disburseData" @getDeleteStatus="deleteDisburse"/>
+                </div>    
               </v-card>
             </v-col>
           </v-row>
@@ -647,7 +659,9 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburseUpdateStatusVue :disburse="disburseData" :userType="userType" @getUpdateStatus="updateDisburse"/>
+                <div v-if="updateStatusDialog">
+                  <DisburseUpdateStatusVue :disburse="disburseData" :userType="userType" @getUpdateStatus="updateDisburse"/>
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -671,7 +685,9 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburselistListVue :disburse="disburseData" @getUpdateStatus="getDisburses"/>
+                <div v-if="disburselistListDialog">
+                  <DisburselistListVue :disburse="disburseData" @getUpdateStatus="getDisburses"/>
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -718,6 +734,10 @@ export default {
       default : null
     },
     personalIDcard: {
+      type: String,
+      default: null
+    },
+    partyID: {
       type: String,
       default: null
     },
@@ -873,10 +893,17 @@ export default {
     async getDisburses() {
       this.disbursesLoading = true
       let params = {}
-      if(this.userType=='Admin' || this.userType=='Director' || this.userType=='Party' || this.userType=='Plan' || this.userType=='Finance') {
+      if(this.userType=='Admin' || this.userType=='Director' || this.userType=='Plan' || this.userType=='Finance') {
         params = {
           token: this.$store.state.jwtToken,
           disburseYear: this.disburseYear
+        }
+      } else if(this.userType=='Party') {
+        console.log(this.partyID)
+        params = {
+          token: this.$store.state.jwtToken,
+          disburseYear: this.disburseYear,
+          partyID: this.partyID
         }
       } else if(this.userType=='Department') {
         params = {
@@ -889,7 +916,14 @@ export default {
       if(result.message === 'Success') {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if(this.disburses) {
-          this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ')
+          if(this.userType=='Admin' || this.userType=='Director' || this.userType=='Plan' || this.userType=='Finance') {
+            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
+          } else if(this.userType=='Party') {
+            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
+          } else if(this.userType=='Department') {
+            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
+          }
+          //this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
           this.PlanDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ตัดแผนแล้ว')
           this.CompleteDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'เบิกจ่ายแล้ว')
           this.CancelDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ยกเลิก')
