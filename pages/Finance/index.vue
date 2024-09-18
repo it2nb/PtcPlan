@@ -52,7 +52,7 @@ export default {
         //   this.periodYear = this.periods[0].periodYear
         // }
         if(this.periods.length > 0) {
-        let thisPeriod = this.periods.filter(period => Date.now() >= new Date(period.periodBegin.replace('-', '/')).getTime() && Date.now() <= new Date(period.periodEnd.replace('-', '/')+' 23:59:00').getTime())
+        let thisPeriod = this.periods.filter(period => Date.now() >= new Date(period.periodBegin.replace('/', '-')).getTime() && Date.now() <= new Date(period.periodEnd.replace('/', '-')+' 23:59:00').getTime())
         if(thisPeriod.length > 0) {
           this.periodYear = thisPeriod[0].periodYear
         } else {

@@ -76,8 +76,10 @@
                   <v-divider></v-divider>
                   <span class="black--text">{{ moneyFormat(item.disburseRealMoney) }}</span>
                 </div> -->
-                <div class="py-2">
-                  {{ moneyFormat(item.disburseMoney) }}
+                <div class="py-2" v-if="parseFloat(item.disburseMoney) <= parseFloat(item.budgetslipMoney)">
+                  <span>
+                    {{ moneyFormat(item.disburseMoney) }}
+                  </span>
                   <div class="mt-1">
                     <v-progress-linear
                       :value="parseFloat(item.disburseMoney)/parseFloat(item.budgetslipMoney)*100"
@@ -93,9 +95,28 @@
                     </v-progress-linear>
                   </div>
                 </div>
+                <div class="py-2" v-else>
+                  <span>
+                    {{ moneyFormat(item.budgetslipMoney) }}
+                  </span>
+                  <div class="mt-1">
+                    <v-progress-linear
+                      value="100"
+                      color="red lighten-3"
+                      height="20"
+
+                    >
+                      <template v-slot:default="{}">
+                        <div class="pa-1 col-12 text-right text-no-wrap">
+                          <strong>100.00%</strong>
+                        </div>
+                      </template>
+                    </v-progress-linear>
+                  </div>
+                </div>
               </template>
               <template v-slot:item.budgetdifrealMoney="{ item }">
-               <span class="fontBold">
+               <span class="fontBold" v-if="parseFloat(item.disburseMoney) <= parseFloat(item.budgetslipMoney)">
                 {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
                 <div class="mt-1">
                   <v-progress-linear
@@ -107,6 +128,23 @@
                     <template v-slot:default="{}">
                       <div class="pa-1 col-12 text-right text-no-wrap">
                         <strong>{{ moneyFormat(100-(parseFloat(item.disburseMoney)/parseFloat(item.budgetslipMoney)*100)) }}%</strong>
+                      </div>
+                    </template>
+                  </v-progress-linear>
+                </div>
+               </span>
+               <span class="fontBold" v-else>
+                0.00
+                <div class="mt-1">
+                  <v-progress-linear
+                    value="0"
+                    color="green lighten-3"
+                    height="20"
+                    reverse
+                  >
+                    <template v-slot:default="{}">
+                      <div class="pa-1 col-12 text-right text-no-wrap">
+                        <strong>0.00%</strong>
                       </div>
                     </template>
                   </v-progress-linear>

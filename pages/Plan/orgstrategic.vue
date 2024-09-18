@@ -54,7 +54,7 @@ export default {
       //   this.orgstrategicYear = this.periodYears[0].periodYear
       // }
       if(this.periodYears.length > 0) {
-        let thisPeriod = this.periodYears.filter(period => Date.now() >= new Date(period.periodBegin.replace('-', '/')).getTime() && Date.now() <= new Date(period.periodEnd.replace('-', '/')+' 23:59:00').getTime())
+        let thisPeriod = this.periodYears.filter(period => Date.now() >= new Date(period.periodBegin.replace('/', '-')).getTime() && Date.now() <= new Date(period.periodEnd.replace('/', '-')+' 23:59:00').getTime())
         if(thisPeriod.length > 0) {
           this.orgstrategicYear = thisPeriod[0].periodYear
         } else {

@@ -54,7 +54,7 @@ export default {
       //   this.deleteBt = parseInt(this.periodYears[0].periodEnable)
       // }
       if(this.periodYears.length > 0) {
-        let thisPeriod = this.periodYears.filter(period => Date.now() >= new Date(period.periodBegin.replace('-', '/')).getTime() && Date.now() <= new Date(period.periodEnd.replace('-', '/')+' 23:59:00').getTime())
+        let thisPeriod = this.periodYears.filter(period => Date.now() >= new Date(period.periodBegin.replace('/', '-')).getTime() && Date.now() <= new Date(period.periodEnd.replace('/', '-')+' 23:59:00').getTime())
         if(thisPeriod.length > 0) {
           this.projectYear = thisPeriod[0].periodYear
         } else {
@@ -86,7 +86,7 @@ export default {
   watch: {
     async projectYear() {
       let result = await this.periodYears.find(period => period.periodYear==this.projectYear)
-      let intime = (Date.now() >= new Date(result.periodProjectStart.replace('-', '/')+' 00:00:00').getTime() && Date.now() <= new Date(result.periodProjectEnd.replace('-', '/')+' 23:59:59').getTime())
+      let intime = (Date.now() >= new Date(result.periodProjectStart.replace('/', '-')+' 00:00:00').getTime() && Date.now() <= new Date(result.periodProjectEnd.replace('/', '-')+' 23:59:59').getTime())
       if(intime && result.periodEnable == 1) {
         this.insertBt = 1;
       } else {
