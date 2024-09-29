@@ -102,8 +102,12 @@ export default {
 
           this.periodYears = this.periodYears.filter(period=>period.periodEnable)
           this.periodYears.map(period=>{
-            if(Date.now() >= new Date(period.periodProjectStart.replace('/', '-')+' 00:00:00').getTime() && Date.now() <= new Date(period.periodProjectEnd.replace('/', '/-')+' 23:59:59').getTime()) {
-              period.insertEnable = 1;
+            if(period.periodProjectStart != null && period.periodProjectEnd != null) {
+              if(Date.now() >= new Date(period.periodProjectStart.replace('/', '-')+' 00:00:00').getTime() && Date.now() <= new Date(period.periodProjectEnd.replace('/', '/-')+' 23:59:59').getTime()) {
+                period.insertEnable = 1;
+              } else {
+                period.insertEnable = 0;
+              }
             } else {
               period.insertEnable = 0;
             }

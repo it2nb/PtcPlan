@@ -2039,6 +2039,7 @@ export default {
     async updateReportProject() {
       await this.$refs.projectUpdateReportForm.validate()
       if(this.projectUpdateReportValidate) {
+        this.updateReportProgress = true
         this.projectSummaryData.token = this.$store.state.jwtToken
 
         if(this.imageInsertNames.length <= 8) {
@@ -2135,6 +2136,7 @@ export default {
           })
           this.imageInsertNames = []
         }
+        this.updateReportProgress = false
         this.updateReportDialog = false
       }
     },
@@ -2193,6 +2195,7 @@ export default {
 
     async deleteImage() {
         if(this.imageDeleteName) {
+          this.deleteImageProgress = true
           let formData = new FormData()
           formData.append('token', this.$store.state.jwtToken)
           formData.append('function', 'projectImageDelete')
@@ -2210,12 +2213,15 @@ export default {
               icon: 'success'
             })
             await this.showSummaryReportDialog(this.projectData)
+            this.deleteImageProgress = false
             this.$emit('getProjects')
           } else {
             swal({
               title: 'ผิดพลาด',
               text: result.msg,
               icon: 'error'
+            }).then(()=>{
+              this.deleteImageProgress = false
             })
           }
         }
