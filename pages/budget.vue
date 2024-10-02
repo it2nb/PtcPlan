@@ -85,11 +85,15 @@ export default {
       //   this.projectYear = this.periodYears[0].periodYear
       // }
       if(this.periodYears.length > 0) {
-        let thisPeriod = this.periodYears.filter(period => Date.now() >= new Date(period.periodBegin.replace('/', '-')).getTime() && Date.now() <= new Date(period.periodEnd.replace('/', '-')+' 23:59:00').getTime())
-        if(thisPeriod.length > 0) {
-          this.projectYear = thisPeriod[0].periodYear
+        if(this.$route.query.year) {
+          this.projectYear = this.$route.query.year
         } else {
-          this.projectYear = this.periodYears[0].periodYear
+          let thisPeriod = this.periodYears.filter(period => Date.now() >= new Date(period.periodBegin.replace('/', '-')).getTime() && Date.now() <= new Date(period.periodEnd.replace('/', '-')+' 23:59:00').getTime())
+          if(thisPeriod.length > 0) {
+            this.projectYear = thisPeriod[0].periodYear
+          } else {
+            this.projectYear = this.periodYears[0].periodYear
+          }
         }
       }
     // }

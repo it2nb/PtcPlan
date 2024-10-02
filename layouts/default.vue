@@ -30,6 +30,9 @@
           <v-tab to="/budget">
             งบประมาณ
           </v-tab>
+          <v-tab to="/document">
+            เอกสารเผยแพร่
+          </v-tab>
           <!-- <v-tab to="/login">
             เข้าสู่ระบบ
           </v-tab> -->

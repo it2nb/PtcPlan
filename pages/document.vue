@@ -1,40 +1,54 @@
 <template>
   <div>
-    <v-row dense>
-      <v-col cols="12" class="pt-5 px-5 green lighten-5">
-        <div class="col-12 col-md-2 ml-auto pa-0">
-          <v-select
-            v-model="projectYear"
-            label="ปีงบประมาณ พ.ศ."
-            :items="periodYears"
-            item-text="periodYearBd"
-            item-value="periodYear"
-            outlined
-            dense
-          ></v-select>
-        </div>
-      </v-col>
-    </v-row>
-    <div v-if="projectYear" class="mt-2">
-      <ProjectInfoTableVue :projectYear="parseInt(projectYear)" userType="Public"/>
-      <h2 class="col-12 px-0 text-center fontBold">ความก้าวหน้าในการดำเนินโครงการแยกตามยุทธศาสตร์</h2>
-      <OrgstrategicDonutVue :periodYear="parseInt(projectYear)" />
-    </div>
+    <v-tabs
+      v-model="tab"
+      centered
+      fixed-tabs
+      color="orange darken-4"
+      background-color="green lighten-5"
+      class="container mt-3"
+      v-if="projectYear"
+    >
+      <v-tab>
+        งบประมาณที่ได้รับจัดสรร
+      </v-tab>
+      <v-tab>
+        ค่าใช้จ่าย
+      </v-tab>
+      <v-tab>
+        ใบโอนจัดสรรงบประมาณ
+      </v-tab>
+    </v-tabs>
+    <v-tabs-items
+      v-model="tab"
+      v-if="projectYear"
+    >
+      <v-tab-item>
+        <BudgetDisburseInfoTableVue :budgetYear="projectYear" />
+      </v-tab-item>
+      <v-tab-item>
+        <ExpenseplanDisburseInfoTableVue :expenseplanYear="projectYear" />
+      </v-tab-item>
+      <v-tab-item>
+        <BudgetslipInfoTableVue :budgetslipYear="projectYear" />
+      </v-tab-item>
+    </v-tabs-items>
   </div>
 </template>
-
 <script>
-import ProjectInfoTableVue from '~/components/ProjectInfoTable.vue';
-import OrgstrategicDonutVue from '~/components/charts/OrgstrategicDonut.vue';
+import BudgetslipInfoTableVue from '~/components/BudgetslipInfoTable.vue'
+import BudgetDisburseInfoTableVue from '~/components/BudgetDisburseInfoTable.vue'
+import ExpenseplanDisburseInfoTableVue from '~/components/ExpenseplanDisburseInfoTable.vue'
 export default {
-
   components: {
-    ProjectInfoTableVue,
-    OrgstrategicDonutVue
+    BudgetslipInfoTableVue,
+    ExpenseplanDisburseInfoTableVue,
+    BudgetDisburseInfoTableVue
   },
 
   data() {
     return {
+      tab: 0,
       userID: null,
       projectYear: null,
       insertBt: 0,
@@ -91,6 +105,5 @@ export default {
       let result = await this.periodYears.find(period => period.periodYear==this.projectYear)
     }
   }
-
 }
 </script>
