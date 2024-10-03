@@ -119,6 +119,11 @@ export default {
           title: 'จัดซื้อ/เบิกเงิน',
           to: '/Plan/disburse'
         },
+        {
+          icon: 'fas fa-dot-circle',
+          title: 'ไฟล์เอกสาร',
+          to: '/Plan/document'
+        },
         // {
         //   icon: 'fas fa-dot-circle',
         //   title: 'แผนกงาน',
