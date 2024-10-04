@@ -63,13 +63,13 @@
             </v-col>
             <v-col cols="12" md="8">
                 <v-file-input
-                id="documentFile"
-                v-model="documentFile"
-                ref="documentFile"
-                type="file"
-                accept=".pdf, .PDF"
-                label="ไฟล์เอกสาร"
-                outlined
+                  id="documentFile"
+                  v-model="documentFile"
+                  ref="documentFile"
+                  type="file"
+                  accept=".pdf, .PDF"
+                  label="ไฟล์เอกสาร"
+                  outlined
                 ></v-file-input>
             </v-col>
             <!-- <v-col cols="12">
@@ -231,7 +231,6 @@ export default {
                         if(result2.message=='Success') {
                             this.document.documentID = result.documentID
                             this.document.documentLink = result2.document
-                            console.log(this.document)
                             await this.$axios.$post('document.update.php', this.document)
                         }
                     });

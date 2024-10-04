@@ -28,7 +28,7 @@
                     <v-btn 
                         icon 
                         smalll 
-                        :href="documentPath+item.documentLink" 
+                        :href="documentPath+item.documentLink+'?t='+new Date().getTime()" 
                         target="_blank" 
                         color="primary"
                         v-if="item.documentLink"
@@ -100,7 +100,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <OrgstrategicUpdateVue :orgstrategic="orgstrategicData" @getUpdateStatus="updateOrgstrategic"/>
+                <DocumentUpdate :document="document" @getStatus="updateData" v-if="updateDialog"/>
               </v-card>
             </v-col>
           </v-row>
@@ -124,7 +124,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <OrgstrategicDeleteVue :orgstrategic="orgstrategicData" @getDeleteStatus="deleteOrgstrategic"/>
+                <DocumentDelete :document="document" @getStatus="deleteData" v-if="deleteDialog"/>
               </v-card>
             </v-col>
           </v-row>
@@ -200,27 +200,21 @@ export default {
       document: {},
       documentPath: null,
       loadData: false,
-      orgstrategicsLoading: true,
-      orgstrategics: [],
-      orgstrategicData: {},
+      
       insertDialog: false,
       insertProgress: false,
-      orgstrategicInsertValidate: null,
 
       updateDialog: false,
       updateProgress: false,
-      orgstrategicUpdateValidate: null,
 
       deleteDialog: false,
       deleteProgress: false,
-      orgstrategicDeleteValidate: null,
     }
   },
 
   async mounted() {
     await this.getDocumenttype()
     await this.getDocumentPath()
-    console.log(this.documentPath)
     await this.getDocuments()
   },
 
@@ -271,19 +265,18 @@ export default {
       this.loadData = false
     },
 
-    async getOrgstrategics() {
-      this.orgstrategicsLoading = true
-      let result = await this.$axios.$get('orgstrategic.php', {
+    async getCover(document) {
+      let result = await this.$axios.$get('document.image.php', {
         params: {
           token: this.$store.state.jwtToken,
-          orgstrategicYear: this.orgstrategicYear
+          documentID: document.documentID,
+          function: 'documentImageGet'
         }
       })
-
-      if(result.message === 'Success') {
-        this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
-      }
-      this.orgstrategicsLoading = false
+       if(result.message == 'Success') {
+        document.documentCoverPath = result.documentImagePath
+        document.documentCover = result.documentImages[0]
+       }
     },
 
     showInsertDialog() {
@@ -305,30 +298,32 @@ export default {
       }
     },
 
-    showUpdateDialog(orgstrategic) {
-      this.orgstrategicData = orgstrategic
-      this.orgstrategicData.token = this.$store.state.jwtToken
+    async showUpdate(document) {
+      this.document = JSON.parse(JSON.stringify(document))
+      this.document.token = this.$store.state.jwtToken
+      this.document.userID = this.userID
+      await this.getCover(this.document)
       this.updateDialog = true
     },
 
-    async updateOrgstrategic(res) {
+    async updateData(res) {
       if(res.status) {
-        await this.getOrgstrategics()
+        await this.getDocuments()
         this.updateDialog = false
       } else {
         this.updateDialog = false
       }
     },
 
-    showDeleteDialog(orgstrategic) {
-      this.orgstrategicData = orgstrategic
-      this.orgstrategicData.token = this.$store.state.jwtToken
+    showDelete(document) {
+      this.document = JSON.parse(JSON.stringify(document))
+      this.document.token = this.$store.state.jwtToken
       this.deleteDialog = true
     },
 
-    async deleteOrgstrategic(res) {
+    async deleteData(res) {
       if(res.status) {
-        await this.getOrgstrategics()
+        await this.getDocuments()
         this.$emit('getStatus', {'status': true})
         this.deleteDialog = false
       } else {
@@ -336,15 +331,5 @@ export default {
       }
     },
   },
-
-watch: {
-  async orgstrategicYear() {
-    await this.getOrgstrategics()
-  },
-
-  async personalIDcard() {
-    await this.getOrgstrategics()
-  }
-}
 }
 </script>

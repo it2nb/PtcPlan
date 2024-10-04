@@ -134,6 +134,11 @@ export default {
           title: 'ข้อมูลผู้ใช้ระบบ',
           to: '/Admin/users'
         },
+        {
+          icon: 'fas fa-dot-circle',
+          title: 'ไฟล์เอกสาร',
+          to: '/Admin/document'
+        },
         // {
         //   icon: 'fas fa-dot-circle',
         //   title: 'แผนกงาน',
