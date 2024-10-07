@@ -37,6 +37,10 @@
             <div class="mb-2 fontBold font18">4.2 เชิงคุณภาพ</div>
             <pre class="font18 ml-5">{{ project.pjsummaryQlyResult }}</pre>
           </div>
+          <div class="ml-5">
+            <div class="mb-2 fontBold font18">4.3 ผลกระทบ</div>
+            <pre class="font18 ml-5">{{ project.pjsummaryImpact }}</pre>
+          </div>
         </v-col>
         <v-col cols="12" class="mt-3 px-5">
           <div class="mb-2 fontBold font18">5. ประโยชน์ที่คาดว่าจะได้รับ</div>

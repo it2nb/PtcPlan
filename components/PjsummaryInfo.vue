@@ -32,6 +32,10 @@
           <div class="mb-2 fontBold">4.2 เชิงคุณภาพ</div>
           <pre class="fontPrompt ml-5">{{ project.pjsummaryQlyResult }}</pre>
         </div>
+        <div class="ml-5">
+          <div class="mb-2 fontBold">4.3 ผลกระทบ</div>
+          <pre class="fontPrompt ml-5">{{ project.pjsummaryImpact }}</pre>
+        </div>
       </v-col>
       <v-col cols="12">
         <div class="mb-2 fontBold">5. ปัญหาอุปสรรค</div>

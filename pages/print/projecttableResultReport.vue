@@ -84,6 +84,9 @@
               <u class="font14">เชิงคุณภาพ</u>
               <pre class="font14" v-if="project.pjsummaryQlyResult">{{ project.pjsummaryQlyResult }}</pre>
               <pre class="font14" v-else>-</pre>
+              <u class="font14">ผลกระทบ</u>
+              <pre class="font14" v-if="project.pjsummaryImpact">{{ project.pjsummaryImpact }}</pre>
+              <pre class="font14" v-else>-</pre>
             </td>
             <td class="text-left font14" style="border: solid 1px black; padding: 3px; vertical-align: top;">
               <b class="font14 fontBold">ปัญหาอุปสรรค</b><br>

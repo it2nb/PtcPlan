@@ -181,6 +181,14 @@
                             () => !!project.pjsummaryQlyResult || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-textarea>
+                        <v-textarea
+                          v-model="project.pjsummaryImpact"
+                          label="ผลกระทบ"
+                          outlined
+                          :rules="[
+                            () => !!project.pjsummaryImpact || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-textarea>
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">5. ปัญหาอุปสรรค</h3>
@@ -377,6 +385,14 @@
                           outlined
                           :rules="[
                             () => !!project.pjsummaryQlyResult || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-textarea>
+                        <v-textarea
+                          v-model="project.pjsummaryImpact"
+                          label="ผลกระทบ"
+                          outlined
+                          :rules="[
+                            () => !!project.pjsummaryImpact || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-textarea>
                       </v-col>

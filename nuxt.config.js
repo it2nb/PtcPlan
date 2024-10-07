@@ -70,7 +70,7 @@ export default {
   },
   proxy: {
     '/Local/': { target: 'http://localhost/ptcplan-api/', pathRewrite: {'^/Local/': ''} },
-    '/Api/': { target: 'http://113.53.238.202/', pathRewrite: {'^/Api/': '/ptcplanSite/Api/'} }
+    '/Api/': { target: 'https://plan.technicphrae.ac.th/', pathRewrite: {'^/Api/': '/ptcplanSite/Api/'} }
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

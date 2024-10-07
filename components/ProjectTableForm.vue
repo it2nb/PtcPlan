@@ -1085,6 +1085,8 @@
                         <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryQtyResult }}</pre>
                         <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
                         <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryQlyResult }}</pre>
+                        <b  class="ml-3 fontBold">ผลกระทบ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryImpact }}</pre>
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ปัญหาอุปสรรค</h3>
@@ -1193,6 +1195,14 @@
                           outlined
                           :rules="[
                             () => !!projectSummaryData.pjsummaryQlyResult || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-textarea>
+                        <v-textarea
+                          v-model="projectSummaryData.pjsummaryImpact"
+                          label="ผลกระทบ"
+                          outlined
+                          :rules="[
+                            () => !!projectSummaryData.pjsummaryImpact || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-textarea>
                       </v-col>
