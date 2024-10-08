@@ -15,6 +15,9 @@
         </div>
       </v-col>
     </v-row>
+    <v-sheet v-if="projectYear">
+      <BudgetDisburseStatus :budgetYear="projectYear"/>
+    </v-sheet>
     <v-tabs
       v-model="tab"
       centered
