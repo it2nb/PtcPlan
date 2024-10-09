@@ -4,7 +4,7 @@
         <v-col cols="12">
           <apexchart type="donut" height="400" :options="chartOptionsAll" :series="seriesAll" class="mt-2"></apexchart>
         </v-col>
-        <v-col cols="12" md="4" v-for="orgstrategic in orgstrategics" :key="orgstrategic.key">
+        <v-col cols="12" md="3" v-for="orgstrategic in orgstrategics" :key="orgstrategic.key">
           <apexchart type="donut" height="400" :options="chartOptions[parseInt(orgstrategic.orgstrategicID)]" :series="series[parseInt(orgstrategic.orgstrategicID)]" class="mt-2"></apexchart>
         </v-col>
       </v-row>

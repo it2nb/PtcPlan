@@ -6,9 +6,9 @@
           <v-card-title class="ptcBg white--text">
             <b>สถานะการเบิกจ่าย ประจำปีงบประมาณ พ.ศ.{{ parseInt(budgetYear)+543 }}</b>
             <v-spacer></v-spacer>
-            <v-btn fab small color="white" :to="'/print/budgetsliptableReport/?year='+budgetYear" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'">
+            <!-- <v-btn fab small color="white" :to="'/print/budgetsliptableReport/?year='+budgetYear" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'">
               <v-icon color="primary">fas fa-print</v-icon>
-            </v-btn>
+            </v-btn> -->
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
@@ -20,222 +20,179 @@
               :loading="budgetslipsLoading"
               hide-default-footer
             >
-              <template v-slot:top>
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-btn color="success" text @click="showInsertDialog" v-if="userType=='Admin' || userType=='Plan'">
-                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มแผนงบประมาณรายรับ
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="ค้นหา"
-                      hide-details
-                      outlined
-                      dense
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </template>
-
               <template v-slot:item.budgetslipID="{ item }">
                 <div  class="text-no-wrap">{{ budgetslips.indexOf(item)+1 }}</div>
               </template>
               <template v-slot:item.budgetYear="{ item }">
                 {{ parseInt(item.budgetYear)+543 }}
               </template>
-              <template v-slot:item.budgetslipMoney="{ item }">
-                <div>
-                  {{ moneyFormat(item.budgetslipMoney) }}
-                  <div class="mt-1">
-                    <v-progress-linear
-                      :value="parseFloat(item.disburseMoney)/parseFloat(item.budgetslipMoney)*100"
-                      background-color="green lighten-3"
-                      color="red lighten-3"
-                      height="8"
-                    >
-                    </v-progress-linear>
-                  </div>
-                </div>
-              </template>
-              <template v-slot:item.budgetrealMoney="{ item }">
-                <div class="text-no-wrap">
-                  {{ moneyFormat(item.budgetrealMoney) }}
-                  <v-btn icon @click="showBudgetslipDialog(item)" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'">
-                    <v-icon color="success">fas fa-wallet</v-icon>
-                  </v-btn>
-                </div>
-              </template>
-              <template v-slot:item.disburseMoney="{ item }">
-                <!-- <span class="black--text" v-if="parseInt(item.disburseRealMoney) > 0">{{ moneyFormat(item.disburseMoney) }}</span>
-                <span class="grey--text" v-else><i>{{ moneyFormat(item.disburseMoney) }}</i></span> -->
-                <!-- <div class="py-2">
-                  <span class="grey--text"><i>{{ moneyFormat(item.disbursePlanMoney) }}</i></span>
-                  <v-divider></v-divider>
-                  <span class="black--text">{{ moneyFormat(item.disburseRealMoney) }}</span>
-                </div> -->
-                <div class="py-2" v-if="parseFloat(item.disburseMoney) <= parseFloat(item.budgetslipMoney)">
-                  <span>
-                    {{ moneyFormat(item.disburseMoney) }}
-                  </span>
-                  <div class="mt-1">
-                    <v-progress-linear
-                      :value="parseFloat(item.disburseMoney)/parseFloat(item.budgetslipMoney)*100"
-                      color="red lighten-3"
-                      height="20"
+              <template v-slot:item.budgetslipMoney1="{ item }">
+                <div class="py-2" v-if="new Date().getTime()>=new Date((budgetYear-1)+'-10-01 00:00:01').getTime()">
+                  <span class="green--text text--darken-3">ได้รับจัดสรร</span> {{ moneyFormat(item.budgetslipMoney1) }}<br>
+                  <span class="red--text text--darken-3">เบิกจ่าย</span> {{ moneyFormat(parseFloat(item.disburseMoney1)>parseFloat(item.budgetslipMoney1)? item.budgetslipMoney1 : item.disburseMoney1) }}
 
+                  <div class="mt-1">
+                    <v-progress-linear
+                      :value="100-(parseFloat(parseFloat(item.disburseMoney1)>parseFloat(item.budgetslipMoney1)? item.budgetslipMoney1 : item.disburseMoney1)/parseFloat(item.budgetslipMoney1)*100)"
+                      background-color="red lighten-4"
+                      color="green lighten-4"
+                      height="16"
                     >
                       <template v-slot:default="{}">
                         <div class="pa-1 col-12 text-right text-no-wrap">
-                          <strong>{{ moneyFormat(parseFloat(item.disburseMoney)/parseFloat(item.budgetslipMoney)*100) }}%</strong>
-                        </div>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
-                <div class="py-2" v-else>
-                  <span>
-                    {{ moneyFormat(item.budgetslipMoney) }}
-                  </span>
-                  <div class="mt-1">
-                    <v-progress-linear
-                      value="100"
-                      color="red lighten-3"
-                      height="20"
-
-                    >
-                      <template v-slot:default="{}">
-                        <div class="pa-1 col-12 text-right text-no-wrap">
-                          <strong>100.00%</strong>
+                          <strong>{{ moneyFormat(parseFloat(parseFloat(item.disburseMoney1)>parseFloat(item.budgetslipMoney1)? item.budgetslipMoney1 : item.disburseMoney1)/parseFloat(item.budgetslipMoney1)*100) }}%</strong>
                         </div>
                       </template>
                     </v-progress-linear>
                   </div>
                 </div>
               </template>
-              <template v-slot:item.budgetdifrealMoney="{ item }">
-               <span class="fontBold" v-if="parseFloat(item.disburseMoney) <= parseFloat(item.budgetslipMoney)">
-                {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
-                <div class="mt-1">
-                  <v-progress-linear
-                    :value="100-(parseFloat(item.disburseMoney)/parseFloat(item.budgetslipMoney)*100)"
-                    color="green lighten-3"
-                    height="20"
-                    reverse
-                  >
-                    <template v-slot:default="{}">
-                      <div class="pa-1 col-12 text-right text-no-wrap">
-                        <strong>{{ moneyFormat(100-(parseFloat(item.disburseMoney)/parseFloat(item.budgetslipMoney)*100)) }}%</strong>
-                      </div>
-                    </template>
-                  </v-progress-linear>
+              <template v-slot:item.budgetslipMoney2="{ item }">
+                <div class="py-2" v-if="new Date().getTime()>=new Date(budgetYear+'-01-01 00:00:01').getTime()">
+                  <span class="green--text text--darken-3">ได้รับจัดสรร</span> {{ moneyFormat(item.budgetslipMoney2) }}<br>
+                  <span class="red--text text--darken-3">เบิกจ่าย</span> {{ moneyFormat(parseFloat(item.disburseMoney2)>parseFloat(item.budgetslipMoney2)? item.budgetslipMoney2 : item.disburseMoney2) }}
+
+                  <div class="mt-1">
+                    <v-progress-linear
+                      :value="100-(parseFloat(parseFloat(item.disburseMoney2)>parseFloat(item.budgetslipMoney2)? item.budgetslipMoney2 : item.disburseMoney2)/parseFloat(item.budgetslipMoney2)*100)"
+                      background-color="red lighten-4"
+                      color="green lighten-4"
+                      height="16"
+                    >
+                      <template v-slot:default="{}">
+                        <div class="pa-1 col-12 text-right text-no-wrap">
+                          <strong>{{ moneyFormat(parseFloat(parseFloat(item.disburseMoney2)>parseFloat(item.budgetslipMoney2)? item.budgetslipMoney2 : item.disburseMoney2)/parseFloat(item.budgetslipMoney2)*100) }}%</strong>
+                        </div>
+                      </template>
+                    </v-progress-linear>
+                  </div>
                 </div>
-               </span>
-               <span class="fontBold" v-else>
-                0.00
-                <div class="mt-1">
-                  <v-progress-linear
-                    value="0"
-                    color="green lighten-3"
-                    height="20"
-                    reverse
-                  >
-                    <template v-slot:default="{}">
-                      <div class="pa-1 col-12 text-right text-no-wrap">
-                        <strong>0.00%</strong>
-                      </div>
-                    </template>
-                  </v-progress-linear>
-                </div>
-               </span>
-                <!-- <span class="success--text fontBold" v-if="(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) > 0">
-                  {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
-                </span>
-                <span class="red--text fontBold" v-else-if="(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) < 0">
-                  {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
-                </span>
-                <span class="fontBold" v-else>
-                  {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
-                </span> -->
               </template>
-              <template v-slot:item.actions="{ item }">
-                <div  class="text-no-wrap">
-                  <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="updateBt || userType=='Admin' || userType=='Plan'">
-                    <v-icon small class="mr-1">fas fa-edit</v-icon>
-                  </v-btn>
-                  <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="deleteBt || userType=='Admin' || userType=='Plan'">
-                    <v-icon small class="mr-1">fas fa-trash</v-icon>
-                  </v-btn>
+              <template v-slot:item.budgetslipMoney3="{ item }">
+                <div class="py-2" v-if="new Date().getTime()>=new Date(budgetYear+'-04-01 00:00:01').getTime()">
+                  <span class="green--text text--darken-3">ได้รับจัดสรร</span> {{ moneyFormat(item.budgetslipMoney3) }}<br>
+                  <span class="red--text text--darken-3">เบิกจ่าย</span> {{ moneyFormat(parseFloat(item.disburseMoney3)>parseFloat(item.budgetslipMoney3)? item.budgetslipMoney3 : item.disburseMoney3) }}
+
+                  <div class="mt-1">
+                    <v-progress-linear
+                      :value="100-(parseFloat(parseFloat(item.disburseMoney3)>parseFloat(item.budgetslipMoney3)? item.budgetslipMoney3 : item.disburseMoney3)/parseFloat(item.budgetslipMoney3)*100)"
+                      background-color="red lighten-4"
+                      color="green lighten-4"
+                      height="16"
+                    >
+                      <template v-slot:default="{}">
+                        <div class="pa-1 col-12 text-right text-no-wrap">
+                          <strong>{{ moneyFormat(parseFloat(parseFloat(item.disburseMoney3)>parseFloat(item.budgetslipMoney3)? item.budgetslipMoney3 : item.disburseMoney3)/parseFloat(item.budgetslipMoney3)*100) }}%</strong>
+                        </div>
+                      </template>
+                    </v-progress-linear>
+                  </div>
+                </div>
+              </template>
+              <template v-slot:item.budgetslipMoney4="{ item }">
+                <div class="py-2" v-if="new Date().getTime()>=new Date(budgetYear+'-07-01 00:00:01').getTime()">
+                  <span class="green--text text--darken-3">ได้รับจัดสรร</span> {{ moneyFormat(item.budgetslipMoney4) }}<br>
+                  <span class="red--text text--darken-3">เบิกจ่าย</span> {{ moneyFormat(parseFloat(item.disburseMoney4)>parseFloat(item.budgetslipMoney4)? item.budgetslipMoney4 : item.disburseMoney4) }}
+
+                  <div class="mt-1">
+                    <v-progress-linear
+                      :value="100-(parseFloat(parseFloat(item.disburseMoney4)>parseFloat(item.budgetslipMoney4)? item.budgetslipMoney4 : item.disburseMoney4)/parseFloat(item.budgetslipMoney4)*100)"
+                      background-color="red lighten-4"
+                      color="green lighten-4"
+                      height="16"
+                    >
+                      <template v-slot:default="{}">
+                        <div class="pa-1 col-12 text-right text-no-wrap">
+                          <strong>{{ moneyFormat(parseFloat(parseFloat(item.disburseMoney4)>parseFloat(item.budgetslipMoney4)? item.budgetslipMoney4 : item.disburseMoney4)/parseFloat(item.budgetslipMoney4)*100) }}%</strong>
+                        </div>
+                      </template>
+                    </v-progress-linear>
+                  </div>
                 </div>
               </template>
               <template slot="body.append">
                 <tr class="d-none d-md-table-row">
                   <td colspan="2" class="fontBold text-center">รวม</td>
-                  <td class="fontBold text-right">
-                    {{ moneyFormat(budgetSum.budgetslipMoney) }}
-                    <div class="mt-1">
-                      <v-progress-linear
-                        :value="parseFloat(budgetSum.disburseMoney)/parseFloat(budgetSum.budgetslipMoney)*100"
-                        background-color="green lighten-2"
-                        color="red lighten-2"
-                        height="10"
-                      >
-                      </v-progress-linear>
-                    </div>
-                  </td>
-                  <!-- <td class="py-2 fontBold text-right">
-                    <span class="grey--text"><i class="fontBold">{{ moneyFormat(budgetSum.disbursePlanMoney) }}</i></span>
-                    <v-divider></v-divider>
-                    {{ moneyFormat(budgetSum.disburseRealMoney) }}
-                  </td> -->
-                  <td class="py-2 fontBold text-right">
-                    <div class="py-2 fontBold">
-                      {{ moneyFormat(budgetSum.disburseMoney) }}
+                  <td class="py-2 text-right">
+                    <span class="font-weight-bold" v-if="new Date().getTime()>=new Date((budgetYear-1)+'-10-01 00:00:01').getTime()">
+                      <span class="green--text text--darken-3 font-weight-bold">ได้รับจัดสรร</span> {{ moneyFormat(budgetSum.budgetslipMoney1) }}<br>
+                      <span class="red--text text--darken-3 font-weight-bold">เบิกจ่าย</span> {{ moneyFormat(parseFloat(budgetSum.disburseMoney1)>parseFloat(budgetSum.budgetslipMoney1)? budgetSum.budgetslipMoney1 : budgetSum.disburseMoney1) }}
                       <div class="mt-1">
                         <v-progress-linear
-                          :value="parseFloat(budgetSum.disburseMoney)/parseFloat(budgetSum.budgetslipMoney)*100"
-                          color="red lighten-2"
+                          :value="100-(parseFloat(parseFloat(budgetSum.disburseMoney1)>parseFloat(budgetSum.budgetslipMoney1)? budgetSum.budgetslipMoney1 : budgetSum.disburseMoney1)/parseFloat(budgetSum.budgetslipMoney1)*100)"
+                          background-color="red lighten-3"
+                          color="green lighten-2"
                           height="20"
-
                         >
                           <template v-slot:default="{}">
                             <div class="pa-0 col-12 text-right text-no-wrap">
-                              <strong>{{ moneyFormat(parseFloat(budgetSum.disburseMoney)/parseFloat(budgetSum.budgetslipMoney)*100) }}%</strong>
+                              <strong>{{ moneyFormat(parseFloat(parseFloat(budgetSum.disburseMoney1)>parseFloat(budgetSum.budgetslipMoney1)? budgetSum.budgetslipMoney1 : budgetSum.disburseMoney1)/parseFloat(budgetSum.budgetslipMoney1)*100) }}%</strong>
                             </div>
                           </template>
                         </v-progress-linear>
                       </div>
-                    </div>
-                  </td>
-                  <td class="fontBold text-right">
-                    {{ moneyFormat(parseFloat(budgetSum.budgetslipMoney)-parseFloat(budgetSum.disburseMoney)) }}
-                    <div class="mt-1">
-                      <v-progress-linear
-                        :value="100-(parseFloat(budgetSum.disburseMoney)/parseFloat(budgetSum.budgetslipMoney)*100)"
-                        color="green lighten-2"
-                        height="20"
-                        reverse
-                      >
-                        <template v-slot:default="{}">
-                          <div class="pa-0 col-12 text-right text-no-wrap">
-                            <strong>{{ moneyFormat(100-(parseFloat(budgetSum.disburseMoney)/parseFloat(budgetSum.budgetslipMoney)*100)) }}%</strong>
-                          </div>
-                        </template>
-                      </v-progress-linear>
-                    </div>
-                    <!-- <span class="success--text fontBold" v-if="(parseFloat(budgetSum.budgetslipMoney)-parseFloat(budgetSum.disburseMoney)) > 0">
-                      {{ moneyFormat(parseFloat(budgetSum.budgetslipMoney)-parseFloat(budgetSum.disburseMoney)) }}
                     </span>
-                    <span class="red--text fontBold" v-else-if="(parseFloat(budgetSum.budgetrealMoney)-parseFloat(budgetSum.disburseMoney)) < 0">
-                      {{ moneyFormat(parseFloat(budgetSum.budgetslipMoney)-parseFloat(budgetSum.disburseMoney)) }}
-                    </span>
-                    <span class="fontBold" v-else>
-                      {{ moneyFormat(parseFloat(budgetSum.budgetslipMoney)-parseFloat(budgetSum.disburseMoney)) }}
-                    </span> -->
                   </td>
-                  <!-- <td></td> -->
+                  <td class="py-2 fontBold text-right">
+                    <span class="font-weight-bold" v-if="new Date().getTime()>=new Date(budgetYear+'-01-01 00:00:01').getTime()">
+                      <span class="green--text text--darken-3 font-weight-bold">ได้รับจัดสรร</span> {{ moneyFormat(budgetSum.budgetslipMoney2) }}<br>
+                      <span class="red--text text--darken-3 font-weight-bold">เบิกจ่าย</span> {{ moneyFormat(parseFloat(budgetSum.disburseMoney2)>parseFloat(budgetSum.budgetslipMoney2)? budgetSum.budgetslipMoney2 : budgetSum.disburseMoney2) }}
+                      <div class="mt-1">
+                        <v-progress-linear
+                          :value="100-(parseFloat(parseFloat(budgetSum.disburseMoney2)>parseFloat(budgetSum.budgetslipMoney2)? budgetSum.budgetslipMoney2 : budgetSum.disburseMoney2)/parseFloat(budgetSum.budgetslipMoney2)*100)"
+                          background-color="red lighten-3"
+                          color="green lighten-2"
+                          height="20"
+                        >
+                          <template v-slot:default="{}">
+                            <div class="pa-0 col-12 text-right text-no-wrap">
+                              <strong>{{ moneyFormat(parseFloat(parseFloat(budgetSum.disburseMoney2)>parseFloat(budgetSum.budgetslipMoney2)? budgetSum.budgetslipMoney2 : budgetSum.disburseMoney2)/parseFloat(budgetSum.budgetslipMoney2)*100) }}%</strong>
+                            </div>
+                          </template>
+                        </v-progress-linear>
+                      </div>
+                    </span>
+                  </td>
+                  <td class="py-2 fontBold text-right">
+                    <span class="font-weight-bold" v-if="new Date().getTime()>=new Date(budgetYear+'-04-01 00:00:01').getTime()">
+                      <span class="green--text text--darken-3 font-weight-bold">ได้รับจัดสรร</span> {{ moneyFormat(budgetSum.budgetslipMoney3) }}<br>
+                      <span class="red--text text--darken-3 font-weight-bold">เบิกจ่าย</span> {{ moneyFormat(parseFloat(budgetSum.disburseMoney3)>parseFloat(budgetSum.budgetslipMoney3)? budgetSum.budgetslipMoney3 : budgetSum.disburseMoney3) }}
+                      <div class="mt-1">
+                        <v-progress-linear
+                          :value="100-(parseFloat(parseFloat(budgetSum.disburseMoney3)>parseFloat(budgetSum.budgetslipMoney3)? budgetSum.budgetslipMoney3 : budgetSum.disburseMoney3)/parseFloat(budgetSum.budgetslipMoney3)*100)"
+                          background-color="red lighten-3"
+                          color="green lighten-2"
+                          height="20"
+                        >
+                          <template v-slot:default="{}">
+                            <div class="pa-0 col-12 text-right text-no-wrap">
+                              <strong>{{ moneyFormat(parseFloat(parseFloat(budgetSum.disburseMoney3)>parseFloat(budgetSum.budgetslipMoney3)? budgetSum.budgetslipMoney3 : budgetSum.disburseMoney3)/parseFloat(budgetSum.budgetslipMoney3)*100) }}%</strong>
+                            </div>
+                          </template>
+                        </v-progress-linear>
+                      </div>
+                    </span>
+                  </td>
+                  <td class="py-2 fontBold text-right">
+                    <span class="font-weight-bold" v-if="new Date().getTime()>=new Date(budgetYear+'-07-01 00:00:01').getTime()">
+                      <span class="green--text text--darken-3 font-weight-bold">ได้รับจัดสรร</span> {{ moneyFormat(parseFloat(budgetSum.budgetslipMoney4)) }}<br>
+                      <span class="red--text text--darken-3 font-weight-bold">เบิกจ่าย</span> {{ moneyFormat(parseFloat(budgetSum.disburseMoney4)>parseFloat(budgetSum.budgetslipMoney4)? budgetSum.budgetslipMoney4 : budgetSum.disburseMoney4) }}
+                      <div class="mt-1">
+                        <v-progress-linear
+                          :value="100-(parseFloat(parseFloat(budgetSum.disburseMoney4)>parseFloat(budgetSum.budgetslipMoney4)? budgetSum.budgetslipMoney4 : budgetSum.disburseMoney4)/parseFloat(budgetSum.budgetslipMoney4)*100)"
+                          background-color="red lighten-3"
+                          color="green lighten-2"
+                          height="20"
+                        >
+                          <template v-slot:default="{}">
+                            <div class="pa-0 col-12 text-right text-no-wrap">
+                              <strong>{{ moneyFormat(parseFloat(parseFloat(budgetSum.disburseMoney4)>parseFloat(budgetSum.budgetslipMoney4)? budgetSum.budgetslipMoney4 : budgetSum.disburseMoney4)/parseFloat(budgetSum.budgetslipMoney4)*100) }}%</strong>
+                            </div>
+                          </template>
+                        </v-progress-linear>
+                      </div>
+                    </span>
+                  </td>
                 </tr>
               </template>
             </v-data-table>
@@ -294,13 +251,11 @@ export default {
           sortable: false,
           value: 'budgetslipID',
         },
-        // { text: 'ปีงบประมาณ พ.ศ.', value: 'budgetYear', align: 'center', class: 'text-center' },
         { text: 'หมวดงบประมาณ', value: 'budgettypeName', align: 'left', class: 'text-center' },
-        { text: 'ได้รับจัดสรร', value: 'budgetslipMoney', align: 'right', class: 'text-center' },
-        // { text: 'รอเบิกจ่าย/เบิกจ่ายแล้ว', value: 'disburseMoney', align: 'right', class: 'text-center' },
-        { text: 'เบิกจ่าย', value: 'disburseMoney', align: 'right', class: 'text-center' },
-        { text: 'คงเหลือ ', value: 'budgetdifrealMoney', align: 'right', class: 'text-center' },
-        // { text: '%เบิกจ่าย', value: 'disbursePercent', align: 'right', class: 'text-center' },
+        { text: 'ไตรมาตร 1', value: 'budgetslipMoney1', align: 'right', class: 'text-center' },
+        { text: 'ไตรมาตร 2', value: 'budgetslipMoney2', align: 'right', class: 'text-center' },
+        { text: 'ไตรมาตร 3', value: 'budgetslipMoney3', align: 'right', class: 'text-center' },
+        { text: 'ไตรมาตร 4', value: 'budgetslipMoney4', align: 'right', class: 'text-center' },
       ],
       search: '',
       budgetslipsLoading: true,
@@ -333,11 +288,10 @@ export default {
       let params = {
         token: this.$store.state.jwtToken,
         budgetslipYear: this.budgetYear,
-        disburseDateStart: '2023-10-01',
-        disburseDateEnd: '2024-06-31',
-        fn: 'getSummaryByBudgetYear'
+        fn: 'getSummaryPeriodByBudgetYear'
       }
       let result = await this.$axios.$get('budgetslip.php', {params})
+      console.log(result)
       if(result.message === 'Success') {
         this.budgetslips = JSON.parse(JSON.stringify(result.budgetslip))
       }
@@ -345,9 +299,7 @@ export default {
       params = {
         token: this.$store.state.jwtToken,
         budgetslipYear: this.budgetYear,
-        disburseDateStart: '2023-10-01',
-        disburseDateEnd: '2024-06-31',
-        fn: 'getSummaryByYear'
+        fn: 'getSummaryPeriodByYear'
       }
       let result2 = await this.$axios.$get('budgetslip.php', {params})
       if(result2.message === 'Success') {
