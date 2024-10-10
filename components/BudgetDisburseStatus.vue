@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>สถานะการเบิกจ่าย ประจำปีงบประมาณ พ.ศ.{{ parseInt(budgetYear)+543 }}</b>
+            <b>รายงานสถานะการใช้จ่ายงบประมาณ ประจำปีงบประมาณ พ.ศ.{{ parseInt(budgetYear)+543 }}</b>
             <v-spacer></v-spacer>
             <!-- <v-btn fab small color="white" :to="'/print/budgetsliptableReport/?year='+budgetYear" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'">
               <v-icon color="primary">fas fa-print</v-icon>

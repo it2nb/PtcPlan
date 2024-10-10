@@ -1,6 +1,16 @@
 <template>
   <div>
       <v-row v-if="showChart">
+        <!-- <v-col cols="12" md="4" class="mx-auto">
+          <v-select
+            v-model="subperiod"
+            :items="subperiods"
+            label="ไตรมาตรที่"
+            outlined
+            hide-details
+            dense
+          ></v-select>
+        </v-col> -->
         <v-col cols="12">
           <apexchart type="donut" height="400" :options="chartOptionsAll" :series="seriesAll" class="mt-2"></apexchart>
         </v-col>
@@ -17,6 +27,10 @@ export default {
     periodYear: {
       type: Number,
       default: null
+    },
+    periodSec: {
+      type: Number,
+      default: null
     }
   },
 
@@ -25,6 +39,32 @@ export default {
       orgstrategics: [],
       showChart: false,
       seriesAll: [],
+      subperiod: null,
+      subperiods: [
+        {
+          value: 1,
+          text: 'ไตรมาตร 1',
+          startDate: (parseInt(this.periodYear)-1)+'-10-01',
+          endDate: (parseInt(this.periodYear)-1)+'-12-31'
+        },
+        {
+          value: 2,
+          text: 'ไตรมาตร 2',
+          startDate: this.periodYear+'-01-01',
+          endDate: this.periodYear+'-03-31'
+        },
+        {
+          value: 3,
+          text: 'ไตรมาตร 3',
+          startDate: this.periodYear+'-04-01',
+          endDate: this.periodYear+'-06-30'
+        },{
+          value: 4,
+          text: 'ไตรมาตร 4',
+          startDate: this.periodYear+'-07-01',
+          endDate: this.periodYear+'-09-30'
+        }
+      ],
       chartOptionsAll: {
         chart: {
           toolbar: {
@@ -76,16 +116,28 @@ export default {
   },
 
   async mounted() {
+    if(this.periodSec>=1 && this.periodSec<=4) {
+      this.subperiod = parseInt(this.periodSec)
+    } else {
+      let period = this.subperiods.filter(period => new Date().getTime()>=new Date(period.startDate+' 00:00:01').getTime())
+      if(period.length>0) {
+        this.subperiod = period.length
+      }
+    }
     await this.getOrgstrategic()
   },
 
   methods: {
     async getOrgstrategic() {
+      let period = this.subperiods.filter(period => period.value==this.subperiod)
       let params = {
         token: this.$store.state.jwtToken,
         orgstrategicYear: this.periodYear,
+        orgstrategicStart: (parseInt(this.periodYear)-1)+'-10-01',
+        orgstrategicEnd: period[0]?.endDate,
         fn: 'SummaryProgress'
       }
+      console.log(params, period)
       let result = await this.$axios.$get('orgstrategic.php', {params})
 
       if(result.message=="Success") {
@@ -160,8 +212,43 @@ export default {
   watch: {
     async periodYear() {
       this.showChart = false
+      this.subperiods = [
+        {
+          value: 1,
+          text: 'ไตรมาตร 1',
+          startDate: (parseInt(this.periodYear)-1)+'-10-01',
+          endDate: (parseInt(this.periodYear)-1)+'-12-31'
+        },
+        {
+          value: 2,
+          text: 'ไตรมาตร 2',
+          startDate: this.periodYear+'-01-01',
+          endDate: this.periodYear+'-03-31'
+        },
+        {
+          value: 3,
+          text: 'ไตรมาตร 3',
+          startDate: this.periodYear+'-04-01',
+          endDate: this.periodYear+'-06-30'
+        },{
+          value: 4,
+          text: 'ไตรมาตร 4',
+          startDate: this.periodYear+'-07-01',
+          endDate: this.periodYear+'-09-30'
+        }
+      ]
+      let period = this.subperiods.filter(period => new Date().getTime()>=new Date(period.startDate+' 00:00:01').getTime())
+      if(period.length>0) {
+        this.subperiod = period.length
+      } else {
+        this.subperiod = 1
+      }
       await this.getOrgstrategic()
-    }
+    },
+    async subperiod() {
+      this.showChart = false
+      await this.getOrgstrategic()
+    },
   }
 }
 </script>

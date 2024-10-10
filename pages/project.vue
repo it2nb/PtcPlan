@@ -14,11 +14,16 @@
           ></v-select>
         </div>
       </v-col>
+      <v-col cols="12" class="pt-4" v-if="projectYear">
+        <v-container class="py-0 my-0">
+          <h2 class="col-12 col-md-5 px-0 fontBold white--text  ptcBg text-center rounded-br-xl rounded-tl-xl elevation-3">ปีงบประมาณ พ.ศ. {{ parseInt(projectYear)+543 }}</h2>
+        </v-container>
+      </v-col>
     </v-row>
     <div v-if="projectYear" class="mt-2 container">
       <h2 class="col-12 px-0 text-center fontBold">ความก้าวหน้าในการดำเนินโครงการแยกตามยุทธศาสตร์</h2>
       <OrgstrategicDonutVue :periodYear="parseInt(projectYear)" />
-      <ProjectInfoTableVue :projectYear="parseInt(projectYear)" userType="Public" class="mt-5"/>
+      <ProjectInfoTableVue :projectYear="parseInt(projectYear)" :projectPeriod="projectPeriod" userType="Public" class="mt-5"/>
     </div>
   </div>
 </template>
@@ -37,6 +42,7 @@ export default {
     return {
       userID: null,
       projectYear: null,
+      projectPeriod: null,
       insertBt: 0,
       updateBt: 0,
       deleteBt: 0,
@@ -45,16 +51,7 @@ export default {
   },
 
   async mounted() {
-    // let loginuser = JSON.parse(sessionStorage.getItem("loginuser"))
-    // this.userID = loginuser.user.userID
-    // if(this.$route.query.periodYear) {
-    //   this.projectYear = this.$route.query.periodYear
-    // } else {
       await this.getPeriod()
-      // if(this.periodYears.length > 0) {
-      //   this.periodYears.reverse()
-      //   this.projectYear = this.periodYears[0].periodYear
-      // }
       if(this.periodYears.length > 0) {
         if(this.$route.query.year) {
           this.projectYear = this.$route.query.year
@@ -66,6 +63,9 @@ export default {
             this.projectYear = this.periodYears[0].periodYear
           }
         }
+      }
+      if(this.$route.query.period) {
+        this.projectPeriod = this.$route.query.period
       }
     // }
   },

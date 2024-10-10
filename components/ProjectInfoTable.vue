@@ -4,8 +4,20 @@
       <v-col cols="12">
         <v-card elevation="2">
           <v-card-title class="pb-5 ptcBg white--text">
-            <b>โครงการ ประจำปีงบประมาณ พ.ศ. {{ parseInt(projectYear)+543 }}</b>
+            <b>รายงานสถานะการดำเนินโครงการ ประจำปีงบประมาณ พ.ศ. {{ parseInt(projectYear)+543 }} (ไตรมาตร {{ subperiod }})</b>
             <v-spacer></v-spacer>
+            <span class="mr-md-3 text-center caption">
+              <v-btn fab small color="white" :href="'/print/projecttableStatusReport/?year='+projectYear+'&status=อนุมัติ'" target="_blank">
+                <v-icon color="primary">fas fa-print</v-icon>
+              </v-btn><br>
+              สถานะดำเนินงาน
+            </span>
+            <span class="mr-md-3 text-center caption">
+              <v-btn fab small color="white" :href="'/print/projecttableResultReport/?year='+projectYear" target="_blank">
+                <v-icon color="primary">fas fa-print</v-icon>
+              </v-btn><br>
+              สรุป
+            </span>
             <v-btn icon color="primary" class="mr-md-3"  :href="'/print/projecttableReport/?year='+projectYear" target="_blank" v-if="userType=='Admin'||userType=='Director'">
               <v-icon>fas fa-print</v-icon>
             </v-btn>
@@ -66,7 +78,7 @@
                 <v-row>
                   <v-col cols="12" md="4">
                     <v-autocomplete
-                      v-model="orgstrategicID"
+                      v-model="orgstrategicID_selected"
                       label="ยุทธศาสตร์"
                       :items="orgstrategics"
                       item-text="orgstrategicFullname"
@@ -76,6 +88,16 @@
                       dense
                       @change="filterProjects"
                     ></v-autocomplete>
+                  </v-col>
+                  <v-col cols="12" md="4" class="mx-auto">
+                    <v-select
+                      v-model="subperiod"
+                      :items="subperiods"
+                      label="ไตรมาตรที่"
+                      outlined
+                      hide-details
+                      dense
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" md="4">
                     <v-text-field
@@ -193,6 +215,216 @@
       </v-col>
     </v-row>
 
+    <v-row justify="center">
+      <v-dialog
+        v-model="updateProgressDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-10 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="info lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="updateProgressDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <v-card-title class="info lighten-2">
+                  <span class="fontBold">รายละเอียดการดำเนินกิจกรรมโครงการ ปีงบประมาณ พ.ศ.{{ parseInt(this.projectYear)+543 }}</span>
+                </v-card-title>
+                <v-divider class="green"></v-divider>
+                <v-form
+                  v-model="projectUpdateProgressValidate"
+                  ref="projectUpdateProgressForm"
+                  lazy-validation
+                  @submit.prevent="updateProgressProject"
+                  class="mt-4"
+                >
+                  <v-card-text>
+                    <v-row dense>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">ชื่อโครงการ</h3>
+                        {{ projectData.projectName }}
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">วัตถุประสงค์</h3>
+                        <pre class="fontPrompt">{{ projectData.projectObjective }}</pre>
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">ยุทธศาสตร์สถานศึกษา</h3>
+                        ยุทธศาสตร์ที่ {{ projectData.orgstrategicNum }} {{ projectData.orgstrategicName }}
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">กลยุทธ์สถานศึกษา</h3>
+                        กลยุทธ์ที่ {{ projectData.orgstrategyNum }} {{ projectData.orgstrategyName }}
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">ฝ่าย</h3>
+                        {{ projectData.partyName }}
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">แผนก/งาน</h3>
+                        {{ projectData.departmentName }}
+
+                      </v-col>
+                      <v-col cols="12" v-if="userType=='Department'||userType=='Personal'">
+                        <h3 class="mb-2 fontBold">การดำเนินกิจกรรม</h3>
+                        <v-radio-group
+                          v-model="projectData.projectProgress"
+                          row
+                        >
+                          <v-radio label="ยังไม่ได้ดำเนินการ" value="ยังไม่ได้ดำเนินการ" color="red darken-2" v-if="parseFloat(projectData.disburseMoney)<=0"></v-radio>
+                          <v-radio label="อยู่ระหว่างดำเนินการ" value="อยู่ระหว่างดำเนินการ" color="yellow darken-1"></v-radio>
+                          <v-radio label="ดำเนินการเสร็จสิ้น" value="ดำเนินการเสร็จสิ้น"  color="success darken-1"></v-radio>
+                        </v-radio-group>
+                      </v-col>
+                      <v-col cols="12" md="6" v-else>
+                        <h3 class="mb-2 fontBold">การดำเนินกิจกรรม</h3>
+                        {{ projectData.projectProgress }}
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                  <v-divider class="green lighten-2"></v-divider>
+                  <v-card-actions v-if="userType=='Department' || userType=='Personal'">
+                    <div class="col-12 text-center">
+                      <v-btn
+                        @click="updateProgressDialog = false"
+                        outlined
+                      >
+                        ยกเลิก
+                      </v-btn>
+                      <v-progress-circular
+                        indeterminate
+                        color="success"
+                        v-if="updateProgressProgress"
+                      ></v-progress-circular>
+                      <v-btn
+                        type="submit"
+                        color="warning darken-1"
+                        large
+                        v-else
+                      >
+                        แก้ไข
+                      </v-btn>
+                    </div>
+                  </v-card-actions>
+                </v-form>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
+    <v-row justify="center">
+      <v-dialog
+        v-model="projectSummaryReportDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-10 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="success lighten-5">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="projectSummaryReportDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <v-card-title class="success lighten-2">
+                  <span class="fontBold">รายงานสรุปผลการดำเนินโครงการ ปีงบประมาณ พ.ศ.{{ parseInt(this.projectYear)+543 }}</span>
+                  <v-spacer></v-spacer>
+                  <v-btn fab x-small color="white" class="mr-2" @click="showUpdateReportDialog(projectData)" v-if="userType=='Department' || userType=='Personal'">
+                    <v-icon small color="warning">fas fa-edit</v-icon>
+                  </v-btn>
+                  <v-btn fab x-small color="white" class="mr-2" :to="'/print/pjsummaryReport/?id='+projectData.projectID" target="_blank">
+                    <v-icon small color="primary">fas fa-print</v-icon>
+                  </v-btn>
+                </v-card-title>
+                <v-divider class="green"></v-divider>
+                <v-form
+                  v-model="projectUpdateReportValidate"
+                  ref="projectUpdateReportForm"
+                  lazy-validation
+                  @submit.prevent="updateReportProject"
+                  class="mt-4"
+                >
+                  <v-card-text>
+                    <v-row dense>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold text-center">ชื่อโครงการ</h3>
+                        <h4 class="fontBold text-center">{{ projectData.projectName }}</h4>
+                        <v-divider class="my-2"></v-divider>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">วัตถุประสงค์</h3>
+                        <pre class="ml-3 fontPrompt">{{ projectData.projectObjective }}</pre>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">งบประมาณ</h3>
+                        <span class="ml-3 fontPrompt">{{ moneyFormat(projectData.disburseMoney) }} บาท</span>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">เป้าหมาย</h3>
+                        <b  class="ml-3 fontBold">เชิงปริมาณ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.projectQuantityGoal }}</pre>
+                        <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.projectQualityGoal }}</pre>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <h3 class="mb-2 fontBold">ตัวชี้วัดความสำเร็จโครงการ</h3>
+                        <b  class="ml-3 fontBold">เชิงปริมาณ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.projectQuantityKpi }}</pre>
+                        <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.projectQualityKpi }}</pre>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-divider class="my-2"></v-divider>
+                        <h3 class="mb-2 fontBold">ผลการดำเนินงาน/กิจกรรม</h3>
+                        <b  class="ml-3 fontBold">เชิงปริมาณ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryQtyResult }}</pre>
+                        <b  class="ml-3 fontBold">เชิงคุณภาพ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryQlyResult }}</pre>
+                        <b  class="ml-3 fontBold">ผลกระทบ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryImpact }}</pre>
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">ปัญหาอุปสรรค</h3>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryProblem }}</pre>
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">ข้อเสนอแนะ</h3>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummarySuggestion }}</pre>
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="mb-2 fontBold">ภาพการดำเนินโครงการ</h3>
+                        <v-row v-if="imageNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
+                            <v-img
+                              :src="imagePath+imageName"
+                              class="align-end text-right"
+                              gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
+                            >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-img>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-form>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
   </div>
 </template>
 
@@ -237,6 +469,10 @@ export default {
       type: Number,
       default: null
     },
+    projectPeriod: {
+      type: Number,
+      default: null
+    },
     insertBt: {
       type: Number,
       default: 0
@@ -265,8 +501,36 @@ export default {
         { text: 'การรายงานผล', value: 'projectReport', align: 'left', class: 'text-center' },
         { text: 'งบประมาณ', value: 'pjbudgetMoney', align: 'center' },
         { text: 'เบิกจ่ายแล้ว', value: 'disburseMoney', align: 'center' },
-        { text: '', value: 'actions', align: 'center' },
+        // { text: '', value: 'actions', align: 'center' },
       ],
+
+      subperiod: null,
+      subperiods: [
+        {
+          value: 1,
+          text: 'ไตรมาตร 1',
+          startDate: (parseInt(this.projectYear)-1)+'-10-01',
+          endDate: (parseInt(this.projectYear)-1)+'-12-31'
+        },
+        {
+          value: 2,
+          text: 'ไตรมาตร 2',
+          startDate: this.projectYear+'-01-01',
+          endDate: this.projectYear+'-03-31'
+        },
+        {
+          value: 3,
+          text: 'ไตรมาตร 3',
+          startDate: this.projectYear+'-04-01',
+          endDate: this.projectYear+'-06-30'
+        },{
+          value: 4,
+          text: 'ไตรมาตร 4',
+          startDate: this.projectYear+'-07-01',
+          endDate: this.projectYear+'-09-30'
+        }
+      ],
+
       parties: [],
       party: {},
       budgetInsertBt: 0,
@@ -274,6 +538,7 @@ export default {
       department: {},
       orgstrategics: [],
       orgstrategies: [],
+      orgstrategicID_selected: null,
       projects: [],
       projects_tb: [],
       projectSum: {},
@@ -288,6 +553,8 @@ export default {
       updateDialog: false,
       updateProgress: false,
       projectUpdateValidate: null,
+
+      updateProgressDialog:false,
 
       updateStatusDialog: false,
       updateStatusProgress: false,
@@ -311,6 +578,17 @@ export default {
   },
 
   async mounted() {
+    if(this.projectPeriod>=1 && this.projectPeriod<=4) {
+      this.subperiod = parseInt(this.projectPeriod)
+    } else {
+      let period = this.subperiods.filter(period => new Date().getTime()>=new Date(period.startDate+' 00:00:01').getTime())
+      if(period.length>0) {
+        this.subperiod = period.length
+      }
+    }
+    if(this.orgstrategicID > 0) {
+      this.orgstrategicID_selected = this.orgstrategicID
+    }
     await this.getParties()
     await this.getOrgstrategic()
     await this.getProjects()
@@ -415,9 +693,12 @@ export default {
 
     async getProjects() {
       this.projectsLoading = true
+      let period = this.subperiods.filter(period => period.value==this.subperiod)
       let params = {
         token: this.$store.state.jwtToken,
-          projectYear: this.projectYear
+        projectYear: this.projectYear,
+        projectStart: (parseInt(this.projectYear)-1)+'-10-01',
+        projectEnd: period[0]?.endDate,
       }
 
       let result = await this.$axios.$get('project.php', {
@@ -435,10 +716,8 @@ export default {
     },
 
     filterProjects() {
-      if(this.orgstrategicID > 0) {
-        this.projects_tb = this.projects.filter((project)=> {
-          return project.orgstrategicID == this.orgstrategicID
-        })
+      if(this.orgstrategicID_selected > 0) {
+        this.projects_tb = this.projects.filter(project=>project.orgstrategicID == this.orgstrategicID_selected)
       } else {
         this.projects_tb = JSON.parse(JSON.stringify(this.projects))
       }
@@ -662,6 +941,18 @@ export default {
       }
     },
 
+    async showUpdateProgressDialog(project) {
+      this.projectData = JSON.parse(JSON.stringify(project))
+      this.projectProgress = project.projectProgress
+      this.departments = []
+      await this.getDepartments(this.projectData.partyID)
+      this.orgstrategics = []
+      await this.getOrgstrategic()
+      this.orgstrategies = []
+      await this.getOrgstrategy(this.projectData.orgstrategicID)
+      this.updateProgressDialog = true
+    },
+
     async showSummaryReportDialog(project) {
       this.projectData = JSON.parse(JSON.stringify(project))
       this.imageNames = []
@@ -699,6 +990,42 @@ export default {
 
   watch: {
     async projectYear() {
+      this.subperiods = [
+        {
+          value: 1,
+          text: 'ไตรมาตร 1',
+          startDate: (parseInt(this.projectYear)-1)+'-10-01',
+          endDate: (parseInt(this.projectYear)-1)+'-12-31'
+        },
+        {
+          value: 2,
+          text: 'ไตรมาตร 2',
+          startDate: this.projectYear+'-01-01',
+          endDate: this.projectYear+'-03-31'
+        },
+        {
+          value: 3,
+          text: 'ไตรมาตร 3',
+          startDate: this.projectYear+'-04-01',
+          endDate: this.projectYear+'-06-30'
+        },{
+          value: 4,
+          text: 'ไตรมาตร 4',
+          startDate: this.projectYear+'-07-01',
+          endDate: this.projectYear+'-09-30'
+        }
+      ]
+      let period = this.subperiods.filter(period => new Date().getTime()>=new Date(period.startDate+' 00:00:01').getTime())
+      if(period.length>0) {
+        this.subperiod = period.length
+      } else {
+        this.subperiod = 1
+      }
+      await this.getProjects()
+      await this.filterProjects()
+    },
+
+    async subperiod() {
       await this.getProjects()
       await this.filterProjects()
     },

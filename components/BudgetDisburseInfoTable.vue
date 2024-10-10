@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>งบประมาณที่ได้รับจัดสรร ประจำปีงบประมาณ พ.ศ.{{ parseInt(budgetYear)+543 }}</b>
+            <b>งบประมาณที่ได้รับจัดสรร ประจำปีงบประมาณ พ.ศ.{{ parseInt(budgetYear)+543 }} (ไตรมาตร {{ subperiod }})</b>
             <v-spacer></v-spacer>
             <v-btn fab small color="white" :to="'/print/budgetsliptableReport/?year='+budgetYear" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'">
               <v-icon color="primary">fas fa-print</v-icon>
@@ -22,10 +22,20 @@
             >
               <template v-slot:top>
                 <v-row>
-                  <v-col cols="12" md="6">
+                  <v-col cols="12" md="2">
                     <v-btn color="success" text @click="showInsertDialog" v-if="userType=='Admin' || userType=='Plan'">
                       <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มแผนงบประมาณรายรับ
                     </v-btn>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <v-select
+                      v-model="subperiod"
+                      :items="subperiods"
+                      label="ไตรมาตรที่"
+                      outlined
+                      hide-details
+                      dense
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
@@ -150,15 +160,6 @@
                   </v-progress-linear>
                 </div>
                </span>
-                <!-- <span class="success--text fontBold" v-if="(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) > 0">
-                  {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
-                </span>
-                <span class="red--text fontBold" v-else-if="(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) < 0">
-                  {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
-                </span>
-                <span class="fontBold" v-else>
-                  {{ moneyFormat(parseFloat(item.budgetslipMoney)-parseFloat(item.disburseMoney)) }}
-                </span> -->
               </template>
               <template v-slot:item.actions="{ item }">
                 <div  class="text-no-wrap">
@@ -271,6 +272,10 @@ export default {
       type: String,
       default: null
     },
+    budgetPeriod: {
+      type: String,
+      default: null
+    },
     insertBt: {
       type: Number,
       default: 0
@@ -312,6 +317,33 @@ export default {
       insertProgress: false,
       budgetslipInsertValidate: null,
 
+      subperiod: null,
+      subperiods: [
+        {
+          value: 1,
+          text: 'ไตรมาตร 1',
+          startDate: (parseInt(this.budgetYear)-1)+'-10-01',
+          endDate: (parseInt(this.budgetYear)-1)+'-12-31'
+        },
+        {
+          value: 2,
+          text: 'ไตรมาตร 2',
+          startDate: this.budgetYear+'-01-01',
+          endDate: this.budgetYear+'-03-31'
+        },
+        {
+          value: 3,
+          text: 'ไตรมาตร 3',
+          startDate: this.budgetYear+'-04-01',
+          endDate: this.budgetYear+'-06-30'
+        },{
+          value: 4,
+          text: 'ไตรมาตร 4',
+          startDate: this.budgetYear+'-07-01',
+          endDate: this.budgetYear+'-09-30'
+        }
+      ],
+
       updateDialog: false,
       updateProgress: false,
       budgetslipUpdateValidate: null,
@@ -325,15 +357,26 @@ export default {
   },
 
   async mounted() {
+    if(this.budgetPeriod>=1 && this.budgetPeriod<=4) {
+      this.subperiod = parseInt(this.budgetPeriod)
+    } else {
+      let period = this.subperiods.filter(period => new Date().getTime()>=new Date(period.startDate+' 00:00:01').getTime())
+      if(period.length>0) {
+        this.subperiod = period.length
+      }
+    }
     await this.getBudgetplans()
   },
 
   methods: {
     async getBudgetplans() {
       this.budgetslipsLoading = true
+      let period = this.subperiods.filter(period => period.value==this.subperiod)
       let params = {
         token: this.$store.state.jwtToken,
         budgetslipYear: this.budgetYear,
+        budgetslipStart: (parseInt(this.budgetYear)-1)+'-10-01',
+        budgetslipEnd: period[0]?.endDate,
         fn: 'getSummaryByBudgetplanYear'
       }
       let result = await this.$axios.$get('budgetslip.php', {params})
@@ -344,8 +387,11 @@ export default {
       params = {
         token: this.$store.state.jwtToken,
         budgetslipYear: this.budgetYear,
+        budgetslipStart: (parseInt(this.budgetYear)-1)+'-10-01',
+        budgetslipEnd: period[0]?.endDate,
         fn: 'getSummaryByYear'
       }
+
       let result2 = await this.$axios.$get('budgetslip.php', {params})
       if(result2.message === 'Success') {
         this.budgetSum = JSON.parse(JSON.stringify(result2.budgetslip))
@@ -421,6 +467,41 @@ export default {
 
 watch: {
   async budgetYear() {
+    this.subperiods = [
+      {
+        value: 1,
+        text: 'ไตรมาตร 1',
+        startDate: (parseInt(this.budgetYear)-1)+'-10-01',
+        endDate: (parseInt(this.budgetYear)-1)+'-12-31'
+      },
+      {
+        value: 2,
+        text: 'ไตรมาตร 2',
+        startDate: this.budgetYear+'-01-01',
+        endDate: this.budgetYear+'-03-31'
+      },
+      {
+        value: 3,
+        text: 'ไตรมาตร 3',
+        startDate: this.budgetYear+'-04-01',
+        endDate: this.budgetYear+'-06-30'
+      },{
+        value: 4,
+        text: 'ไตรมาตร 4',
+        startDate: this.budgetYear+'-07-01',
+        endDate: this.budgetYear+'-09-30'
+      }
+    ]
+    let period = this.subperiods.filter(period => new Date().getTime()>=new Date(period.startDate+' 00:00:01').getTime())
+    if(period.length>0) {
+      this.subperiod = period.length
+    } else {
+      this.subperiod = 1
+    }
+    await this.getBudgetplans()
+  },
+
+  async subperiod() {
     await this.getBudgetplans()
   },
 
