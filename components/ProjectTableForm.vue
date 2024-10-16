@@ -169,7 +169,7 @@
           <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((userType=='Personal' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && parseFloat(item.disburseMoney)<=0 && deleteBt) || (userType=='Department' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && deleteBt) || userType=='Admin' || userType=='Plan') && item.projectProgress=='ยังไม่ได้ดำเนินการ'">
             <v-icon small class="mr-1">fas fa-trash</v-icon>
           </v-btn> -->
-          <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((userType=='Personal' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && updateBt) || (userType=='Department' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && updateBt) || (userType=='Party' && item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin' || userType=='Plan') && item.projectProgress!='ดำเนินการเสร็จสิ้น'">
+          <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(userType=='Personal' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && updateBt) || (userType=='Department' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && updateBt) || (userType=='Party' && item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin' || userType=='Plan'">
             <v-icon small class="mr-1">fas fa-edit</v-icon>
           </v-btn>
           <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((userType=='Personal' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && parseFloat(item.disburseMoney)<=0 && item.projectType!='ในแผน' && deleteBt) || (userType=='Department' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && parseFloat(item.disburseMoney)<=0 && item.projectType!='ในแผน' && deleteBt) || userType=='Admin' || userType=='Plan') && item.projectProgress=='ยังไม่ได้ดำเนินการ'">
@@ -1034,7 +1034,7 @@
                 <v-card-title class="success lighten-2">
                   <span class="fontBold">รายงานสรุปผลการดำเนินโครงการ ปีงบประมาณ พ.ศ.{{ parseInt(this.projectYear)+543 }}</span>
                   <v-spacer></v-spacer>
-                  <v-btn fab x-small color="white" class="mr-2" @click="showUpdateReportDialog(projectData)" v-if="userType=='Department' || userType=='Personal'">
+                  <v-btn fab x-small color="white" class="mr-2" @click="showUpdateReportDialog(projectData)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
                     <v-icon small color="warning">fas fa-edit</v-icon>
                   </v-btn>
                   <v-btn fab x-small color="white" class="mr-2" :to="'/print/pjsummaryReport/?id='+projectData.projectID" target="_blank">
@@ -1105,7 +1105,7 @@
                               class="align-end text-right"
                               gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
                             >
-                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal'">
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
                                 <v-icon small>fas fa-trash</v-icon>
                               </v-btn>
                             </v-img>
