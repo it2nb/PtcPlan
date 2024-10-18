@@ -1258,7 +1258,7 @@
                     </v-row>
                   </v-card-text>
                   <v-divider class="green lighten-2"></v-divider>
-                  <v-card-actions v-if="userType=='Department' || userType=='Personal'">
+                  <v-card-actions v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
                     <div class="col-12 text-center">
                       <v-btn
                         @click="updateReportDialog = false"
