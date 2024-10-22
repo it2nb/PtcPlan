@@ -14,7 +14,7 @@
             </div>
             <v-data-table
               :headers="headers"
-              :items="pjbudgets"
+              :items="pjbudgetallocs"
               :search="search"
               :items-per-page="-1"
               :loading="pjbudgetsLoading"
@@ -36,21 +36,12 @@
                 </div>
               </template> -->
 
-              <template v-slot:item.pjbudgetMoney="{ item }">
-                <div class="text-no-wrap text-right">
-                  {{ moneyFormat(parseInt(item.pjbudgetQty)*parseFloat(item.pjbudgetMoney)) }}
-                  <div class="caption" v-if="parseFloat(item.disburseMoney)>0">
-                    <span class="px-1 success lighten-4" v-if="parseFloat(item.disburseMoney)<=parseFloat(item.pjbudgetMoney)">{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
-                    <span class="px-1 red lighten-4" v-else>{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
-                  </div>
-                </div>
+              <template v-slot:item.pjbudgetallocMoney="{ item }">
+                {{ moneyFormat(item.pjbudgetallocMoney) }}
               </template>
 
               <template v-slot:item.actions="{ item }" v-if="!readOnly">
                 <div  class="text-no-wrap">
-                  <v-btn color="success" icon  small @click="showPjbudgetallocDialog(item)">
-                    <v-icon small class="mr-1">fas fa-list</v-icon>
-                  </v-btn>
                   <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin'">
                     <v-icon small class="mr-1">fas fa-edit</v-icon>
                   </v-btn>
@@ -81,7 +72,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <PjbudgetInsertVue :pjbudget="pjbudgetData" @getInsertStatus="insertPjbudget"/>
+                <PjbudgetallocInsert :pjbudgetalloc="pjbudgetallocData" @getInsertStatus="insertPjbudgetalloc"/>
               </v-card>
             </v-col>
           </v-row>
@@ -105,7 +96,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <PjbudgetUpdateVue :pjbudget="pjbudgetData" @getUpdateStatus="updatePjbudget"/>
+                <PjbudgetallocUpdate :pjbudgetalloc="pjbudgetallocData" @getUpdateStatus="updatePjbudgetalloc"/>
               </v-card>
             </v-col>
           </v-row>
@@ -129,7 +120,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <PjbudgetDeleteVue :pjbudget="pjbudgetData" @getDeleteStatus="deletePjbudget"/>
+                <PjbudgetallocDelete :pjbudgetalloc="pjbudgetallocData" @getDeleteStatus="deletePjbudgetalloc"/>
               </v-card>
             </v-col>
           </v-row>
@@ -142,15 +133,7 @@
 
 <script>
 var numeral = require('numeral')
-import PjbudgetInsertVue from './PjbudgetInsert.vue'
-import PjbudgetUpdateVue from './PjbudgetUpdate.vue'
-import PjbudgetDeleteVue from './PjbudgetDelete.vue'
 export default {
-  components: {
-    PjbudgetInsertVue,
-    PjbudgetUpdateVue,
-    PjbudgetDeleteVue,
-  },
 
   props: {
     userType: {
@@ -198,19 +181,19 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'แผนก/งาน', value: 'pjsubactivityName', align: 'left', class:'text-center' },
-        { text: 'งบประมาณ', value: 'expenseName', align: 'left', class:'text-center'  },
-        { text: 'หมายเหตุ', value: 'pjbudgetName', align: 'left', class:'text-center'  },
+        { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class:'text-center' },
+        { text: 'งบประมาณ', value: 'pjbudgetallocMoney', align: 'right', class:'text-center'  },
+        { text: 'หมายเหตุ', value: 'pjbudgetallocDes', align: 'left', class:'text-center'  },
         { text: '', value: 'actions', align: 'center', class:'text-center'  },
       ],
       pjsubactivity: {},
 
-      pjbudgets: [],
+      pjbudgetallocs: [],
+      pjbudgetallocTotalMoney: 0,
       pjbudgetsLoading: true,
       search: '',
-      pjactivities: [],
 
-      pjbudgetData: {},
+      pjbudgetallocData: {},
 
       insertDialog: false,
       insertProgress: false,
@@ -223,15 +206,13 @@ export default {
       deleteDialog: false,
       deleteProgress: false,
       deleteValidate: null,
-
-      pjbudgetallocDialog: false,
     }
   },
 
   async mounted() {
     if(this.pjbudget) {
       await this.getPjsubactivity()
-      await this.getPjbudget()
+      await this.getPjbudgetalloc()
     }
   },
 
@@ -250,34 +231,37 @@ export default {
       }
     },
 
-    async getPjbudget() {
+    async getPjbudgetalloc() {
       this.pjbudgetsLoading = true
       let params = {
         token: this.$store.state.jwtToken,
-        projectID: this.pjbudget.projectID
+        pjbudgetID: this.pjbudget.pjbudgetID
       }
-      let result = await this.$axios.$get('pjbudget.php', {
+      let result = await this.$axios.$get('pjbudgetalloc.php', {
         params: params
       })
 
       if(result.message == 'Success') {
-        this.pjbudgets = JSON.parse(JSON.stringify(result.pjbudget))
+        this.pjbudgetallocs = JSON.parse(JSON.stringify(result.pjbudgetalloc))
+        this.pjbudgetallocTotalMoney = this.pjbudgetallocs.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.pjbudgetallocMoney), 0);
       }
       this.pjbudgetsLoading = false
     },
 
     showInsertDialog() {
-      this.pjbudgetData = {
+      this.pjbudgetallocData = {
         token: this.$store.state.jwtToken,
-        projectID: this.projectID,
-        projectYear: this.project.projectYear
+        pjbudgetID: this.pjbudget.pjbudgetID,
+        pjbudgetMoney: this.pjbudget.pjbudgetMoney,
+        budgetplanID: this.pjbudget.budgetplanID,
+        pjbudgetallocTotalMoney: this.pjbudgetallocTotalMoney
       }
       this.insertDialog = true
     },
 
-    async insertPjbudget(res) {
+    async insertPjbudgetalloc(res) {
       if(res.status) {
-        await this.getPjbudget()
+        await this.getPjbudgetalloc()
         this.$emit('getbudgetStatus', {'status': true})
         this.insertDialog = false
       } else {
@@ -285,15 +269,17 @@ export default {
       }
     },
 
-    showUpdateDialog(pjbudget) {
-      this.pjbudgetData = pjbudget
-      this.pjbudgetData.token = this.$store.state.jwtToken
+    showUpdateDialog(pjbudgetalloc) {
+      this.pjbudgetallocData = pjbudgetalloc
+      this.pjbudgetallocData.token = this.$store.state.jwtToken
+      this.pjbudgetallocData.pjbudgetMoney = this.pjbudget.pjbudgetMoney
+      this.pjbudgetallocData.pjbudgetallocTotalMoney = this.pjbudgetallocTotalMoney-this.pjbudgetallocData.pjbudgetallocMoney
       this.updateDialog = true
     },
 
-    async updatePjbudget(res) {
+    async updatePjbudgetalloc(res) {
       if(res.status) {
-        await this.getPjbudget()
+        await this.getPjbudgetalloc()
         this.$emit('getbudgetStatus', {'status': true})
         this.updateDialog = false
       } else {
@@ -301,26 +287,20 @@ export default {
       }
     },
 
-    showDeleteDialog(pjbudget) {
-      this.pjbudgetData = pjbudget
-      this.pjbudgetData.token = this.$store.state.jwtToken
+    showDeleteDialog(pjbudgetalloc) {
+      this.pjbudgetallocData = pjbudgetalloc
+      this.pjbudgetallocData.token = this.$store.state.jwtToken
       this.deleteDialog = true
     },
 
-    async deletePjbudget(res) {
+    async deletePjbudgetalloc(res) {
       if(res.status) {
-        await this.getPjbudget()
+        await this.getPjbudgetalloc()
         this.$emit('getbudgetStatus', {'status': true})
         this.deleteDialog = false
       } else {
         this.deleteDialog = false
       }
-    },
-
-    showPjbudgetallocDialog(pjbudget) {
-      this.pjbudgetData = pjbudget
-      this.pjbudgetData.token = this.$store.state.jwtToken
-      this.pjbudgetallocDialog = true
     },
 
     moneyFormat(money) {
@@ -342,9 +322,16 @@ export default {
 
   },
 
+  computed: {
+    pjbudgetID() {
+      return this.pjbudget.pjbudgetID
+    }
+  },
+
   watch: {
-    async projectID() {
-      await this.getPjbudget()
+    async pjbudgetID() {
+      await this.getPjsubactivity()
+      await this.getPjbudgetalloc()
     }
   }
 }
