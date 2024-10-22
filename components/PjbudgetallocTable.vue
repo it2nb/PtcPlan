@@ -4,10 +4,14 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>งบประมาณโครงการ</b>
+            <b>จัดสรรงบประมาณโครงการ</b><br>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
+            <div class="mb-3 font-weight-bold">
+                {{ pjsubactivity.projectName }}<br>
+                กิจกรรมย่อยที่ {{ pjsubactivity.pjactivityNum }}.{{ pjsubactivity.pjsubactivityNum }} {{ pjsubactivity.pjsubactivityName }}
+            </div>
             <v-data-table
               :headers="headers"
               :items="pjbudgets"
@@ -20,7 +24,7 @@
                 <v-row>
                   <v-col cols="12" md="6" v-if="insertBt">
                     <v-btn color="success" text @click="showInsertDialog">
-                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มงบประมาณโครงการ
+                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มผู้ใช้งบโครงการ
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -59,30 +63,6 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
-
-    <v-row justify="center">
-      <v-dialog
-        v-model="pjbudgetallocDialog"
-        persistent
-        fullscreen
-      >
-        <v-card color="rgba(0,0,0, .5)">
-          <v-row>
-            <v-col class="col-11 col-md-10 mx-auto my-5">
-              <v-card>
-                <v-card-actions class="light-grey lighten-4">
-                  <v-spacer></v-spacer>
-                  <v-btn icon color="black" @click="pjbudgetallocDialog = false">
-                    <v-icon>fas fa-times</v-icon>
-                  </v-btn>
-                </v-card-actions>
-                <PjbudgetallocTable :pjbudget="pjbudgetData" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" @getInsertStatus="insertPjbudget"/>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-dialog>
     </v-row>
 
     <v-row justify="center">
@@ -165,7 +145,6 @@ var numeral = require('numeral')
 import PjbudgetInsertVue from './PjbudgetInsert.vue'
 import PjbudgetUpdateVue from './PjbudgetUpdate.vue'
 import PjbudgetDeleteVue from './PjbudgetDelete.vue'
-import PjbudgetallocTable from './PjbudgetallocTable.vue';
 export default {
   components: {
     PjbudgetInsertVue,
@@ -178,15 +157,15 @@ export default {
       type: String,
       default: null,
     },
-    expenseID: {
+    pjbudget: {
+        type: Object,
+        default: ()=>{}
+    },
+    departmentID: {
       type: Number,
       default: null
     },
-    budgetID: {
-      type: Number,
-      default: null
-    },
-    pjsubactivityID: {
+    budgetplanID: {
       type: Number,
       default: null
     },
@@ -219,19 +198,12 @@ export default {
   data() {
     return {
       headers: [
-        // { text: 'กิจกรรมหลักที่', value: 'projectName', align: 'left', class: 'text-center' },
-        // { text: 'ผู้รับผิดชอบ', value: '' },
-        { text: 'กิจกรรม', value: 'pjsubactivityName', align: 'left', class:'text-center' },
-        { text: 'หมวดค่าใช้จ่าย', value: 'expenseName', align: 'left', class:'text-center'  },
-        { text: 'รายการ', value: 'pjbudgetName', align: 'left', class:'text-center'  },
-        { text: 'หมวดงบประมาณ', value: 'budgetplanFullname', align: 'left', class:'text-center'  },
-        // { text: 'จำนวน', value: 'pjbudgetQty', align: 'right', class:'text-center'  },
-        // { text: 'หน่วย', value: 'pjbudgetUnit', align: 'left', class:'text-center'  },
-        { text: 'จำนวนเงิน', value: 'pjbudgetMoney', align: 'right', class:'text-center'  },
-        // { text: 'รวม', value: 'pjbudgetSumMoney', align: 'right', class:'text-center'  },
+        { text: 'แผนก/งาน', value: 'pjsubactivityName', align: 'left', class:'text-center' },
+        { text: 'งบประมาณ', value: 'expenseName', align: 'left', class:'text-center'  },
+        { text: 'หมายเหตุ', value: 'pjbudgetName', align: 'left', class:'text-center'  },
         { text: '', value: 'actions', align: 'center', class:'text-center'  },
       ],
-      project: {},
+      pjsubactivity: {},
 
       pjbudgets: [],
       pjbudgetsLoading: true,
@@ -257,24 +229,24 @@ export default {
   },
 
   async mounted() {
-    if(this.projectID) {
-      await this.getProject()
+    if(this.pjbudget) {
+      await this.getPjsubactivity()
       await this.getPjbudget()
     }
   },
 
   methods: {
-    async getProject() {
+    async getPjsubactivity() {
       let params = {
         token: this.$store.state.jwtToken,
-        projectID: this.projectID
+        pjsubactivityID: this.pjbudget.pjsubactivityID
       }
-      let result = await this.$axios.$get('project.php', {
+      let result = await this.$axios.$get('pjsubactivity.php', {
         params: params
       })
 
       if(result.message == 'Success') {
-        this.project = JSON.parse(JSON.stringify(result.project))
+        this.pjsubactivity = JSON.parse(JSON.stringify(result.pjsubactivity))
       }
     },
 
@@ -282,7 +254,7 @@ export default {
       this.pjbudgetsLoading = true
       let params = {
         token: this.$store.state.jwtToken,
-        projectID: this.projectID
+        projectID: this.pjbudget.projectID
       }
       let result = await this.$axios.$get('pjbudget.php', {
         params: params
