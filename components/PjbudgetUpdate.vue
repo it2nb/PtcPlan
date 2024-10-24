@@ -232,26 +232,35 @@ export default {
         this.updateData.pjbudgetQty = 1
         this.updateData.pjbudgetUnit = "รายการ"
         this.updateData.pjbudgetMoney = numeral(this.updateData.pjbudgetMoney).value()
+        if(this.updateData.pjbudgetMoney>=this.updateData.pjbudgetallocMoney) {
+          let result = await this.$axios.$post('pjbudget.update.php', this.updateData)
 
-        let result = await this.$axios.$post('pjbudget.update.php', this.updateData)
-
-        if(result.message == 'Success') {
-          Swal.fire({
-            title: 'สำเร็จ',
-            text: result.msg,
-            icon: 'success'
-          }).then(async ()=> {
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true, 'pjbudgetID': result.pjbudgetID})
-          })
+          if(result.message == 'Success') {
+            Swal.fire({
+              title: 'สำเร็จ',
+              text: result.msg,
+              icon: 'success'
+            }).then(async ()=> {
+              this.updateProgress = false
+              this.$emit('getUpdateStatus', {'status': true, 'pjbudgetID': result.pjbudgetID})
+            })
+          } else {
+            Swal.fire({
+              title: 'ไม่สำเร็จ',
+              text: result.msg,
+              icon: 'error'
+            }).then(()=>{
+              this.updateProgress = false
+              this.$emit('getUpdateStatus', {'status': true})
+            })
+          }
         } else {
           Swal.fire({
-            title: 'ไม่สำเร็จ',
-            text: result.msg,
-            icon: 'error'
+              title: 'ข้อมูลผิดพลาด',
+              text: 'งบประมาณที่ตั้งนี้ไม่เพียงพอกับยอดเงินจัดสรรไว้แล้ว',
+              icon: 'warning'
           }).then(()=>{
             this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
           })
         }
       }

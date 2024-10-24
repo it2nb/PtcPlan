@@ -77,6 +77,17 @@
 
               <template v-slot:item.actions="{ item }">
                 <div class="text-no-wrap">
+                  <v-badge
+                    :content="item.expenseallocQty"
+                    :value="item.expenseallocQty"
+                    color="primary"
+                    bordered
+                    overlap
+                  >
+                    <v-btn color="primary" icon  small @click="showExpenseallocDialog(item)">
+                      <v-icon small class="mr-1">fas fa-list</v-icon>
+                    </v-btn>
+                  </v-badge>
                   <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="updateBt || userType=='Admin'">
                     <v-icon small class="mr-1">fas fa-edit</v-icon>
                   </v-btn>
@@ -210,6 +221,30 @@
       </v-dialog>
     </v-row>
 
+    <v-row justify="center">
+      <v-dialog
+        v-model="expenseallocDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-10 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="blue-grey lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="expenseallocDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <ExpenseallocTable :expenseplan="expenseplan" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" :userType="userType" @getTableStatus="getExpenseplans"/>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
   </div>
 </template>
 
@@ -295,6 +330,7 @@ export default {
       expenseplanDeleteValidate: null,
 
       expensebudgetDialog: false,
+      expenseallocDialog: false,
     }
   },
 
@@ -379,6 +415,12 @@ export default {
     showExpenseBudgetDialog(expenseplan) {
       this.expenseplan = JSON.parse(JSON.stringify(expenseplan))
       this.expensebudgetDialog = true
+    },
+
+    showExpenseallocDialog(expenseplan) {
+      this.expenseplan = expenseplan
+      this.expenseplan.token = this.$store.state.jwtToken
+      this.expenseallocDialog = true
     },
 
     moneyFormat(money) {

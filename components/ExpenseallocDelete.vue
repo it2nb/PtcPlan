@@ -1,49 +1,33 @@
 <template>
   <v-card>
     <v-card-title class="red lighten-2">
-      <span class="fontBold">ลบงบประมาณโครงการ</span>
+      <span class="fontBold">ลบผู้ใช้งบโครงการ</span>
     </v-card-title>
     <v-divider class="amber"></v-divider>
     <v-form
       v-model="deleteValidate"
       ref="deleteForm"
       lazy-validation
-      @submit.prevent="deletePjbudget"
+      @submit.prevent="deleteExpensealloc"
       class="mt-4"
     >
       <v-card-text>
         <v-row dense>
           <v-col cols="12" md="4">
-            <h3 class="mb-2 fontBold">กิจกรรมย่อย</h3>
-            {{ deleteData.pjsubactivityName }}
-          </v-col>
-          <v-col cols="12" md="4">
-            <h3 class="mb-2 fontBold">หมวดค่าใช้จ่าย</h3>
-            {{ deleteData.expenseName }}
+            <h3 class="mb-2 fontBold">แผนก/งาน</h3>
+            {{ deleteData.departmentName }}
           </v-col>
           <v-col cols="12" md="4">
             <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
-            {{ deleteData.budgetName}} : {{ deleteData.budgetplanDes}}
+            {{ deleteData.budgetplanFullname }}
           </v-col>
-          <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">รายการ</h3>
-            {{ deleteData.pjbudgetName }}
-          </v-col>
-          <!-- <v-col cols="12" md="2">
-            <h3 class="mb-2 fontBold">จำนวน</h3>
-            {{ deleteData.pjbudgetQty }}
-          </v-col>
-          <v-col cols="12" md="2">
-            <h3 class="mb-2 fontBold">หน่วยนับ</h3>
-            {{ deleteData.pjbudgetUnit }}
-          </v-col> -->
-          <v-col cols="12" md="2">
+          <v-col cols="12" md="4">
             <h3 class="mb-2 fontBold">จำนวนเงิน(บาท)</h3>
-            {{ deleteData.pjbudgetMoney }}
+            {{ deleteData.expenseallocMoney }}
           </v-col>
           <v-col cols="12">
-            <h3 class="mb-2 fontBold">รายละเอียดเพิ่มเติม</h3>
-            <pre>{{ deleteData.pjbudgetComment }}</pre>
+            <h3 class="mb-2 fontBold">หมายเหตุ</h3>
+            <pre class="fontPrompt">{{ deleteData.expenseallocDes }}</pre>
           </v-col>
         </v-row>
       </v-card-text>
@@ -80,7 +64,7 @@
 import Swal from 'sweetalert2'
 export default {
   props: {
-    pjbudget: {
+    expensealloc: {
       type: Object,
       default: () => {}
     },
@@ -98,31 +82,27 @@ export default {
   },
 
   async mounted() {
-    if(this.pjbudget) {
-      this.deleteData = JSON.parse(JSON.stringify(this.pjbudget))
+    if(this.expensealloc) {
+      this.deleteData = JSON.parse(JSON.stringify(this.expensealloc))
     }
   },
 
   methods: {
-    async deletePjbudget() {
+    async deleteExpensealloc() {
       await this.$refs.deleteForm.validate()
       if(this.deleteValidate) {
         this.deleteProgress = true
 
-        let result = await this.$axios.$post('pjbudget.delete.php', this.deleteData)
+        let result = await this.$axios.$post('expensealloc.delete.php', this.deleteData)
 
         if(result.message == 'Success') {
-          await this.$axios.$post('pjbudgetalloc.delete.php', {
-            token: this.deleteData.token,
-            pjbudgetID: this.deleteData.pjbudgetID
-          })
           Swal.fire({
             title: 'สำเร็จ',
             text: result.msg,
             icon: 'success'
           }).then(async ()=> {
             this.deleteProgress = false
-            this.$emit('getDeleteStatus', {'status': true, 'pjbudgetID': result.pjbudgetID})
+            this.$emit('getDeleteStatus', {'status': true, 'expenseallocID': result.expenseallocID})
           })
         } else {
           Swal.fire({
@@ -157,9 +137,9 @@ export default {
   },
 
   watch: {
-    async pjbudget() {
-      if(this.pjbudget) {
-        this.deleteData = JSON.parse(JSON.stringify(this.pjbudget))
+    async expensealloc() {
+      if(this.expensealloc) {
+        this.deleteData = JSON.parse(JSON.stringify(this.expensealloc))
       }
     }
   }

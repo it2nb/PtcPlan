@@ -4,40 +4,39 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>จัดสรรงบประมาณโครงการ</b><br>
+            <b>ผู้ใช้งบรายจ่าย</b><br>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <div class="mb-3 font-weight-bold">
-                {{ pjsubactivity.projectName }}<br>
-                กิจกรรมย่อยที่ {{ pjsubactivity.pjactivityNum }}.{{ pjsubactivity.pjsubactivityNum }} {{ pjsubactivity.pjsubactivityName }}
+                {{ expenseplan.expenseplanFullname }}
             </div>
             <v-data-table
               :headers="headers"
-              :items="pjbudgetallocs"
+              :items="expenseallocs"
               :search="search"
               :items-per-page="-1"
-              :loading="pjbudgetsLoading"
+              :loading="expensesLoading"
               hide-default-footer
             >
               <template v-slot:top v-if="!readOnly">
                 <v-row>
                   <v-col cols="12" md="6" v-if="insertBt">
                     <v-btn color="success" text @click="showInsertDialog">
-                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มผู้ใช้งบโครงการ
+                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มผู้ใช้งบรายจ่าย
                     </v-btn>
                   </v-col>
                 </v-row>
               </template>
 
-              <!-- <template v-slot:item.pjbudgetMoney="{ item }">
+              <!-- <template v-slot:item.expenseMoney="{ item }">
                 <div class="text-no-wrap text-right">
-                  {{ moneyFormat(parseInt(item.pjbudgetMoney)) }}
+                  {{ moneyFormat(parseInt(item.expenseMoney)) }}
                 </div>
               </template> -->
 
-              <template v-slot:item.pjbudgetallocMoney="{ item }">
-                {{ moneyFormat(item.pjbudgetallocMoney) }}
+              <template v-slot:item.expenseallocMoney="{ item }">
+                {{ moneyFormat(item.expenseallocMoney) }}
               </template>
 
               <template v-slot:item.actions="{ item }" v-if="!readOnly">
@@ -72,7 +71,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <PjbudgetallocInsert :pjbudgetalloc="pjbudgetallocData" @getInsertStatus="insertPjbudgetalloc"/>
+                <ExpenseallocInsert :expensealloc="expenseallocData" @getInsertStatus="insertExpensealloc"/>
               </v-card>
             </v-col>
           </v-row>
@@ -96,7 +95,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <PjbudgetallocUpdate :pjbudgetalloc="pjbudgetallocData" @getUpdateStatus="updatePjbudgetalloc"/>
+                <ExpenseallocUpdate :expensealloc="expenseallocData" @getUpdateStatus="updateExpensealloc"/>
               </v-card>
             </v-col>
           </v-row>
@@ -120,7 +119,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <PjbudgetallocDelete :pjbudgetalloc="pjbudgetallocData" @getDeleteStatus="deletePjbudgetalloc"/>
+                <ExpenseallocDelete :expensealloc="expenseallocData" @getDeleteStatus="deleteExpensealloc"/>
               </v-card>
             </v-col>
           </v-row>
@@ -140,7 +139,7 @@ export default {
       type: String,
       default: null,
     },
-    pjbudget: {
+    expenseplan: {
         type: Object,
         default: ()=>{}
     },
@@ -149,10 +148,6 @@ export default {
       default: null
     },
     budgetplanID: {
-      type: Number,
-      default: null
-    },
-    pjbudgetID: {
       type: Number,
       default: null
     },
@@ -182,18 +177,19 @@ export default {
     return {
       headers: [
         { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class:'text-center' },
-        { text: 'งบประมาณ', value: 'pjbudgetallocMoney', align: 'right', class:'text-center'  },
-        { text: 'หมายเหตุ', value: 'pjbudgetallocDes', align: 'left', class:'text-center'  },
+        { text: 'หมวดงบประมาณ', value: 'budgetplanFullname', align: 'right', class:'text-center'  },
+        { text: 'งบประมาณ', value: 'expenseallocMoney', align: 'right', class:'text-center'  },
+        { text: 'หมายเหตุ', value: 'expenseallocDes', align: 'left', class:'text-center'  },
         { text: '', value: 'actions', align: 'center', class:'text-center'  },
       ],
       pjsubactivity: {},
 
-      pjbudgetallocs: [],
-      pjbudgetallocTotalMoney: 0,
-      pjbudgetsLoading: true,
+      expenseallocs: [],
+      expenseallocTotalMoney: 0,
+      expensesLoading: true,
       search: '',
 
-      pjbudgetallocData: {},
+      expenseallocData: {},
 
       insertDialog: false,
       insertProgress: false,
@@ -210,58 +206,42 @@ export default {
   },
 
   async mounted() {
-    if(this.pjbudget) {
-      await this.getPjsubactivity()
-      await this.getPjbudgetalloc()
+    if(this.expenseplan) {
+      await this.getExpensealloc()
     }
   },
 
   methods: {
-    async getPjsubactivity() {
+    async getExpensealloc() {
+      this.expensesLoading = true
       let params = {
         token: this.$store.state.jwtToken,
-        pjsubactivityID: this.pjbudget.pjsubactivityID
+        expenseplanID: this.expenseplan.expenseplanID
       }
-      let result = await this.$axios.$get('pjsubactivity.php', {
+      let result = await this.$axios.$get('expensealloc.php', {
         params: params
       })
 
       if(result.message == 'Success') {
-        this.pjsubactivity = JSON.parse(JSON.stringify(result.pjsubactivity))
+        this.expenseallocs = JSON.parse(JSON.stringify(result.expensealloc))
+        this.expenseallocTotalMoney = this.expenseallocs.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.expenseallocMoney), 0);
       }
-    },
-
-    async getPjbudgetalloc() {
-      this.pjbudgetsLoading = true
-      let params = {
-        token: this.$store.state.jwtToken,
-        pjbudgetID: this.pjbudget.pjbudgetID
-      }
-      let result = await this.$axios.$get('pjbudgetalloc.php', {
-        params: params
-      })
-
-      if(result.message == 'Success') {
-        this.pjbudgetallocs = JSON.parse(JSON.stringify(result.pjbudgetalloc))
-        this.pjbudgetallocTotalMoney = this.pjbudgetallocs.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.pjbudgetallocMoney), 0);
-      }
-      this.pjbudgetsLoading = false
+      this.expensesLoading = false
     },
 
     showInsertDialog() {
-      this.pjbudgetallocData = {
+      this.expenseallocData = {
         token: this.$store.state.jwtToken,
-        pjbudgetID: this.pjbudget.pjbudgetID,
-        pjbudgetMoney: this.pjbudget.pjbudgetMoney,
-        budgetplanID: this.pjbudget.budgetplanID,
-        pjbudgetallocTotalMoney: this.pjbudgetallocTotalMoney
+        expenseplanID: this.expenseplan.expenseplanID,
+        expenseplanMoney: this.expenseplan.expenseplanMoney,
+        expenseallocTotalMoney: this.expenseallocTotalMoney
       }
       this.insertDialog = true
     },
 
-    async insertPjbudgetalloc(res) {
+    async insertExpensealloc(res) {
       if(res.status) {
-        await this.getPjbudgetalloc()
+        await this.getExpensealloc()
         this.$emit('getTableStatus', {'status': true})
         this.insertDialog = false
       } else {
@@ -269,17 +249,17 @@ export default {
       }
     },
 
-    showUpdateDialog(pjbudgetalloc) {
-      this.pjbudgetallocData = pjbudgetalloc
-      this.pjbudgetallocData.token = this.$store.state.jwtToken
-      this.pjbudgetallocData.pjbudgetMoney = this.pjbudget.pjbudgetMoney
-      this.pjbudgetallocData.pjbudgetallocTotalMoney = this.pjbudgetallocTotalMoney-this.pjbudgetallocData.pjbudgetallocMoney
+    showUpdateDialog(expensealloc) {
+      this.expenseallocData = expensealloc
+      this.expenseallocData.token = this.$store.state.jwtToken
+      this.expenseallocData.expenseMoney = this.expenseplan.expenseMoney
+      this.expenseallocData.expenseallocTotalMoney = this.expenseallocTotalMoney-this.expenseallocData.expenseallocMoney
       this.updateDialog = true
     },
 
-    async updatePjbudgetalloc(res) {
+    async updateExpensealloc(res) {
       if(res.status) {
-        await this.getPjbudgetalloc()
+        await this.getExpensealloc()
         this.$emit('getTableStatus', {'status': true})
         this.updateDialog = false
       } else {
@@ -287,15 +267,15 @@ export default {
       }
     },
 
-    showDeleteDialog(pjbudgetalloc) {
-      this.pjbudgetallocData = pjbudgetalloc
-      this.pjbudgetallocData.token = this.$store.state.jwtToken
+    showDeleteDialog(expensealloc) {
+      this.expenseallocData = expensealloc
+      this.expenseallocData.token = this.$store.state.jwtToken
       this.deleteDialog = true
     },
 
-    async deletePjbudgetalloc(res) {
+    async deleteExpensealloc(res) {
       if(res.status) {
-        await this.getPjbudgetalloc()
+        await this.getExpensealloc()
         this.$emit('getTableStatus', {'status': true})
         this.deleteDialog = false
       } else {
@@ -323,15 +303,14 @@ export default {
   },
 
   computed: {
-    pjbudgetID() {
-      return this.pjbudget.pjbudgetID
+    expenseplanID() {
+      return this.expenseplan.expenseplanID
     }
   },
 
   watch: {
-    async pjbudgetID() {
-      await this.getPjsubactivity()
-      await this.getPjbudgetalloc()
+    async expenseplanID() {
+      await this.getExpensealloc()
     }
   }
 }

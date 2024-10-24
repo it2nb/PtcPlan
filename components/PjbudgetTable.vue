@@ -44,7 +44,7 @@
 
               <template v-slot:item.actions="{ item }" v-if="!readOnly">
                 <div  class="text-no-wrap">
-                  <v-btn color="success" icon  small @click="showPjbudgetallocDialog(item)">
+                  <v-btn color="primary" icon  small @click="showPjbudgetallocDialog(item)">
                     <v-icon small class="mr-1">fas fa-list</v-icon>
                   </v-btn>
                   <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin'">
@@ -77,7 +77,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <PjbudgetallocTable :pjbudget="pjbudgetData" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" @getInsertStatus="insertPjbudget"/>
+                <PjbudgetallocTable :pjbudget="pjbudgetData" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" @getTableStatus="insertPjbudget"/>
               </v-card>
             </v-col>
           </v-row>
@@ -313,9 +313,22 @@ export default {
       }
     },
 
-    showUpdateDialog(pjbudget) {
+    async showUpdateDialog(pjbudget) {
       this.pjbudgetData = pjbudget
       this.pjbudgetData.token = this.$store.state.jwtToken
+      let pjbudgetalloc = {}
+      await this.$axios.$get('pjbudgetalloc.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          pjbudgetID: pjbudget.pjbudgetID,
+          fn: 'getSummaryByPjbudgetID'
+        }
+      }).then(result=>{
+        if(result.message == 'Success') {
+          pjbudgetalloc = result.pjbudgetalloc
+        }
+      })
+      this.pjbudgetData.pjbudgetallocMoney = parseFloat(pjbudgetalloc.pjbudgetallocMoney)
       this.updateDialog = true
     },
 
@@ -329,7 +342,7 @@ export default {
       }
     },
 
-    showDeleteDialog(pjbudget) {
+    async showDeleteDialog(pjbudget) {
       this.pjbudgetData = pjbudget
       this.pjbudgetData.token = this.$store.state.jwtToken
       this.deleteDialog = true
