@@ -94,6 +94,7 @@ export default {
         let result = await this.$axios.$post('expensebudget.delete.php', this.deleteData)
 
         if(result.message == 'Success') {
+          await this.$axios.$post('expensealloc.delete.php', this.deleteData)
           Swal.fire({
             title: 'สำเร็จ',
             text: result.msg,

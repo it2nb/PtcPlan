@@ -81,6 +81,7 @@ export default {
   data() {
     return {
       budgetplans: [],
+      expensealloc: {},
       updateData: {},
       updateProgress: false,
       updateValidate: null,
@@ -91,6 +92,7 @@ export default {
     if(this.expensebudget) {
       this.updateData = JSON.parse(JSON.stringify(this.expensebudget))
       await this.getBudgetplan()
+      await this.getExpensealloc()
     }
   },
 
@@ -106,30 +108,54 @@ export default {
       }
     },
 
+    async getExpensealloc() {
+      let params = {
+        token: this.$store.state.jwtToken,
+        expenseplanID: this.updateData.expenseplanID,
+        budgetplanID: this.updateData.budgetplanID,
+        fn: 'getSummaryByExpenseplanIDBudgetplanID'
+      }
+      let result = await this.$axios.$get('expensealloc.php', {params})
+      if(result.message == 'Success') {
+        this.expensealloc = JSON.parse(JSON.stringify(result.expensealloc))
+        console.log(this.expensealloc)
+      }
+    },
+
     async updateExpensebudget() {
       await this.$refs.updateForm.validate()
       if(this.updateValidate) {
         this.updateProgress = true
         this.updateData.expenseplanMoney = numeral(this.updateData.expenseplanMoney).value()
-        let result = await this.$axios.$post('expensebudget.update.php', this.updateData)
+        if(parseFloat(this.updateData.expenseplanMoney)>=parseFloat(this.expensealloc.expenseallocMoney)) {
+          let result = await this.$axios.$post('expensebudget.update.php', this.updateData)
 
-        if(result.message == 'Success') {
-          Swal.fire({
-            title: 'สำเร็จ',
-            text: result.msg,
-            icon: 'success'
-          }).then(async ()=> {
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+          if(result.message == 'Success') {
+            Swal.fire({
+              title: 'สำเร็จ',
+              text: result.msg,
+              icon: 'success'
+            }).then(async ()=> {
+              this.updateProgress = false
+              this.$emit('getUpdateStatus', {'status': true})
+            })
+          } else {
+            Swal.fire({
+              title: 'ไม่สำเร็จ',
+              text: result.msg,
+              icon: 'error'
+            }).then(()=>{
+              this.updateProgress = false
+              this.$emit('getUpdateStatus', {'status': true})
+            })
+          }
         } else {
           Swal.fire({
-            title: 'ไม่สำเร็จ',
-            text: result.msg,
-            icon: 'error'
+              title: 'ข้อมูลผิดพลาด',
+              text: 'งบประมาณที่ตั้งนี้ไม่เพียงพอกับยอดเงินจัดสรรไว้แล้ว',
+              icon: 'warning'
           }).then(()=>{
             this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
           })
         }
       }
@@ -146,6 +172,7 @@ export default {
       if(this.expensebudget) {
         this.updateData = JSON.parse(JSON.stringify(this.expensebudget))
         await this.getBudgetplan()
+        await this.getExpensealloc()
       }
     }
   }
