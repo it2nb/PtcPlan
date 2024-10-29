@@ -137,7 +137,8 @@
                   <div class="pl-2">
                     {{ item.expenseName }} : {{ item.pjbudgetName }}
                     (คงเหลือ
-                    <span class="success--text text--darken-2" v-if="(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) }}</span>
+                    <span class="success--text text--darken-2" v-if="item.departmentQty > 0">{{ moneyFormat(item.pjbudgetallocMoney) }}</span>
+                    <span class="success--text text--darken-2" v-else-if="(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span class="red--text text--darken-2" v-else-if="(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) < 0">{{ moneyFormat(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span v-else>0</span>)
                   </div>
@@ -377,11 +378,13 @@ export default {
     async getPjbudget(projectID) {
       let params = {
         token: this.$store.state.jwtToken,
-        projectID: projectID
+        projectID: projectID,
+        departmentID: this.insertData.departmentID
       }
       let result = await this.$axios.$get('pjbudget.php', {params})
       if(result.message == 'Success') {
         this.pjbudgets = JSON.parse(JSON.stringify(result.pjbudget))
+        this.pjbudgets = this.pjbudgets.filter(pjbudget=> pjbudget.departmentID==this.insertData.departmentID || pjbudget.departmentQty>0)
       }
     },
 
