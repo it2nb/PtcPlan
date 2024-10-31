@@ -1826,7 +1826,7 @@ export default {
             text: result.msg,
             icon: 'success'
           }).then(async ()=> {
-            this.$emit('getProjects')
+            this.$emit('getProjects', false)
             this.insertDialog = false
             this.insertProgress = false
           })
@@ -1939,7 +1939,7 @@ export default {
             text: result.msg,
             icon: 'success'
           }).then(async ()=> {
-            this.$emit('getProjects')
+            this.$emit('getProjects', false)
             this.updateDialog = false
             this.updateProgress = false
           })
@@ -2000,7 +2000,7 @@ export default {
             text: result.msg,
             icon: 'success'
           }).then(async ()=> {
-            this.$emit('getProjects')
+            this.$emit('getProjects', false)
             this.updateStatusDialog = false
             this.updateStatusProgress = false
           })
@@ -2030,7 +2030,7 @@ export default {
             text: result.msg,
             icon: 'success'
           }).then(async ()=> {
-            this.$emit('getProjects')
+            this.$emit('getProjects', false)
             this.updateProgressDialog = false
             this.updateProgressProgress = false
           })
@@ -2080,7 +2080,7 @@ export default {
                 icon: 'success'
               })
               await this.showSummaryReportDialog(this.projectSummaryData)
-              this.$emit('getProjects')
+              this.$emit('getProjects', false)
               this.imageNames = []
               this.imagePath = ''
               let result3 = await this.$axios.$get('project.image.php', {
@@ -2121,7 +2121,7 @@ export default {
               icon: 'success'
             })
             await this.showSummaryReportDialog(this.projectSummaryData)
-            this.$emit('getProjects')
+            this.$emit('getProjects', false)
             this.imageInsertNames = []
             this.imageNames = []
             this.imagePath = ''
@@ -2187,7 +2187,7 @@ export default {
             await this.$axios.$post('pjsubactivity.delete.php', params)
             await this.$axios.$post('pjsummary.delete.php', params)
             await this.$axios.$post('pjbudget.delete.php', params)
-            this.$emit('getProjects')
+            this.$emit('getProjects', false)
             this.deleteDialog = false
             this.deleteProgress = false
           })
@@ -2224,7 +2224,7 @@ export default {
             })
             await this.showSummaryReportDialog(this.projectData)
             this.deleteImageProgress = false
-            this.$emit('getProjects')
+            this.$emit('getProjects', false)
           } else {
             swal({
               title: 'ผิดพลาด',
@@ -2245,7 +2245,7 @@ export default {
     },
 
     async getBudgetStatus(res) {
-      this.$emit('getProjects')
+      this.$emit('getProjects', false)
     },
 
     moneyFormat(money) {

@@ -356,7 +356,8 @@ export default {
         token: this.$store.state.jwtToken,
         projectStatus: 'อนุมัติ',
         projectPlanStatus: 'อนุมัติหลักการ',
-        projectYear: this.updateData.disburseYear
+        projectYear: this.updateData.disburseYear,
+        departmentID: this.updateData.departmentID
       }
       let result = await this.$axios.$get('project.php', {params})
       if(result.message == 'Success') {
@@ -371,11 +372,13 @@ export default {
     async getPjbudget(projectID) {
       let params = {
         token: this.$store.state.jwtToken,
-        projectID: projectID
+        projectID: projectID,
+        departmentID: this.updateData.departmentID
       }
       let result = await this.$axios.$get('pjbudget.php', {params})
       if(result.message == 'Success') {
         this.pjbudgets = JSON.parse(JSON.stringify(result.pjbudget))
+        this.pjbudgets = this.pjbudgets.filter(pjbudget=> pjbudget.departmentID==this.updateData.departmentID || pjbudget.departmentQty>0)
       }
     },
 

@@ -168,7 +168,8 @@
                   <div>
                     {{ item.expenseplanDes }}
                     (คงเหลือ
-                    <span class="success--text text--darken-2" v-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
+                    <span class="success--text text--darken-2" v-if="item.departmentQty > 0">{{ moneyFormat(item.expenseallocMoney) }}</span>
+                    <span class="success--text text--darken-2" v-else-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span class="red--text text--darken-2" v-else-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) < 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span v-else>0</span>)
                   </div>
@@ -345,7 +346,8 @@ export default {
     async getExpaeseplan() {
       let params = {
         token: this.$store.state.jwtToken,
-        expenseplanYear: this.insertData.disburseYear
+        expenseplanYear: this.insertData.disburseYear,
+        departmentID: this.insertData.departmentID
       }
       let result = await this.$axios.$get('expenseplan.php', {params})
       if(result.message == 'Success') {
@@ -391,11 +393,13 @@ export default {
     async getExpaesebudget(expenseplanID) {
       let params = {
         token: this.$store.state.jwtToken,
-        expenseplanID: expenseplanID
+        expenseplanID: expenseplanID,
+        departmentID: this.insertData.departmentID
       }
       let result = await this.$axios.$get('expensebudget.php', {params})
       if(result.message == 'Success') {
         this.expensebudgets = JSON.parse(JSON.stringify(result.expensebudget))
+        this.expensebudgets = this.expensebudgets.filter(expensebudget=> expensebudget.departmentQty>0)
       }
     },
 

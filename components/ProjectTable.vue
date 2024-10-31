@@ -375,7 +375,7 @@ export default {
       }
     },
 
-    async getProjects() {
+    async getProjects(RedisStatus=true) {
       this.projectsLoading = true
       let params = {
         token: this.$store.state.jwtToken,
@@ -384,7 +384,8 @@ export default {
           departmentID: this.departmentID,
           orgstrategicID: this.orgstrategicID,
           orgstrategyID: this.orgstrategyID,
-          projectYear: this.projectYear
+          projectYear: this.projectYear,
+          RedisStatus: RedisStatus
       }
       if(this.userType == 'Admin') {
         delete params.personalIDcard
