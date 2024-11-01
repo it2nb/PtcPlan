@@ -153,7 +153,7 @@
               v-model="insertData.expenseplanID"
               label="หมวดงบประมาณรายจ่าย"
               :items="expenseplans"
-              item-text="expenseplanFullname"
+              item-text="expenseplanDes"
               item-value="expenseplanID"
               outlined
               required
@@ -184,7 +184,7 @@
               v-model="insertData.budgetplanID"
               label="หมวดงบประมาณ"
               :items="expensebudgets"
-              item-text="budgetplanFullname"
+              item-text="budgetplanDes"
               item-value="budgetplanID"
               outlined
               required

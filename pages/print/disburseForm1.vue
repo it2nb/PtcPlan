@@ -42,35 +42,47 @@
           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;3. อนุมัติค่าใช้จ่ายตามโครงการ 
         </v-col>
         <v-col cols="12" class="mt-10">
-          <v-row no-gutters>
+          <v-row no-gutters v-if="disburse.disburseType=='ค่าใช้จ่าย'">
             <v-col align-self="start" class="text-center font17">
               <!-- <img :src="departmentSignature" width="150" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
               ({{ disburse.disburseReqName }})<br>
               หัวหน้างาน{{ disburse.departmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font17">
-              ({{ disburse.departmentHead }})<br>
-              ผู้รับผิดชอบโครงการ
-            </v-col>
-            <v-col align-self="start" class="text-center font17">
               ({{ disburse.partyHead }})<br>
               รองผู้อำนวยการฝ่าย{{ disburse.partyName }}
             </v-col>
           </v-row>
+          <v-row no-gutters v-if="disburse.disburseType=='โครงการ'">
+            <v-col align-self="start" class="text-center font17" v-if="disburse.departmentID!=disburse.pjdepartmentID">
+              <!-- <img :src="departmentSignature" width="150" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
+              ({{ disburse.disburseReqName }})<br>
+              ผู้ขอจัดซื้อ
+            </v-col>
+            <v-col align-self="start" class="text-center font17">
+              ({{ disburse.pjdepartmentHead }})<br>
+              หัวหน้า{{ disburse.pjdepartmentName }}<br>ผู้รับผิดชอบโครงการ
+            </v-col>
+            <v-col align-self="start" class="text-center font17">
+              ({{ disburse.pjpartyHead }})<br>
+              รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}
+            </v-col>
+          </v-row>
         </v-col>
         <v-col cols="12" class="mt-10 pt-10">
+          <span class="font16">รหัสคำขอจัดซื้อ DB-{{ parseInt(disburseID) }}</span> 
           <table width="100%" class="tableNormal">
             <tr>
               <td width="40%" class="font17" valign="top">
                 1. งานพัสดุตรวจสอบรายการวัสดุ/ครุภัณฑ์<br/>
-                &emsp;&emsp;<v-icon small>far fa-square</v-icon> ถูกต้อง<br>
-                &emsp;&emsp;<v-icon small>far fa-square</v-icon> ไม่ถูกต้อง
+                &emsp;&emsp;<v-icon small v-if="disburse.disburseParcCheck=='ถูกต้อง'">far fa-square-check</v-icon><v-icon small v-else>far fa-square</v-icon> ถูกต้อง<br>
+                &emsp;&emsp;<v-icon small v-if="disburse.disburseParcCheck=='ไม่ถูกต้อง'">far fa-square-check</v-icon><v-icon small v-else>far fa-square</v-icon> ไม่ถูกต้อง
                 <v-row no-gutters class="mt-1">
                   <v-col cols="12" class="font17 text-center">
                     ลงชื่อ...............................
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
-                    (นายพงษ์เดช เรียนละหงษ์)
+                    ({{ disburse.disburseParcHead }})
                   </v-col>
                 </v-row>
               </td>
@@ -83,7 +95,7 @@
                     ลงชื่อ...............................
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
-                    (นายวุฒิชัย  คำมีสว่าง)
+                    ({{ disburse.disbursePlanHead }})
                   </v-col>
                 </v-row>
               </td>
@@ -97,7 +109,7 @@
                     ลงชื่อ...............................
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
-                    (นางอัญชรี  ภูริปัญญาวรกุล)
+                    ({{ disburse.disburseFinaHead }})
                   </v-col>
                 </v-row>
               </td>
@@ -109,7 +121,7 @@
                     ลงชื่อ...............................
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
-                    (นางสาวเรณู  เชี่ยวชาญ)
+                    ({{ disburse.disburseAccoHead }})
                   </v-col>
                 </v-row>
               </td>
@@ -193,7 +205,10 @@
           <table width="100%" class="tableNormal">
             <thead>
               <tr>
+              </tr>
+              <tr>
                 <th colspan="7" class="font17 text-center font-weight-bold">
+                  <div class="text-right font16">รหัสคำขอจัดซื้อ DB-{{ parseInt(disburseID) }}</div>
                   ประมาณการค่าใช้จ่าย  (ค่าใช้สอย / ค่าตอบแทน / ค่าวัสดุ)
                 </th>
               </tr>
@@ -291,9 +306,9 @@ export default {
                 disburseID: this.disburseID
             }
         })
-
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
+
             this.formDate = this.disburse.disburseDate.split('-')
 
             let disburselistQuery = await this.$axios.$get('disburselist.php', {

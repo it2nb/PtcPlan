@@ -163,7 +163,7 @@
           <div class="col-12" v-else-if="disburse.disburseStatus == 'ตรวจสอบรายการ'">
             <div v-if="departmentSys == 'Parcel'">
               <v-row no-gutters>
-                <v-col cols="12" md="4" class="mx-auto">
+                <!-- <v-col cols="12" md="4" class="mx-auto">
                   <v-radio-group
                     v-model="disburse.disburseParcCheck"
                     row
@@ -181,7 +181,7 @@
                       color="error"
                     ></v-radio>
                   </v-radio-group>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" md="10" class="mx-auto">
                   <v-textarea
                     v-model="disburse.disburseParcDes"
@@ -509,7 +509,6 @@ export default {
   async mounted() {
     let loginuser = JSON.parse(sessionStorage.getItem('loginuser'))
     this.user = JSON.parse(JSON.stringify(loginuser.user))
-    console.log(this.user)
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
       await this.getDisburselistQty(this.disburse.disburseID)
@@ -588,6 +587,7 @@ export default {
         disburse.disburseStatus = 'รอยืนยันจัดซื้อ'
       }
       let result = await this.updateDisburse(disburse)
+
       if(result) {
         Swal.fire({
           title: 'เรียบร้อย',

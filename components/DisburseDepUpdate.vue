@@ -134,7 +134,8 @@
                   <div class="pl-2">
                     {{ item.expenseName }} : {{ item.pjbudgetName }}
                     (คงเหลือ
-                    <span class="success--text text--darken-2" v-if="(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) }}</span>
+                    <span class="success--text text--darken-2" v-if="item.departmentQty > 0">{{ moneyFormat(item.pjbudgetallocMoney) }}</span>
+                    <span class="success--text text--darken-2" v-else-if="(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span class="red--text text--darken-2" v-else-if="(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) < 0">{{ moneyFormat(parseFloat(item.pjbudgetMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span v-else>0</span>)
                   </div>
@@ -149,7 +150,7 @@
               v-model="updateData.expenseplanID"
               label="หมวดงบประมาณรายจ่าย"
               :items="expenseplans"
-              item-text="expenseplanFullname"
+              item-text="expenseplanDes"
               item-value="expenseplanID"
               outlined
               required
@@ -164,7 +165,8 @@
                   <div>
                     {{ item.expenseplanDes }}
                     (คงเหลือ
-                    <span class="success--text text--darken-2" v-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
+                    <span class="success--text text--darken-2" v-if="item.departmentQty > 0">{{ moneyFormat(item.expenseallocMoney) }}</span>
+                    <span class="success--text text--darken-2" v-else-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span class="red--text text--darken-2" v-else-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) < 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span v-else>0</span>)
                   </div>
@@ -179,7 +181,7 @@
               v-model="updateData.budgetplanID"
               label="หมวดงบประมาณ"
               :items="expensebudgets"
-              item-text="budgetplanFullname"
+              item-text="budgetplanDes"
               item-value="budgetplanID"
               outlined
               required
@@ -339,7 +341,8 @@ export default {
     async getExpaeseplan() {
       let params = {
         token: this.$store.state.jwtToken,
-        expenseplanYear: this.updateData.disburseYear
+        expenseplanYear: this.updateData.disburseYear,
+        departmentID: this.updateData.departmentID
       }
       let result = await this.$axios.$get('expenseplan.php', {params})
       if(result.message == 'Success') {
@@ -385,11 +388,13 @@ export default {
     async getExpaesebudget(expenseplanID) {
       let params = {
         token: this.$store.state.jwtToken,
-        expenseplanID: expenseplanID
+        expenseplanID: expenseplanID,
+        departmentID: this.updateData.departmentID
       }
       let result = await this.$axios.$get('expensebudget.php', {params})
       if(result.message == 'Success') {
         this.expensebudgets = JSON.parse(JSON.stringify(result.expensebudget))
+        this.expensebudgets = this.expensebudgets.filter(expensebudget=> expensebudget.departmentQty>0)
       }
     },
 
