@@ -27,6 +27,10 @@
               <h3 class="mb-2 fontBold">วันที่ขอจัดซื้อ/เบิกเงิน</h3>
               {{ thaiDate(disburse.disburseDate) }}
             </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
+              {{ disburse.disburseProduct }}
+            </v-col>
             <!-- <v-col cols="12" v-if="disburse.disburseType=='โครงการ'">
               <h3 class="mb-2 fontBold">โครงการ</h3>
               {{  disburse.projectName }}
@@ -162,6 +166,22 @@
                 </tr>
               </template>
             </v-data-table>
+            </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseParcCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานพัสดุ</h3>
+              <pre class="pl-5 font16">{{ disburse.disburseParcDes }}</pre>
+            </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disbursePlanCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานวางแผน</h3>
+              <pre class="pl-5 font16">{{ disburse.disbursePlanDes }}</pre>
+            </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseAccoCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานบัญชี</h3>
+              <pre class="pl-5 font16">{{ disburse.disburseAccoDes }}</pre>
+            </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseFinaCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานการเงิน</h3>
+              <pre class="pl-5 font16">{{ disburse.disburseFinaDes }}</pre>
             </v-col>
           </v-row>
         </v-card-text>
@@ -620,7 +640,6 @@ export default {
     },
 
     async confirmParty() {
-      console.log(this.user.partyHead)
       this.updateProgress = true
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
         token: this.$store.state.jwtToken,

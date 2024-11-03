@@ -131,6 +131,11 @@ export default {
         },
         {
           icon: 'fas fa-dot-circle',
+          title: 'ข้อมูลแผนกงาน',
+          to: '/Admin/departments'
+        },
+        {
+          icon: 'fas fa-dot-circle',
           title: 'ข้อมูลผู้ใช้ระบบ',
           to: '/Admin/users'
         },

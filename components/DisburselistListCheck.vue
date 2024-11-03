@@ -39,6 +39,10 @@
               <h3 class="mb-2 fontBold">วันที่ขอจัดซื้อ/เบิกเงิน</h3>
               {{ thaiDate(disburse.disburseDate) }}
             </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
+              {{ disburse.disburseProduct }}
+            </v-col>
             <v-col cols="12">
               <h3 class="mb-2 fontBold">ค่าใช้จ่าย : โครงการ</h3>
               {{  disburse.disburseName }}
@@ -133,6 +137,22 @@
               </template>
             </v-data-table>
             </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseParcCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานพัสดุ</h3>
+              <pre class="pl-5 font16">{{ disburse.disburseParcDes }}</pre>
+            </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disbursePlanCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานวางแผน</h3>
+              <pre class="pl-5 font16">{{ disburse.disbursePlanDes }}</pre>
+            </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseAccoCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานบัญชี</h3>
+              <pre class="pl-5 font16">{{ disburse.disburseAccoDes }}</pre>
+            </v-col>
+            <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseFinaCheck=='ไม่ถูกต้อง'">
+              <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานการเงิน</h3>
+              <pre class="pl-5 font16">{{ disburse.disburseFinaDes }}</pre>
+            </v-col>
           </v-row>
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
@@ -163,11 +183,11 @@
           <div class="col-12" v-else-if="disburse.disburseStatus == 'ตรวจสอบรายการ'">
             <div v-if="departmentSys == 'Parcel'">
               <v-row no-gutters>
-                <!-- <v-col cols="12" md="4" class="mx-auto">
+                <v-col cols="12" md="4" class="mx-auto">
                   <v-radio-group
                     v-model="disburse.disburseParcCheck"
                     row
-                    readonly
+                    :readonly="!disburseParcCheck"
                     class="text-center justify-center"
                   >
                     <v-radio
@@ -181,7 +201,7 @@
                       color="error"
                     ></v-radio>
                   </v-radio-group>
-                </v-col> -->
+                </v-col>
                 <v-col cols="12" md="10" class="mx-auto">
                   <v-textarea
                     v-model="disburse.disburseParcDes"
@@ -467,6 +487,7 @@
 <script>
 var numeral = require('numeral')
 import Swal from 'sweetalert2'
+import { readonly } from 'vue';
 export default {
   props: {
     disburse: {
@@ -486,6 +507,7 @@ export default {
       disburselistcs: [],
       disburselistQty: {},
       disburseSum: [],
+      disburseParcCheck: true,
       insertData: {},
       insertProgress: false,
       insertValidate: null,
@@ -593,13 +615,16 @@ export default {
           title: 'เรียบร้อย',
           text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
+        }).then(()=>{
+          this.$emit('getUpdateStatus', {'status': true})
         })
-        this.$emit('getUpdateStatus', {'status': true})
       } else {
         Swal.fire({
           title: 'เรียบร้อย',
           text: 'บันทึกข้อมูลแล้ว',
           icon: 'success'
+        }).then(()=>{
+          this.$emit('getUpdateStatus', {'status': true})
         })
       }
     },
@@ -613,16 +638,18 @@ export default {
         await this.getDisburselistQty(this.disburse.disburseID).then(async ()=>{
             if(this.disburselistQty.wrongQty > 0) {
               this.disburse.disburseParcCheck = 'ไม่ถูกต้อง'
-
-              await this.updateDisburseCheck(this.disburse)
+              this.disburseParcCheck = false
+              //await this.updateDisburseCheck(this.disburse)
             } else if(this.disburselistQty.allQty == this.disburselistQty.correctQty) {
               this.disburse.disburseParcCheck = 'ถูกต้อง'
-              await this.updateDisburseCheck(this.disburse)
+              this.disburseParcCheck = true
+              //await this.updateDisburseCheck(this.disburse)
             } else {
               this.disburse.disburseParcCheck = ''
-              await this.updateDisburseCheck(this.disburse)
+              this.disburseParcCheck = true
+              //await this.updateDisburseCheck(this.disburse)
             }
-            this.$emit('getUpdateStatus', {'status': true})
+            //this.$emit('getUpdateStatus', {'status': true})
           })
         //}
         this.updateProgress = false

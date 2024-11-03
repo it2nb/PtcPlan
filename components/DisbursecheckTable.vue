@@ -506,7 +506,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburselistListCheckVue :disburse="JSON.parse(JSON.stringify(disburseData))" :departmentSys="departmentSys" @getUpdateStatus="getDisburses" v-if="disburselistListDialog"/>
+                <DisburselistListCheckVue :disburse="JSON.parse(JSON.stringify(disburseData))" :departmentSys="departmentSys" @getUpdateStatus="updateDisburse" v-if="disburselistListDialog"/>
               </v-card>
             </v-col>
           </v-row>
@@ -790,9 +790,11 @@ export default {
         this.$emit('getTableStatus', {'status': true})
         this.updateDialog = false
         this.updateStatusDialog = false
+        this.disburselistListDialog = false
       } else {
         this.updateDialog = false
         this.updateStatusDialog = false
+        this.disburselistListDialog = false
       }
     },
 
