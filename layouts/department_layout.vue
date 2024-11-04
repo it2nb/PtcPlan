@@ -78,6 +78,20 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
+        <v-list-item
+          to="/Department/company"
+          router
+          exact
+          color="teal darken-2"
+          v-if="user.departmentSys=='Parcel'"
+        >
+          <v-list-item-action>
+            <v-icon>fas fa-dot-circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>ร้านค้า</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <Headerapp :drawer="drawer" @getDrawer="drawerChange" />
