@@ -108,33 +108,33 @@
         <v-col cols="6" class="mt-3 font17">
           ได้ตรวจรายการจ่ายและใบสำคัญที่ขอเบิกมานี้<br>
           รวม .................................ฉบับ เห็นถูกต้องแล้ว<br>
-          ........................................ เจ้าหน้าที่<br>
+          <div class="mt-2 font17">........................................ เจ้าหน้าที่</div>
           (........................................)<br>
-          ........................................รองผู้อำนวยการวิทยาลัย<br>
-          (นายพรชัย สว่างทิศ)
+          <div class="mt-2 font17">........................................รองผู้อำนวยการวิทยาลัย</div>
+          ({{ dedirectorName }})
         </v-col>
         <v-col cols="6" class="mt-3 font17">
           ขอรับรองว่า การเบิกเงินตามรายการข้างต้นนี้ ได้ดำเนินการตามระเบียบกระทรวงการคลัง ว่าด้วยการจัดซื้อจัดจ้าง และการบริหารพัสดุภาครัฐ พ.ศ.2560 โดยวิธีเฉพาะเจาะจง เป็นการถูกต้องตามระเบียบแล้ว <br>
-          ........................................ผู้เบิก<br>
-          (นายพงษ์เดช เรียนละหงษ์)
+          <div class="mt-2 font17">........................................ผู้เบิก</div>
+          ({{ disburse.disburseParcHead }})
         </v-col>
         <v-col cols="6" class="mt-3 font17">
           <b class="font17 font-weight-bold">อนุมัติจ่ายได้</b><br>
-          ........................................ผู้อำนวยการวิทยาลัย<br>
-          (นายอัศวิน  ข่มอาวุธ)<br>
+          <div class="mt-3 font17">........................................ผู้อำนวยการวิทยาลัย</div>
+          ({{ directorName }})<br>
           วันที่……….เดือน………………….พ.ศ…………
         </v-col>
         <v-col cols="6" class="mt-3 font17">
           <br>
           ........................................จ่ายเงิน<br>
-          (นางอัญชรี  ภูริปัญญาวรกุล)<br>
+          ({{ disburse.disburseFinaHead }})<br>
           วันที่……….เดือน………………….พ.ศ…………
         </v-col>
         <v-col cols="6" class="mt-3 font17">
           ได้รับเงิน<br>
           (………………………………………)<br>
           ไว้ถูกต้องแล้ว<br>
-          (……………………………………………)ผู้รับเงิน<br>
+          <div class="mt-2 font17">(……………………………………………) ผู้รับเงิน</div>
           (……………………………………………)<br>
           วันที่…………เดือน…………………พ.ศ…………
         </v-col>
@@ -151,6 +151,10 @@ export default {
     return {
         state: null,
         disburseID: null,
+        parcelName: null,
+        financeName: null,
+        dedirectorName: null,
+        directorName: null,
         disburse: {},
         disburselists: [],
         formDate: []
@@ -161,6 +165,7 @@ export default {
     this.disburseID = this.$route.query.id
     this.state = this.$store.state
     await this.getDisburse()
+    await this.getName()
   },
 
   methods: {
@@ -187,6 +192,57 @@ export default {
               this.disburselists = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
             }
         }
+    },
+
+    async getName() {
+      let token = this.$store.state.jwtToken
+      await this.$axios.$get('party.php', {
+        params: {
+          token: token,
+          partyName: 'อำนวยการ'
+        }
+      }).then(result=> {
+        if(result.message == 'Success') {
+          this.directorName = result.party.partyHead
+        }
+      })
+
+      await this.$axios.$get('party.php', {
+        params: {
+          token: token,
+          partyName: 'บริหารทรัพยากร'
+        }
+      }).then(result=> {
+        if(result.message == 'Success') {
+          this.dedirectorName = result.party.partyHead
+        }
+      })
+
+      await this.$axios.$get('department.php', {
+        params: {
+          token: token,
+          departmentSys: 'Parcel'
+        }
+      }).then(result=> {
+        if(result.message == 'Success') {
+          if(result.department.length>0){
+            this.parcelName = result.department[0].departmentHead
+          }
+        }
+      })
+
+      await this.$axios.$get('department.php', {
+        params: {
+          token: token,
+          departmentSys: 'Finance'
+        }
+      }).then(result=> {
+        if(result.message == 'Success') {
+          if(result.department.length>0){
+            this.financeName = result.department[0].departmentHead
+          }
+        }
+      })
     },
 
     // async getOrgstartegics() {

@@ -11,8 +11,11 @@
         <v-col cols="8" align-self="end" class="text-center font25 font-weight-bold">
             บันทึกข้อความ
         </v-col>
-        <v-col cols="12" class="font17">
+        <v-col cols="12" class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
             ส่วนราชการ &emsp; {{ disburse.departmentName }} ฝ่าย{{ disburse.partyName}}
+        </v-col>
+        <v-col cols="12" class="font17" v-if="disburse.disburseType=='โครงการ'">
+            ส่วนราชการ &emsp; {{ disburse.pjdepartmentName }} ฝ่าย{{ disburse.pjpartyName}}
         </v-col>
         <v-col cols="6" class="font17">
             ที่&emsp;&emsp;&emsp;&emsp;&emsp;/{{ parseInt(formDate[0])+543 }}
@@ -69,7 +72,7 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" class="mt-10 pt-10">
+        <v-col cols="12" class="mt-5">
           <span class="font16">รหัสคำขอจัดซื้อ DB-{{ parseInt(disburseID) }}</span> 
           <table width="100%" class="tableNormal">
             <tr>
@@ -141,11 +144,17 @@
         <v-col cols="4" class="font17" v-if="state">
           สถานศึกษา {{ state.appSubTitle }}
         </v-col>
-        <v-col cols="4" class="font17">
+        <v-col cols="4" class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
           ฝ่าย {{ disburse.partyName }}
         </v-col>
-        <v-col cols="4" class="font17">
+        <v-col cols="4" class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
           {{ disburse.departmentName }}
+        </v-col>
+        <v-col cols="4" class="font17" v-if="disburse.disburseType=='โครงการ'">
+          ฝ่าย {{ disburse.pjpartyName }}
+        </v-col>
+        <v-col cols="4" class="font17" v-if="disburse.disburseType=='โครงการ'">
+          {{ disburse.pjdepartmentName }}
         </v-col>
         <v-col cols="12" class="font17 mb-2">
           ภาคเรียนที่ {{ (parseInt(String(disburse.disburseDate).split('-')[1])>=5&&parseInt(String(disburse.disburseDate).split('-')[1])<=10)? '1':'2'}} &emsp;ปีการศึกษา {{ (parseInt(String(disburse.disburseDate).split('-')[1])>=5&&parseInt(String(disburse.disburseDate).split('-')[1])<=10)? parseInt(disburse.disburseYear)+543:parseInt(disburse.disburseYear)+542}}&emsp;ชื่อโครงการ {{ disburse.disburseType=='โครงการ'? disburse.projectName : disburse.expenseplanDes }} จำนวน {{ disburselists.length }} รายการ 
@@ -191,14 +200,46 @@
             </tr>
           </table>
         </v-col>
-        <v-col cols="6" class="font17 text-center mt-2">
+        <v-col cols="6" class="font17 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
+          ........................................<br>
           ({{ disburse.departmentHead }}) <br>
           หัวหน้า{{ disburse.departmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
-        <v-col cols="6" class="font17 text-center mt-2">
+        <v-col cols="6" class="font17 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
+          ........................................<br>
           ({{ disburse.partyHead }}) <br>
           รองผู้อำนวยการฝ่าย{{ disburse.partyName }}<br>
+          วันที่ {{ thaiDate(disburse.disburseDate) }}
+        </v-col>
+        <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
+          ........................................<br>
+          ({{ disburse.departmentHead }}) <br>
+          ผู้ขอจัดซื้อ<br>
+          วันที่ {{ thaiDate(disburse.disburseDate) }}
+        </v-col>
+        <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
+          ........................................<br>
+          ({{ disburse.pjdepartmentHead }}) <br>
+          หัวหน้า{{ disburse.pjdepartmentName }}<br>
+          วันที่ {{ thaiDate(disburse.disburseDate) }}
+        </v-col>
+        <v-col cols="6" class="font17 text-center mt-5" v-else>
+          ........................................<br>
+          ({{ disburse.pjdepartmentHead }}) <br>
+          หัวหน้า{{ disburse.pjdepartmentName }}<br>
+          วันที่ {{ thaiDate(disburse.disburseDate) }}
+        </v-col>
+        <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
+          ........................................<br>
+          ({{ disburse.pjpartyHead }}) <br>
+          รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}<br>
+          วันที่ {{ thaiDate(disburse.disburseDate) }}
+        </v-col>
+        <v-col cols="6" class="font17 text-center mt-5" v-else>
+          ........................................<br>
+          ({{ disburse.pjpartyHead }}) <br>
+          รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="12" class="mt-3 font17">
@@ -267,7 +308,7 @@
               </tr>
               <tr>
                 <td colspan="5" class="font17 text-right font-weight-bold">รวมเงิน</td>
-                <td class="font17 text-right font-weight-bold">{{ disburse.disburseMoney }}</td>
+                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
                 <td></td>
               </tr>
             </tbody>
@@ -323,34 +364,6 @@ export default {
             }
         }
     },
-
-    // async getOrgstartegics() {
-    //   let params = {
-    //     token: this.$store.state.jwtToken,
-    //     orgstrategicYear: this.periodYear,
-    //     projectStatus: this.status,
-    //     fn: 'getProductListAll'
-    //   }
-    //   let result = await this.$axios.$get('orgstrategic.php', { params})
-
-    //   if(result.message === 'Success') {
-    //     this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
-    //   }
-    // },
-
-    // async getSummary() {
-    //   let params = {
-    //     token: this.$store.state.jwtToken,
-    //     projectYear: this.periodYear,
-    //     fn: 'getSummaryByYear'
-    //   }
-    //   let result = await this.$axios.$get('project.php', {
-    //     params: params
-    //   })
-    //   if(result.message == 'Success') {
-    //     this.projectSum = JSON.parse(JSON.stringify(result.project))
-    //   }
-    // },
 
     thaiDate(inDate) {
       let result = ''

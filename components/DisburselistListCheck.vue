@@ -23,6 +23,36 @@
         >
           <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> ใบเบิก
         </v-btn>
+        <v-btn 
+          color="white"
+          :to="'/print/disburseForm3/?id='+disburse.disburseID" 
+          target="_blank"
+          small
+          class="mx-1"
+          v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง' && departmentSys=='Parcel'"
+        >
+          <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> รายงานขอซื้อขอจ้าง
+        </v-btn>
+        <v-btn 
+          color="white"
+          :to="'/print/disburseForm4/?id='+disburse.disburseID" 
+          target="_blank"
+          small
+          class="mx-1"
+          v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง' && departmentSys=='Parcel'"
+        >
+          <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> คำสั่งตรวจรับ
+        </v-btn>
+        <v-btn 
+          color="white"
+          :to="'/print/disburseForm5/?id='+disburse.disburseID" 
+          target="_blank"
+          small
+          class="mx-1"
+          v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง' && departmentSys=='Parcel'"
+        >
+          <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> รายงานผล
+        </v-btn>
       </v-card-title>
       <v-divider class="green"></v-divider>
         <v-card-text>
@@ -57,9 +87,9 @@
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">กรรมการตรวจรับ</h3>
-              {{ disburse.disburseAuditHead }} ประธานกรรมการ<br>
-              {{ disburse.disburseAuditComm }} กรรมการ<br>
-              {{ disburse.disburseAuditSecr }} กรรมการและเลขานุการ
+              {{ disburse.disburseAuditHead }} {{ disburse.disburseAuditHeadPos }} ประธานกรรมการ<br>
+              {{ disburse.disburseAuditComm }} {{ disburse.disburseAuditCommPos }} กรรมการ<br>
+              {{ disburse.disburseAuditSecr }} {{ disburse.disburseAuditSecrPos }} กรรมการและเลขานุการ
             </v-col>
             <v-col cols="12" class="text-center" v-if="departmentSys=='Parcel'">
               <v-btn 
@@ -547,6 +577,12 @@
                           outlined
                           dense
                         />
+                        <v-text-field
+                          v-model="updateData.disburseAuditHeadPos"
+                          label="ตำแหน่ง"
+                          outlined
+                          dense
+                        />
                       </v-col>
                       <v-col cols="12" md="4">
                         <v-text-field
@@ -555,11 +591,23 @@
                           outlined
                           dense
                         />
+                        <v-text-field
+                          v-model="updateData.disburseAuditCommPos"
+                          label="ตำแหน่ง"
+                          outlined
+                          dense
+                        />
                       </v-col>
                       <v-col cols="12" md="4">
                         <v-text-field
                           v-model="updateData.disburseAuditSecr"
                           label="กรรมการและเลขานุการตรวจรับ"
+                          outlined
+                          dense
+                        />
+                        <v-text-field
+                          v-model="updateData.disburseAuditSecrPos"
+                          label="ตำแหน่ง"
                           outlined
                           dense
                         />
@@ -711,7 +759,7 @@ export default {
           disburse.disburseAccoHead = this.user.departmentHead
         }
       }
-      if(this.departmentSys == 'Finace') {
+      if(this.departmentSys == 'Finance') {
         if(disburse.disburseFinaCheck=='ถูกต้อง') {
           disburse.disburseFinaHead = this.user.departmentHead
         }
@@ -824,8 +872,11 @@ export default {
         disburseID: this.updateData.disburseID,
         companyID: this.updateData.companyID,
         disburseAuditHead: this.updateData.disburseAuditHead,
+        disburseAuditHeadPos: this.updateData.disburseAuditHeadPos,
         disburseAuditComm: this.updateData.disburseAuditComm,
-        disburseAuditSecr: this.updateData.disburseAuditSecr
+        disburseAuditCommPos: this.updateData.disburseAuditCommPos,
+        disburseAuditSecr: this.updateData.disburseAuditSecr,
+        disburseAuditSecrPos: this.updateData.disburseAuditSecrPos
       })
 
       if(disburseUpdate.message == 'Success') {
@@ -834,10 +885,13 @@ export default {
           text: 'แก้ไขข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
         }).then(()=>{
-          this.disburse.companyID = this.updateData.companyID,
-          this.disburse.disburseAuditHead = this.updateData.disburseAuditHead,
-          this.disburse.disburseAuditComm = this.updateData.disburseAuditComm,
+          this.disburse.companyID = this.updateData.companyID
+          this.disburse.disburseAuditHead = this.updateData.disburseAuditHead
+          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
+          this.disburse.disburseAuditComm = this.updateData.disburseAuditComm
+          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
           this.disburse.disburseAuditSecr = this.updateData.disburseAuditSecr
+          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
           this.updateProgress = false
           this.updateCompanyDialog = false
         })
