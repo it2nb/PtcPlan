@@ -136,7 +136,7 @@
                       </div>
                     </td>
                     <td class="font16 text-right" style="border: solid 1px black; padding: 3px"  v-for="budget in budgets" :key="budget.key">
-                      <span v-if="pjbudget.budgetplanID==budget.budgetplanID">{{ moneyFormat(parseInt(pjbudget.pjbudgetQty)*parseFloat(pjbudget.pjbudgetMoney)) }}</span>
+                      <span v-if="pjbudget.budgetplanID==budget.budgetplanID">{{ moneyFormat(parseFloat(pjbudget.pjbudgetQty)*parseFloat(pjbudget.pjbudgetMoney)) }}</span>
                     </td>
                     <td class="font16" style="border: solid 1px black; padding: 3px"></td>
                   </tr>

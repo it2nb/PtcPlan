@@ -58,7 +58,7 @@
                 </div>
               </template>
               <template v-slot:item.disburseMoney="{ item }">
-                <!-- <span class="black--text" v-if="parseInt(item.disburseRealMoney) > 0">{{ moneyFormat(item.disburseMoney) }}</span>
+                <!-- <span class="black--text" v-if="parseFloat(item.disburseRealMoney) > 0">{{ moneyFormat(item.disburseMoney) }}</span>
                 <span class="grey--text" v-else><i>{{ moneyFormat(item.disburseMoney) }}</i></span> -->
                 <div class="py-2">
                   <div class="px-1 grey--text deep-purple lighten-5"><i>{{ moneyFormat(item.disbursePlanMoney) }}</i></div>
@@ -126,7 +126,7 @@
                     </td>
                   <td class="fontBold text-right">
                     <div v-if="parseFloat(budgetSum.budgetplanMoney) > parseFloat(budgetSum.budgetrealMoney)">
-                      <span class="success--text " v-if="(parseFloat(budgetSum.budgetplanMoney)-(parseInt(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) > 0">
+                      <span class="success--text " v-if="(parseFloat(budgetSum.budgetplanMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) > 0">
                         {{ moneyFormat(parseFloat(budgetSum.budgetplanMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) }}
                       </span>
                       <span class="red--text " v-else-if="(parseFloat(budgetSum.budgetplanMoney)-(parseFloat(budgetSum.disbursePlanMoney)+parseFloat(budgetSum.disburseRealMoney))) < 0">

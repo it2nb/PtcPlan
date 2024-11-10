@@ -36,7 +36,7 @@
                       <v-card elevation="1" color="red darken-2">
                         <v-card-subtitle class="elevation-1 white--text">ยังไม่ได้ดำเนินการ</v-card-subtitle>
                         <v-card-text class="py-2 text-right red lighten-4 black--text">
-                          {{ parseInt(projectSum.projectHinAndApproveQty)-(parseInt(projectSum.projectInProgressQty)+parseInt(projectSum.projectDoneProgressQty)) }} โครงการ<br>
+                          {{ parseFloat(projectSum.projectHinAndApproveQty)-(parseFloat(projectSum.projectInProgressQty)+parseFloat(projectSum.projectDoneProgressQty)) }} โครงการ<br>
                           {{ moneyFormat(projectSum.pjbudgetHintAndNoneProgressMoney) }} บาท
                         </v-card-text>
                       </v-card>

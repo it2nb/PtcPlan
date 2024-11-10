@@ -302,7 +302,11 @@ export default {
     },
 
     qtyFormat(qty){
-      return numeral(qty).format('0,0')
+      if(qty%1) {
+        return numeral(qty).format('0,0.00')
+      } else {
+        return numeral(qty).format('0,0')
+      }
     },
 
     thaiBaht(money) {

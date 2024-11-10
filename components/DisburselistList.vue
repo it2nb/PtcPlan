@@ -44,8 +44,8 @@
               {{ disburse.expenseName }}( {{ disburse.expenseplanDes }} )
             </v-col> -->
             <v-col cols="12">
-              <h3 class="mb-2 fontBold">ค่าใช้จ่าย : โครงการ</h3>
-              {{  disburse.disburseName }}
+              <h3 class="mb-2 fontBold">คำขอ :ค่าใช้จ่าย : โครงการ</h3>
+              {{ disburse.disburseSubtype }} : {{  disburse.disburseName }}
             </v-col>
             <v-col cols="12">
               <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
@@ -62,7 +62,7 @@
               >
                 <v-card-text>
                   <v-row dense>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12" md="5">
                       <v-text-field
                         v-model="insertData.disburselistName"
                         label="รายการ"
@@ -87,7 +87,7 @@
                         ]"
                       />
                     </v-col>
-                    <v-col cols="6" md="2">
+                    <v-col cols="6" md="1">
                       <v-text-field
                         v-model="insertData.disburselistUnit"
                         label="หน่วยนับ"
@@ -111,6 +111,14 @@
                         ]"
                       />
                     </v-col>
+                    <v-col cols="12" md="2">
+                      <v-text-field
+                        v-model="insertData.disburselistDes"
+                        label="เลขทะเบียน/เลขครุภัณฑ์"
+                        outlined
+                        dense
+                      />
+                    </v-col>
 
                     <v-col class="text-center">
                       <v-progress-circular indeterminate color="primary" class="mx-auto" v-if="insertProgress"></v-progress-circular>
@@ -128,6 +136,7 @@
                 {text: 'หน่วยนับ', value: 'disburselistUnit', align: 'center', class: 'text-center'},
                 {text: 'ราคา', value: 'disburselistPrice', align: 'right', class: 'text-center'},
                 {text: 'รวม', value: 'disburselistSumPrice', align: 'right', class: 'text-center'},
+                {text: 'หมายเหตุ', value: 'disburselistDes', align: 'left', class: 'text-center'},
                 {text: 'หมายเหตุ', value: 'disburselistStatus', align: 'left', class: 'text-center'},
                 {text: '', value:'actions', align: 'right'}
               ]"
@@ -300,7 +309,7 @@
                 >
                   <v-card-text>
                     <v-row dense>
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="5">
                         <v-text-field
                           v-model="updateData.disburselistName"
                           label="รายการ"
@@ -325,7 +334,7 @@
                           ]"
                         />
                       </v-col>
-                      <v-col cols="6" md="2">
+                      <v-col cols="6" md="1">
                         <v-text-field
                           v-model="updateData.disburselistUnit"
                           label="หน่วยนับ"
@@ -347,6 +356,14 @@
                           :rules="[
                             ()=>!!updateData.disburselistPrice || 'กรุณากรอกข้อมูล'
                           ]"
+                        />
+                      </v-col>
+                      <v-col cols="12" md="2">
+                        <v-text-field
+                          v-model="updateData.disburselistDes"
+                          label="เลขทะเบียน/เลขครุภัณฑ์"
+                          outlined
+                          dense
                         />
                       </v-col>
                       <v-col class="text-center">
@@ -508,7 +525,7 @@ export default {
 
       if(result.message == 'Success') {
         this.disburselists = JSON.parse(JSON.stringify(result.disburselist))
-        this.disburseSum = this.disburselists.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.disburselistSumPrice), 0);
+        this.disburseSum = this.disburselists.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburselistSumPrice), 0);
       }
     },
 
@@ -606,15 +623,22 @@ export default {
           text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
         })
-        this.$emit('getUpdateStatus', {'status': true})
         this.disburse.disburseStatus = 'ตรวจสอบรายการ'
-        let result = await this.$axios.$post('disburselist.update.php', {
+        await this.$axios.$post('disburselist.update.php', {
           token: this.$store.state.jwtToken,
           disburseID: this.disburse.disburseID,
           disburselistStatus: '',
           disburselistComment: '',
           fn: 'byDisburse'
         })
+
+        if(this.user.userLineToken) {
+          await this.$axios.$post('sendline.php', {
+            token: this.user.userLineToken,
+            message: 'ยืนยันรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' อยู่ระหว่างส่งตรวจสอบรายการ\n'+window.location.origin
+          })
+        }
+        this.$emit('getUpdateStatus', {'status': true})
       }
       this.updateProgress = false
     },
@@ -633,6 +657,7 @@ export default {
           text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
         })
+        
         this.$emit('getUpdateStatus', {'status': true})
         this.disburse.disburseStatus = 'รอฝ่ายเห็นชอบ'
       }
@@ -678,7 +703,11 @@ export default {
     },
 
     qtyFormat(qty) {
-      return numeral(qty).format('0,0')
+      if(qty%1) {
+        return numeral(qty).format('0,0.00')
+      } else {
+        return numeral(qty).format('0,0')
+      }
     },
 
   },

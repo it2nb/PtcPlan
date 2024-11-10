@@ -32,7 +32,7 @@
 
               <!-- <template v-slot:item.pjbudgetMoney="{ item }">
                 <div class="text-no-wrap text-right">
-                  {{ moneyFormat(parseInt(item.pjbudgetMoney)) }}
+                  {{ moneyFormat(parseFloat(item.pjbudgetMoney)) }}
                 </div>
               </template> -->
 
@@ -243,7 +243,7 @@ export default {
 
       if(result.message == 'Success') {
         this.pjbudgetallocs = JSON.parse(JSON.stringify(result.pjbudgetalloc))
-        this.pjbudgetallocTotalMoney = this.pjbudgetallocs.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.pjbudgetallocMoney), 0);
+        this.pjbudgetallocTotalMoney = this.pjbudgetallocs.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.pjbudgetallocMoney), 0);
       }
       this.pjbudgetsLoading = false
     },

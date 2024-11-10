@@ -33,7 +33,7 @@
           สิ่งที่ส่งมาด้วย แบบโครงการและประมาณการค่าใช้จ่าย
         </v-col>
         <v-col cols="12" class="pt-1 font17">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ disburse.departmentName }} มีความประสงค์จะจัดซื้อ{{ disburse.disburseType=='โครงการ'? disburse.expenseName : disburse.expenseplanDes }} เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }} จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ disburse.departmentName }} มีความประสงค์จะจัดซื้อ{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes }} เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }} จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
         </v-col>
         <v-col cols="12" class="pt-1 font17">
           &emsp;&emsp;&emsp;&emsp;&emsp;ดังนั้น เพื่อให้การดำเนินงานเป็นไปด้วยความเรียบร้อย จึงขออนุญาตดำเนินการและขออนุมัติงบประมาณเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }}) เพื่อใช้จ่ายตามแบบโครงการและประมาณการค่าใช้จ่ายที่แนบท้าย
@@ -302,6 +302,7 @@
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
                 <td class="font17">
+                  {{ disburselist.disburselistDes }}
                   <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                   {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
                 </td>
@@ -394,7 +395,11 @@ export default {
     },
 
     qtyFormat(qty){
-      return numeral(qty).format('0,0')
+      if(qty%1) {
+        return numeral(qty).format('0,0.00')
+      } else {
+        return numeral(qty).format('0,0')
+      }
     },
 
     thaiBaht(money) {

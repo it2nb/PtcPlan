@@ -53,6 +53,16 @@
         >
           <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> รายงานผล
         </v-btn>
+        <v-btn 
+          color="white"
+          :to="'/print/disburseForm6/?id='+disburse.disburseID" 
+          target="_blank"
+          small
+          class="mx-1"
+          v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง' && departmentSys=='Parcel'"
+        >
+          <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> ใบสั่ง
+        </v-btn>
       </v-card-title>
       <v-divider class="green"></v-divider>
         <v-card-text>
@@ -650,6 +660,7 @@ export default {
   data() {
     return {
       user: {},
+      disburseuser: {},
       disburselists: [],
       disburselistcs: [],
       disburselistQty: {},
@@ -684,10 +695,26 @@ export default {
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
       await this.getDisburselistQty(this.disburse.disburseID)
+      if(this.disburse.userID>0) {
+        await this.getDisburseUser(this.disburse.userID)
+      }
     }
   },
 
   methods: {
+    async getDisburseUser(userID) {
+      let result = await this.$axios.$get('user.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          userID: userID
+        }
+      })
+
+      if(result.message == 'Success') {
+        this.disburseuser = JSON.parse(JSON.stringify(result.user))
+      }
+    },
+
     async getDisburselist(disburseID) {
       let result = await this.$axios.$get('disburselist.php', {
         params: {
@@ -699,7 +726,7 @@ export default {
       if(result.message == 'Success') {
         this.disburselists = JSON.parse(JSON.stringify(result.disburselist))
         this.disburselistcs = JSON.parse(JSON.stringify(result.disburselist))
-        this.disburseSum = this.disburselists.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.disburselistSumPrice), 0);
+        this.disburseSum = this.disburselists.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburselistSumPrice), 0);
       }
     },
 
@@ -745,21 +772,26 @@ export default {
     },
 
     async updateDisburseCheck(disburse) {
+      let lineMsg = ''
       if(this.departmentSys == 'Parcel') {
+        lineMsg = 'งานพัสดุ'
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.departmentHead
         }
       } else if(this.departmentSys == 'Plan') {
+        lineMsg = 'งานวางแผนฯ'
         if(disburse.disbursePlanCheck=='ถูกต้อง') {
           disburse.disbursePlanHead = this.user.departmentHead
         }
       }
       if(this.departmentSys == 'Account') {
+        lineMsg = 'งานการบัญชี'
         if(disburse.disburseAccoCheck=='ถูกต้อง') {
           disburse.disburseAccoHead = this.user.departmentHead
         }
       }
       if(this.departmentSys == 'Finance') {
+        lineMsg = 'งานการเงิน'
         if(disburse.disburseFinaCheck=='ถูกต้อง') {
           disburse.disburseFinaHead = this.user.departmentHead
         }
@@ -767,8 +799,10 @@ export default {
 
       if(disburse.disburseParcCheck=='ไม่ถูกต้อง' || disburse.disbursePlanCheck=='ไม่ถูกต้อง' || disburse.disburseAccoCheck=='ไม่ถูกต้อง' || disburse.disburseFinaCheck=='ไม่ถูกต้อง') {
         disburse.disburseStatus = 'ไม่ถูกต้อง'
+        lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : ไม่ถูกต้อง > โปรดแก้ไขและยืนยันคำขออีกครั้ง'
       } else if(disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง') {
-        disburse.disburseStatus = 'รอยืนยันจัดซื้อ'
+        disburse.disburseStatus = 'รอฝ่ายเห็นชอบ'
+        lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : ถูกต้อง > รอให้รองฝ่ายให้ความเห็นชอบ'
       }
       let result = await this.updateDisburse(disburse)
 
@@ -777,7 +811,16 @@ export default {
           title: 'เรียบร้อย',
           text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
-        }).then(()=>{
+        }).then(async ()=>{
+          if(disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'รอฝ่ายเห็นชอบ') {
+            if(this.disburseuser.userLineToken) {
+            await this.$axios.$post('sendline.php', {
+              token: this.disburseuser.userLineToken,
+              message: lineMsg+'\n'+window.location.origin
+            })
+          }
+          
+        }
           this.$emit('getUpdateStatus', {'status': true})
         })
       } else {
@@ -925,7 +968,11 @@ export default {
     },
 
     qtyFormat(qty) {
-      return numeral(qty).format('0,0')
+      if(qty%1) {
+        return numeral(qty).format('0,0.00')
+      } else {
+        return numeral(qty).format('0,0')
+      }
     },
 
   },

@@ -45,7 +45,7 @@
               readonly
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="4">
             <h3 class="mb-2 fontBold">วันที่ขอจัดซื้อ/เบิกเงิน</h3>
             <v-text-field
               v-model="insertData.disburseDate"
@@ -60,8 +60,31 @@
               ]"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">ประเภทจัดซื้อ/เบิกเงิน</h3>
+          <v-col cols="12" md="4">
+            <h3 class="mb-2 fontBold">ประเภทคำขอ</h3>
+            <v-radio-group
+              v-model="insertData.disburseSubtype"
+              row
+              :rules="[
+                ()=>!!insertData.disburseSubtype || 'กรุณากรอกข้อมูล'
+              ]"
+            >
+              <v-radio
+                label="ขอซื้อ"
+                value="ซื้อ"
+              ></v-radio>
+              <v-radio
+                label="ขอจ้าง"
+                value="จ้าง"
+              ></v-radio>
+              <v-radio
+                label="ขอเช่า"
+                value="เช่า"
+              ></v-radio>
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12" md="4">
+            <h3 class="mb-2 fontBold">ประเภทกิจกรรม</h3>
             <v-radio-group
               v-model="insertData.disburseType"
               row
@@ -409,13 +432,22 @@ export default {
         this.insertProgress = true
         this.insertData.disburseMoney = 0
 
+        if(this.insertData.disburseType=='โครงการ') {
+          delete this.insertData.expenseplanID
+        }
+        else if(this.insertData.disburseType=='ค่าใช้จ่าย') {
+          delete this.insertData.projectID
+          delete this.insertData.expenseID
+          delete this.insertData.pjbudgetID
+        }
+
         if(this.expensebudgets.length > 0) {
           let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.insertData.expenseplanID)
-          if(budgetplan) {
+          if(budgetplan.expenseID) {
             this.insertData.expenseID = budgetplan.expenseID
           }
         }
-        if(this.pjbudgets.length > 0) {
+        if(this.pjbudgets.length > 0 && this.insertData.disburseType=='โครงการ') {
           let pjbudget = await this.pjbudgets.find(pjbudget => pjbudget.pjbudgetID==this.insertData.pjbudgetID)
           if(pjbudget) {
             this.insertData.budgetplanID = pjbudget.budgetplanID

@@ -31,7 +31,7 @@
 
               <!-- <template v-slot:item.expenseMoney="{ item }">
                 <div class="text-no-wrap text-right">
-                  {{ moneyFormat(parseInt(item.expenseMoney)) }}
+                  {{ moneyFormat(parseFloat(item.expenseMoney)) }}
                 </div>
               </template> -->
 
@@ -224,7 +224,7 @@ export default {
 
       if(result.message == 'Success') {
         this.expenseallocs = JSON.parse(JSON.stringify(result.expensealloc))
-        this.expenseallocTotalMoney = this.expenseallocs.reduce((prev, curr)=> parseInt(prev) + parseInt(curr.expenseallocMoney), 0);
+        this.expenseallocTotalMoney = this.expenseallocs.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.expenseallocMoney), 0);
       }
       this.expensesLoading = false
     },

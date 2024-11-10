@@ -555,7 +555,7 @@ export default {
           if(this.userUpdate.userLineToken && (this.user.userLineToken!=this.userUpdate.userLineToken)) {
             await this.$axios.$post('sendline.php', {
               token: this.userUpdate.userLineToken,
-              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Notify ของคุณเรียบร้อยแล้ว'
+              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Notify ของคุณเรียบร้อยแล้ว\n'+window.location.origin
             })
           }
           let msg = result.msg

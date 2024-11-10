@@ -342,15 +342,15 @@ export default {
         this.userUpdate.token = this.$store.state.jwtToken
 
         let result = await this.$axios.$post('user.update.php', this.userUpdate)
-
+        let msg = result.msg
         if(result.message == 'Success') {
           if(this.userUpdate.userLineToken && (this.user.userLineToken!=this.userUpdate.userLineToken)) {
             await this.$axios.$post('sendline.php', {
               token: this.userUpdate.userLineToken,
-              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Notify ของคุณเรียบร้อยแล้ว'
+              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Notify ของคุณเรียบร้อยแล้ว\n'+window.location.origin
             })
           }
-          let msg = result.msg
+          
           swal({
             title: 'เรียบร้อย',
             text: msg,

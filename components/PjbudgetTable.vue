@@ -28,13 +28,13 @@
 
               <!-- <template v-slot:item.pjbudgetMoney="{ item }">
                 <div class="text-no-wrap text-right">
-                  {{ moneyFormat(parseInt(item.pjbudgetMoney)) }}
+                  {{ moneyFormat(parseFloat(item.pjbudgetMoney)) }}
                 </div>
               </template> -->
 
               <template v-slot:item.pjbudgetMoney="{ item }">
                 <div class="text-no-wrap text-right">
-                  {{ moneyFormat(parseInt(item.pjbudgetQty)*parseFloat(item.pjbudgetMoney)) }}
+                  {{ moneyFormat(parseFloat(item.pjbudgetQty)*parseFloat(item.pjbudgetMoney)) }}
                   <div class="caption" v-if="parseFloat(item.disburseMoney)>0">
                     <span class="px-1 success lighten-4" v-if="parseFloat(item.disburseMoney)<=parseFloat(item.pjbudgetMoney)">{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
                     <span class="px-1 red lighten-4" v-else>{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
