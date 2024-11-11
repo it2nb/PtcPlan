@@ -35,8 +35,6 @@ export default {
       //   token: 'eW5bdWePAvZK6hOlsh1e2YJxvFfwwOSpjddt6Y4Fv7C',
       //   message: 'Test \nทดสอบ'
       // })
-
-      console.log(result)
     }
   }
 }

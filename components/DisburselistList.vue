@@ -638,6 +638,34 @@ export default {
             message: 'ยืนยันรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' อยู่ระหว่างส่งตรวจสอบรายการ\n'+window.location.origin
           })
         }
+        await this.$axios.$get('department.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            departmentSys: 'Parcel'
+          }
+        }).then(result=> {
+          if(result.message=='Success') {
+            result.department.forEach(async department => {
+              await this.$axios.$get('user.php', {
+                params: {
+                  token: this.$store.state.jwtToken,
+                  departmentID: department.departmentID
+                }
+              }).then(result2=>{
+                if(result2.message == 'Success') {
+                  result2.user.forEach(async user=>{
+                    if(user.userLineToken) {
+                      await this.$axios.$post('sendline.php', {
+                        token: user.userLineToken,
+                        message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ส่งมาตรวจสอบความถูกต้อง\n'+window.location.origin
+                      })
+                    }
+                  })
+                }
+              })
+            })
+          }
+        })
         this.$emit('getUpdateStatus', {'status': true})
       }
       this.updateProgress = false

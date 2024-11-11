@@ -777,17 +777,20 @@ export default {
         lineMsg = 'งานพัสดุ'
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.departmentHead
+          await this.sendLindDepartSys('Plan', this.disburse.disburseID)
         }
       } else if(this.departmentSys == 'Plan') {
         lineMsg = 'งานวางแผนฯ'
         if(disburse.disbursePlanCheck=='ถูกต้อง') {
           disburse.disbursePlanHead = this.user.departmentHead
+          await this.sendLindDepartSys('Account', this.disburse.disburseID)
         }
       }
       if(this.departmentSys == 'Account') {
         lineMsg = 'งานการบัญชี'
         if(disburse.disburseAccoCheck=='ถูกต้อง') {
           disburse.disburseAccoHead = this.user.departmentHead
+          await this.sendLindDepartSys('Finance', this.disburse.disburseID)
         }
       }
       if(this.departmentSys == 'Finance') {
@@ -948,6 +951,37 @@ export default {
           this.updateCompanyDialog = false
         })
       }
+    },
+
+    async sendLindDepartSys(departmentSys, disburseID) {
+      await this.$axios.$get('department.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          departmentSys: departmentSys
+        }
+      }).then(result=> {
+        if(result.message=='Success') {
+          result.department.forEach(async department => {
+            await this.$axios.$get('user.php', {
+              params: {
+                token: this.$store.state.jwtToken,
+                departmentID: department.departmentID
+              }
+            }).then(result2=>{
+              if(result2.message == 'Success') {
+                result2.user.forEach(async user=>{
+                  if(user.userLineToken) {
+                    await this.$axios.$post('sendline.php', {
+                      token: user.userLineToken,
+                      message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(disburseID)+' ส่งมาตรวจสอบความถูกต้อง\n'+window.location.origin
+                    })
+                  }
+                })
+              }
+            })
+          })
+        }
+      })
     },
 
     thaiDate(inDate) {

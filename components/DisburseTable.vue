@@ -899,7 +899,6 @@ export default {
           disburseYear: this.disburseYear
         }
       } else if(this.userType=='Party') {
-        console.log(this.partyID)
         params = {
           token: this.$store.state.jwtToken,
           disburseYear: this.disburseYear,
@@ -919,6 +918,7 @@ export default {
           if(this.userType=='Admin' || this.userType=='Director' || this.userType=='Plan' || this.userType=='Finance') {
             this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
           } else if(this.userType=='Party') {
+            this.disburses = this.disburses.filter(disburse => disburse.disburseType=='ค่าใช้จ่าย'||(disburse.disburseType=='โครงการ'&&disburse.pjpartyID==this.partyID))
             this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
           } else if(this.userType=='Department') {
             this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
