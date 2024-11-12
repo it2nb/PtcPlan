@@ -636,10 +636,11 @@ export default {
         disbursePlanHead: '',
         disburseAccoHead: '',
         disburseFinaHead: '',
-        parcUserID: '',
-        planUserID: '',
-        accoUserID: '',
-        finaUserID: '',
+        partyUserID: 0,
+        parcUserID: 0,
+        planUserID: 0,
+        accoUserID: 0,
+        finaUserID: 0,
         disburseParReqName: '',
       })
 
@@ -720,11 +721,18 @@ export default {
 
     async confirmParty() {
       this.updateProgress = true
+      let disburseParReqName = ''
+      let partyUserID = 0
+      if(this.disburseParStatus=='ตัดแผนแล้ว') {
+        disburseParReqName = this.user.partyHead
+        partyUserID = this.user.userID
+      }
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
         token: this.$store.state.jwtToken,
         disburseID: this.disburse.disburseID,
         disburseStatus: this.disburseParStatus,
-        disburseParReqName: this.user.partyHead
+        disburseParReqName: disburseParReqName,
+        partyUserID: partyUserID
       })
 
       if(disburseUpdate.message == 'Success') {

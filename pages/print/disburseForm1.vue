@@ -33,7 +33,7 @@
           สิ่งที่ส่งมาด้วย แบบโครงการและประมาณการค่าใช้จ่าย
         </v-col>
         <v-col cols="12" class="pt-1 font17">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ disburse.departmentName }} มีความประสงค์จะจัดซื้อ{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes }} เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }} จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ disburse.departmentName }} มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }} จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
         </v-col>
         <v-col cols="12" class="pt-1 font17">
           &emsp;&emsp;&emsp;&emsp;&emsp;ดังนั้น เพื่อให้การดำเนินงานเป็นไปด้วยความเรียบร้อย จึงขออนุญาตดำเนินการและขออนุมัติงบประมาณเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }}) เพื่อใช้จ่ายตามแบบโครงการและประมาณการค่าใช้จ่ายที่แนบท้าย
@@ -47,29 +47,36 @@
         <v-col cols="12" class="mt-10">
           <v-row no-gutters v-if="disburse.disburseType=='ค่าใช้จ่าย'">
             <v-col align-self="start" class="text-center font17">
-              <!-- <img :src="departmentSignature" width="150" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
-              <img :src="disburseSign+'?t='+new Date()" width="150" v-if="disburseSign" /><br>
+              <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
+              <img :src="disburseSign+'?t='+new Date()" width="100" v-if="disburseSign" /><br>
               ({{ disburse.disburseReqName }})<br>
               หัวหน้างาน{{ disburse.departmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font17">
+              <img :src="disbursePartySign+'?t='+new Date()" width="100" v-if="disbursePartySign" /><br>
               ({{ disburse.partyHead }})<br>
               รองผู้อำนวยการฝ่าย{{ disburse.partyName }}
             </v-col>
           </v-row>
           <v-row no-gutters v-if="disburse.disburseType=='โครงการ'">
             <v-col align-self="start" class="text-center font17" v-if="disburse.departmentID!=disburse.pjdepartmentID">
-              <!-- <img :src="departmentSignature" width="150" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
-              <img :src="disburseSign+'?t='+new Date()" width="150" v-if="disburseSign" /><br>
+              <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
+              <img :src="disburseSign+'?t='+new Date()" width="100" v-if="disburseSign" /><br>
               ({{ disburse.disburseReqName }})<br>
               ผู้ขอจัดซื้อ
             </v-col>
-            <v-col align-self="start" class="text-center font17">
-              <img :src="pjdepartmentSign+'?t='+new Date()" width="150" v-if="pjdepartmentSign" /><img :src="disburseSign+'?t='+new Date()" width="150" v-else-if="disburseSign" /><br>
+            <v-col align-self="start" class="text-center font17" v-if="disburse.departmentID!=disburse.pjdepartmentID">
+              <img :src="pjdepartmentSign+'?t='+new Date()" width="100" v-if="pjdepartmentSign" /><br>
               ({{ disburse.pjdepartmentHead }})<br>
               หัวหน้า{{ disburse.pjdepartmentName }}<br>ผู้รับผิดชอบโครงการ
             </v-col>
+            <v-col align-self="start" class="text-center font17" v-else>
+              <img :src="pjdepartmentSign+'?t='+new Date()" width="100" v-if="pjdepartmentSign" /><img :src="disburseSign+'?t='+new Date()" width="100" v-else-if="disburseSign" /><br>
+              ({{ disburse.pjdepartmentHead }})<br>
+              หัวหน้า{{ disburse.pjdepartmentName }}
+            </v-col>
             <v-col align-self="start" class="text-center font17">
+              <img :src="disbursePartySign+'?t='+new Date()" width="100" v-if="disbursePartySign" /><br>
               ({{ disburse.pjpartyHead }})<br>
               รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}
             </v-col>
@@ -81,11 +88,11 @@
             <tr>
               <td width="40%" class="font17" valign="top">
                 1. งานพัสดุตรวจสอบรายการวัสดุ/ครุภัณฑ์<br/>
-                &emsp;&emsp;<v-icon small v-if="disburse.disburseParcCheck=='ถูกต้อง'">far fa-square-check</v-icon><v-icon small v-else>far fa-square</v-icon> ถูกต้อง<br>
+                &emsp;&emsp;<v-icon small v-if="disburse.disburseParcCheck=='ถูกต้อง'">far fa-square-check</v-icon><v-icon small v-else>far fa-square</v-icon> ถูกต้อง <span class="font17" v-if="disburse.disburseParcCheck=='ถูกต้อง'">{{ moneyFormat(disburse.disburseMoney) }} บาท</span><br>
                 &emsp;&emsp;<v-icon small v-if="disburse.disburseParcCheck=='ไม่ถูกต้อง'">far fa-square-check</v-icon><v-icon small v-else>far fa-square</v-icon> ไม่ถูกต้อง
                 <v-row no-gutters class="mt-1">
                   <v-col cols="12" class="font17 text-center">
-                    ลงชื่อ <img :src="parcSign+'?t='+new Date()" width="150" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" />
+                    ลงชื่อ <img :src="parcSign+'?t='+new Date()" width="100" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" />
                     <span class="font-17" v-else>...............................</span>
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
@@ -100,7 +107,7 @@
                 <v-row no-gutters class="mt-1">
                   <v-col cols="12" class="font17 text-center">
 
-                    ลงชื่อ <img :src="planSign+'?t='+new Date()" width="150" v-if="planSign && disburse.disbursePlanCheck=='ถูกต้อง'" />
+                    ลงชื่อ <img :src="planSign+'?t='+new Date()" width="100" v-if="planSign && disburse.disbursePlanCheck=='ถูกต้อง'" />
                     <span class="font-17" v-else>...............................</span>
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
@@ -115,7 +122,7 @@
                 &emsp;&emsp;เห็นควรอนุญาตดำเนินการ<br>
                 <v-row no-gutters class="mt-1">
                   <v-col cols="12" class="font17 text-center">
-                    ลงชื่อ <img :src="finaSign+'?t='+new Date()" width="150" v-if="finaSign && disburse.disburseFinaCheck=='ถูกต้อง'" />
+                    ลงชื่อ <img :src="finaSign+'?t='+new Date()" width="100" v-if="finaSign && disburse.disburseFinaCheck=='ถูกต้อง'" />
                     <span class="font-17" v-else>...............................</span>
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
@@ -128,7 +135,7 @@
                 &emsp;&emsp;เห็นควรอนุญาตดำเนินการ<br>
                 <v-row no-gutters class="mt-1">
                   <v-col cols="12" class="font17 text-center">
-                    ลงชื่อ <img :src="accoSign+'?t='+new Date()" width="150" v-if="accoSign && disburse.disburseAccoCheck=='ถูกต้อง'" />
+                    ลงชื่อ <img :src="accoSign+'?t='+new Date()" width="100" v-if="accoSign && disburse.disburseAccoCheck=='ถูกต้อง'" />
                     <span class="font-17" v-else>...............................</span>
                   </v-col>
                   <v-col cols="12" class="font17 text-center">
@@ -209,47 +216,50 @@
           </table>
         </v-col>
         <v-col cols="6" class="font17 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
-          <img :src="disburseSign+'?t='+new Date()" width="150" v-if="disburseSign" />
+          <img :src="disburseSign+'?t='+new Date()" width="100" v-if="disburseSign" />
           <span class="font17" v-else>........................................</span><br>
           ({{ disburse.departmentHead }}) <br>
           หัวหน้า{{ disburse.departmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font17 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
-          ........................................<br>
+          <img :src="disbursePartySign+'?t='+new Date()" width="100" v-if="disbursePartySign" />
+          <span class="font17" v-else>........................................</span><br>
           ({{ disburse.partyHead }}) <br>
           รองผู้อำนวยการฝ่าย{{ disburse.partyName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
-          <img :src="disburseSign+'?t='+new Date()" width="150" v-if="disburseSign" />
+          <img :src="disburseSign+'?t='+new Date()" width="100" v-if="disburseSign" />
           <span class="font17" v-else>........................................</span><br>
           ({{ disburse.departmentHead }}) <br>
           ผู้ขอจัดซื้อ<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
-          <img :src="pjdepartmentSign+'?t='+new Date()" width="150" v-if="pjdepartmentSign" />
+          <img :src="pjdepartmentSign+'?t='+new Date()" width="100" v-if="pjdepartmentSign" />
           <span class="font17" v-else>........................................</span><br>
           ({{ disburse.pjdepartmentHead }}) <br>
           หัวหน้า{{ disburse.pjdepartmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
-        <v-col cols="6" class="font17 text-center mt-5" v-else>
-          <img :src="pjdepartmentSign+'?t='+new Date()" width="150" v-if="pjdepartmentSign" /><img :src="disburseSign+'?t='+new Date()" width="150" v-else-if="disburseSign" />
+        <v-col cols="6" class="font17 text-center mt-5" v-else-if="disburse.disburseType=='โครงการ'">
+          <img :src="pjdepartmentSign+'?t='+new Date()" width="100" v-if="pjdepartmentSign" /><img :src="disburseSign+'?t='+new Date()" width="100" v-else-if="disburseSign" />
           <span class="font17" v-else>........................................</span><br>
           ({{ disburse.pjdepartmentHead }}) <br>
           หัวหน้า{{ disburse.pjdepartmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
-          ........................................<br>
+          <img :src="disbursePartySign+'?t='+new Date()" width="100" v-if="disbursePartySign" />
+          <span class="font17" v-else>........................................</span><br>
           ({{ disburse.pjpartyHead }}) <br>
           รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
-        <v-col cols="6" class="font17 text-center mt-5" v-else>
-          ........................................<br>
+        <v-col cols="6" class="font17 text-center mt-5" v-else-if="disburse.disburseType=='โครงการ'">
+          <img :src="disbursePartySign+'?t='+new Date()" width="100" v-if="disbursePartySign" />
+          <span class="font17" v-else>........................................</span><br>
           ({{ disburse.pjpartyHead }}) <br>
           รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
@@ -342,7 +352,9 @@ export default {
         disburseID: null,
         disburse: {},
         disburseSign: null,
+        disbursePartySign: null,
         pjdepartmentSign: null,
+        pjpartySign: null,
         parcSign: null,
         planSign: null,
         accoSign: null,
@@ -368,6 +380,10 @@ export default {
         })
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
+            console.log(this.disburse)
+            if(this.disburse.partyUserID) {
+              this.disbursePartySign = await this.getPartySignature(this.disburse.partyUserID)
+            }
             if(this.disburse.userID) {
               this.disburseSign = await this.getDepartmentSignature(this.disburse.userID)
             }
@@ -411,6 +427,23 @@ export default {
           }
         })
 
+        if(result.message == 'Success') {
+          return result.signatureImagePath+JSON.parse(JSON.stringify(result.signatureImages))[0]
+        } else {
+          return null
+        }
+    },
+
+    async getPartySignature(userID) {
+      let result = await this.$axios.$get('signature.image.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            signatureType: 'Party',
+            signatureID: userID,
+            function: 'signatureImageGet'
+          }
+        })
+console.log(result, userID)
         if(result.message == 'Success') {
           return result.signatureImagePath+JSON.parse(JSON.stringify(result.signatureImages))[0]
         } else {
