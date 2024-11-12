@@ -93,7 +93,7 @@
             </v-col>
             <v-col cols="12" lg="4">
             <div class="border">
-                <v-img :src="getImageUrl(this.documentImage)" v-if="this.documentImage"></v-img>
+                <v-img :src="getImageUrl(this.documentImage)+'?t='+new Date()" v-if="this.documentImage"></v-img>
                 <v-img blank blank-color="grey" class="col-12" v-else></v-img>
             </div>
             </v-col>

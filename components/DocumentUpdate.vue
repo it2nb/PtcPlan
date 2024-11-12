@@ -100,9 +100,9 @@
             </v-col>
             <v-col cols="12" lg="4">
                 <div class="border text-right">
-                    <v-img :src="getImageUrl(this.documentImage)" v-if="this.documentImage"></v-img>
+                    <v-img :src="getImageUrl(this.documentImage)+'?t='+new Date()" v-if="this.documentImage"></v-img>
                     <div v-else-if="documentCover">
-                    <v-img :src="this.document.documentCoverPath+this.document.documentCover" ></v-img>
+                    <v-img :src="this.document.documentCoverPath+this.document.documentCover+'?t='+new Date()" ></v-img>
                     <v-btn color="error" small class="m-1" @click="deleteDocumentImg">
                         <v-icon small>fas fa-trash</v-icon>
                     </v-btn>

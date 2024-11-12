@@ -158,7 +158,7 @@
                 <v-icon small color="error" v-if="item.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                 {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistCommment : '' }}
               </template>
-              <template v-slot:item.actions="{ item }" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง') && userType=='Department'">
+              <template v-slot:item.actions="{ item }" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
                 <v-btn color="warning" icon  small @click="showUpdateDialog(item)">
                   <v-icon small class="mr-1">fas fa-edit</v-icon>
                 </v-btn>
@@ -196,7 +196,7 @@
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
         <v-card-actions>
-          <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง') && userType=='Department'">
+          <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
             <v-progress-circular
               indeterminate
               color="success"
@@ -480,6 +480,7 @@ export default {
   data() {
     return {
       user: {},
+      disburseuser: {},
       userType: null,
       disburselists: [],
       disburseSum: [],
@@ -511,10 +512,26 @@ export default {
     console.log(this.user)
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
+      if(this.disburse.userID>0) {
+        await this.getDisburseUser(this.disburse.userID)
+      }
     }
   },
 
   methods: {
+    async getDisburseUser(userID) {
+      let result = await this.$axios.$get('user.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          userID: userID
+        }
+      })
+
+      if(result.message == 'Success') {
+        this.disburseuser = JSON.parse(JSON.stringify(result.user))
+      }
+    },
+
     async getDisburselist(disburseID) {
       let result = await this.$axios.$get('disburselist.php', {
         params: {
@@ -614,7 +631,16 @@ export default {
         disburseParcCheck: '',
         disbursePlanCheck: '',
         disburseAccoCheck: '',
-        disburseFinaCheck: ''
+        disburseFinaCheck: '',
+        disburseParcHead: '',
+        disbursePlanHead: '',
+        disburseAccoHead: '',
+        disburseFinaHead: '',
+        parcUserID: '',
+        planUserID: '',
+        accoUserID: '',
+        finaUserID: '',
+        disburseParReqName: '',
       })
 
       if(disburseUpdate.message == 'Success') {
@@ -707,6 +733,62 @@ export default {
           text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
         })
+        console.log(this.disburseuser)
+        if(this.disburseParStatus=='ตัดแผนแล้ว') {
+          if(this.disburseuser.userLineToken) {
+            await this.$axios.$post('sendline.php', {
+              token: this.disburseuser.userLineToken,
+              message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : รองฝ่ายเห็นชอบแล้ว > กำลังดำเนินการจัดซื้อจัดจ้าง\n'+window.location.origin
+            })
+          }
+          if(this.user.userLineToken) {
+            await this.$axios.$post('sendline.php', {
+              token: this.user.userLineToken,
+              message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : รองฝ่ายเห็นชอบแล้ว > กำลังดำเนินการจัดซื้อจัดจ้าง\n'+window.location.origin
+            })
+          }
+          await this.$axios.$get('department.php', {
+            params: {
+              token: this.$store.state.jwtToken,
+              departmentSys: 'Parcel'
+            }
+          }).then(result=> {
+            if(result.message=='Success') {
+              result.department.forEach(async department => {
+                await this.$axios.$get('user.php', {
+                  params: {
+                    token: this.$store.state.jwtToken,
+                    departmentID: department.departmentID
+                  }
+                }).then(result2=>{
+                  if(result2.message == 'Success') {
+                    result2.user.forEach(async user=>{
+                      if(user.userLineToken) {
+                        await this.$axios.$post('sendline.php', {
+                          token: user.userLineToken,
+                          message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : รองฝ่ายเห็นชอบแล้ว > ดำเนินการจัดซื้อจัดจ้าง\n'+window.location.origin
+                        })
+                      }
+                    })
+                  }
+                })
+              })
+            }
+          })
+        } else {
+          if(this.disburseuser.userLineToken) {
+            await this.$axios.$post('sendline.php', {
+              token: this.disburseuser.userLineToken,
+              message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : รองฝ่ายไม่เห็นชอบ\n'+window.location.origin
+            })
+          }
+          if(this.user.userLineToken) {
+            await this.$axios.$post('sendline.php', {
+              token: this.user.userLineToken,
+              message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : รองฝ่ายไม่เห็นชอบ\n'+window.location.origin
+            })
+          }
+        }
         this.$emit('getUpdateStatus', {'status': true})
         this.disburse.disburseStatus = this.disburseParStatus
       }

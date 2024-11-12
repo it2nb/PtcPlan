@@ -41,7 +41,7 @@
                   target="_blank"
                 >
                   <v-list-item-avatar v-if="document.documentCover">
-                    <v-img :src="document.documentCover" contain></v-img>
+                    <v-img :src="document.documentCover+'?t='+new Date()" contain></v-img>
                   </v-list-item-avatar>
                   <v-list-item-icon v-else>
                     <v-icon color="red darken-3">fas fa-file-pdf</v-icon>

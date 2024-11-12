@@ -1101,7 +1101,7 @@
                         <v-row v-if="imageNames.length > 0">
                           <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
                             <v-img
-                              :src="imagePath+imageName"
+                              :src="imagePath+imageName+'?t='+new Date()"
                               class="align-end text-right"
                               gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
                             >
@@ -1241,7 +1241,7 @@
                         <v-row v-if="imageInsertNames.length > 0">
                           <v-col class="col-3 col-md-1" v-for="imageName in imageInsertNames" :key="imageName.key">
                             <v-img
-                              :src="getImageUrl(imageName)"
+                              :src="getImageUrl(imageName)+'?t='+new Date()"
                             >
                               <template v-slot:placeholder>
                                 <v-row

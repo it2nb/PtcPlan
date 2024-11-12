@@ -404,7 +404,7 @@
                         <v-row v-if="imageNames.length > 0">
                           <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
                             <v-img
-                              :src="imagePath+imageName"
+                              :src="imagePath+imageName+'?t='+new Date()"
                               class="align-end text-right"
                               gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
                             >

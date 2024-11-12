@@ -215,7 +215,7 @@
                         ></v-file-input>
                         <div class="col-12" v-if="personalSignature">
                           <v-img
-                            :src="getImageUrl(personalSignature)"
+                            :src="getImageUrl(personalSignature)+'?t='+new Date()"
                             contain
                           >
                             <template v-slot:placeholder>

@@ -777,12 +777,14 @@ export default {
         lineMsg = 'งานพัสดุ'
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.departmentHead
+          disburse.parcUserID = this.user.userID
           await this.sendLindDepartSys('Plan', this.disburse.disburseID)
         }
       } else if(this.departmentSys == 'Plan') {
         lineMsg = 'งานวางแผนฯ'
         if(disburse.disbursePlanCheck=='ถูกต้อง') {
           disburse.disbursePlanHead = this.user.departmentHead
+          disburse.planUserID = this.user.userID
           await this.sendLindDepartSys('Account', this.disburse.disburseID)
         }
       }
@@ -790,12 +792,14 @@ export default {
         lineMsg = 'งานการบัญชี'
         if(disburse.disburseAccoCheck=='ถูกต้อง') {
           disburse.disburseAccoHead = this.user.departmentHead
+          disburse.accoUserID = this.user.userID
           await this.sendLindDepartSys('Finance', this.disburse.disburseID)
         }
       }
       if(this.departmentSys == 'Finance') {
         lineMsg = 'งานการเงิน'
         if(disburse.disburseFinaCheck=='ถูกต้อง') {
+          disburse.finaUserID = this.user.userID
           disburse.disburseFinaHead = this.user.departmentHead
         }
       }

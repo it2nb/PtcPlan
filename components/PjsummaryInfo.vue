@@ -49,7 +49,7 @@
         <div class="mb-2 fontBold">7. ภาพการดำเนินโครงการ</div>
         <v-row v-if="imageNames.length > 0">
           <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
-            <v-img :src="imagePath+imageName"></v-img>
+            <v-img :src="imagePath+imageName+'?t='+new Date()"></v-img>
           </v-col>
         </v-row>
       </v-col>

@@ -206,7 +206,7 @@
         ผู้เสนอโครงการ <img :src="personalSignature" width="150" v-if="personalSignature" /><span v-else>...........................................................</span><br>({{ project.personalPrefix+project.personalName+" "+project.personalSer }})
       </div> -->
       <div class="mt-10 font16 text-center">
-        ผู้เสนอโครงการ <img :src="departmentSignature" width="150" v-if="departmentSignature && (project.departmentSignName==project.departmentHead)" />
+        ผู้เสนอโครงการ <img :src="departmentSignature+'?t='+new Date()" width="150" v-if="departmentSignature && (project.departmentSignName==project.departmentHead)" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.departmentSignName">({{ project.departmentSignName }})</span>
         <span class="font16" v-else-if="project.departmentHead">({{ project.departmentHead }})</span>
@@ -214,7 +214,7 @@
         หัวหน้า{{project.departmentName}}
       </div>
       <div class="mt-10 font16 text-center">
-        ผู้เห็นชอบโครงการ <img :src="partySignature" width="150" v-if="partySignature && (project.partySignName==project.partyHead)" />
+        ผู้เห็นชอบโครงการ <img :src="partySignature+'?t='+new Date()" width="150" v-if="partySignature && (project.partySignName==project.partyHead)" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.partySignName">({{ project.partySignName }})</span>
         <span class="font16" v-else-if="project.partyHead">({{ project.partyHead }})</span>
@@ -222,7 +222,7 @@
         รองผู้อำนวยการฝ่าย{{project.partyName}}
       </div>
       <div class="mt-10 font16 text-center">
-        ผู้อนุมัติโครงการ <img :src="directorSignature" width="150" v-if="directorSignature && (project.directorSignName==project.partyHead)" />
+        ผู้อนุมัติโครงการ <img :src="directorSignature+'?t='+new Date()" width="150" v-if="directorSignature && (project.directorSignName==project.partyHead)" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.directorSignName">({{ project.directorSignName }})</span>
         <span class="font16" v-else-if="bossparty.partyHead">({{ bossparty.partyHead }})</span>
@@ -286,7 +286,6 @@ export default {
         projectID: this.projectID
       }
       let result = await this.$axios.$get('project.php', {params})
-      console.log(result)
       if(result.message == 'Success') {
         this.project = JSON.parse(JSON.stringify(result.project))
         await this.getPersonalSignature(this.project.personalIDcard)
