@@ -387,7 +387,7 @@
                   v-model="updateValidate"
                   ref="updateForm"
                   lazy-validation
-                  @submit.prevent="updateDisburselist"
+                  @submit.prevent="updateDisburselist(updateData)"
                   class="mt-4"
                 >
                   <v-card-text>
@@ -778,6 +778,7 @@ export default {
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.departmentHead
           disburse.parcUserID = this.user.userID
+          await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ส่งมาให้ > งานวางแผนฯ > ตรวจสอบความถูกต้อง')
           await this.sendLindDepartSys('Plan', this.disburse.disburseID)
         }
       } else if(this.departmentSys == 'Plan') {
@@ -785,6 +786,7 @@ export default {
         if(disburse.disbursePlanCheck=='ถูกต้อง') {
           disburse.disbursePlanHead = this.user.departmentHead
           disburse.planUserID = this.user.userID
+          await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ส่งมาให้ > งานบัญชี > ตรวจสอบความถูกต้อง')
           await this.sendLindDepartSys('Account', this.disburse.disburseID)
         }
       }
@@ -793,6 +795,7 @@ export default {
         if(disburse.disburseAccoCheck=='ถูกต้อง') {
           disburse.disburseAccoHead = this.user.departmentHead
           disburse.accoUserID = this.user.userID
+          await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ส่งมาให้ > งานการเงิน > ตรวจสอบความถูกต้อง')
           await this.sendLindDepartSys('Finance', this.disburse.disburseID)
         }
       }
@@ -806,10 +809,12 @@ export default {
 
       if(disburse.disburseParcCheck=='ไม่ถูกต้อง' || disburse.disbursePlanCheck=='ไม่ถูกต้อง' || disburse.disburseAccoCheck=='ไม่ถูกต้อง' || disburse.disburseFinaCheck=='ไม่ถูกต้อง') {
         disburse.disburseStatus = 'ไม่ถูกต้อง'
+        await this.sendLineGroup('ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : ไม่ถูกต้อง > ส่งกลับไปแก้ไข')
         lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : ไม่ถูกต้อง > โปรดแก้ไขและยืนยันคำขออีกครั้ง'
       } else if(disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง') {
         disburse.disburseStatus = 'รอฝ่ายเห็นชอบ'
-        lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : ถูกต้อง > รอให้รองฝ่ายให้ความเห็นชอบ'
+        await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ส่งมาให้ > รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+' > ให้ความเห็นชอบ')
+        lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : ถูกต้อง > รอให้รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+'ให้ความเห็นชอบ'
       }
       let result = await this.updateDisburse(disburse)
 
@@ -986,6 +991,15 @@ export default {
           })
         }
       })
+    },
+
+    async sendLineGroup(msg){
+      if(this.$store.state.lineGroupToken) {
+        await this.$axios.$post('sendline.php', {
+          token: this.$store.state.lineGroupToken,
+          message: msg+'\n'+window.location.origin
+        })
+      }
     },
 
     thaiDate(inDate) {

@@ -665,6 +665,9 @@ export default {
             message: 'ยืนยันรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' อยู่ระหว่างส่งตรวจสอบรายการ\n'+window.location.origin
           })
         }
+
+        await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ส่งมาให้ > งานพัสดุ > ตรวจสอบความถูกต้อง')
+
         await this.$axios.$get('department.php', {
           params: {
             token: this.$store.state.jwtToken,
@@ -741,8 +744,9 @@ export default {
           text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
         })
-        console.log(this.disburseuser)
+
         if(this.disburseParStatus=='ตัดแผนแล้ว') {
+          await this.sendLineGroup('รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : รองฝ่ายเห็นชอบแล้ว')
           if(this.disburseuser.userLineToken) {
             await this.$axios.$post('sendline.php', {
               token: this.disburseuser.userLineToken,
@@ -784,6 +788,7 @@ export default {
             }
           })
         } else {
+          await this.sendLineGroup('รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' : รองฝ่ายไม่เห็นชอบ')
           if(this.disburseuser.userLineToken) {
             await this.$axios.$post('sendline.php', {
               token: this.disburseuser.userLineToken,
@@ -801,6 +806,15 @@ export default {
         this.disburse.disburseStatus = this.disburseParStatus
       }
       this.updateProgress = false
+    },
+
+    async sendLineGroup(msg){
+      if(this.$store.state.lineGroupToken) {
+        await this.$axios.$post('sendline.php', {
+          token: this.$store.state.lineGroupToken,
+          message: msg+'\n'+window.location.origin
+        })
+      }
     },
 
     thaiDate(inDate) {
