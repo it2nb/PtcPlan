@@ -30,11 +30,11 @@
         <v-col cols="12" class="mt-3 px-5">
           <div class="mb-2 fontBold font18">4. ผลการดำเนินงาน/กิจกรรม</div>
           <div class="ml-5">
-            <div class="mb-2 fontBold font18">4.1 เชิงปริมาณ</div>
+            <div class="mb-2 fontBold font18">4.1 เชิงปริมาณ (ผลผลิต)</div>
             <pre class="font18 ml-5">{{ project.pjsummaryQtyResult }}</pre>
           </div>
           <div class="ml-5">
-            <div class="mb-2 fontBold font18">4.2 เชิงคุณภาพ</div>
+            <div class="mb-2 fontBold font18">4.2 เชิงคุณภาพ (ผลลัพธ์)</div>
             <pre class="font18 ml-5">{{ project.pjsummaryQlyResult }}</pre>
           </div>
           <div class="ml-5">

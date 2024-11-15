@@ -37,19 +37,19 @@
               background-color="green lighten-5"
             >
               <v-tab>
-                <b class="grey--text text--darken-2">ทั้งหมด</b>
+                <b class="grey--text text--darken-2">ทั้งหมด ({{ projects.length }})</b>
               </v-tab>
               <v-tab>
-                <b class="primary--text">เสนอโครงการ</b>
+                <b class="primary--text">เสนอโครงการ ({{ projectsProp.length }})</b>
               </v-tab>
               <!-- <v-tab>
                 <b class="deep-purple--text">แผนก/งานเห็นชอบแล้ว</b>
               </v-tab> -->
               <v-tab class="lime--text text--darken-3">
-                <b>ฝ่ายเห็นชอบแล้ว</b>
+                <b>ฝ่ายเห็นชอบแล้ว ({{ projectsPart.length }})</b>
               </v-tab>
               <v-tab class="success--text text--darken-3">
-                <b>อนุมัติแล้ว</b>
+                <b>อนุมัติแล้ว ({{ projectsAppr.length }})</b>
               </v-tab>
             </v-tabs>
             <v-tabs-items

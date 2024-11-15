@@ -900,7 +900,7 @@
                         large
                         v-else
                       >
-                        แก้ไข
+                        ยืนยัน
                       </v-btn>
                     </div>
                   </v-card-actions>
@@ -1003,7 +1003,7 @@
                         large
                         v-else
                       >
-                        แก้ไข
+                        ยืนยันสถานะ
                       </v-btn>
                     </div>
                   </v-card-actions>
@@ -1183,7 +1183,7 @@
                         <h3 class="mb-2 fontBold">ผลการดำเนินงาน/กิจกรรม</h3>
                         <v-textarea
                           v-model="projectSummaryData.pjsummaryQtyResult"
-                          label="เชิงปริมาณ"
+                          label="เชิงปริมาณ (ผลผลิต)"
                           outlined
                           :rules="[
                             () => !!projectSummaryData.pjsummaryQtyResult || 'กรุณากรอกข้อมูล'
@@ -1191,7 +1191,7 @@
                         ></v-textarea>
                         <v-textarea
                           v-model="projectSummaryData.pjsummaryQlyResult"
-                          label="เชิงคุณภาพ"
+                          label="เชิงคุณภาพ (ผลลัพธ์)"
                           outlined
                           :rules="[
                             () => !!projectSummaryData.pjsummaryQlyResult || 'กรุณากรอกข้อมูล'
@@ -1277,7 +1277,7 @@
                         large
                         v-else
                       >
-                        แก้ไข
+                        บันทึก
                       </v-btn>
                     </div>
                   </v-card-actions>
@@ -1961,6 +1961,17 @@ export default {
         this.updateStatusProgress = true
         this.projectData.token = this.$store.state.jwtToken
 
+        let bossparty = {}
+
+        let params = {
+          token: this.$store.state.jwtToken,
+          partyName: 'อำนวยการ'
+        }
+        let partry = await this.$axios.$get('party.php', {params})
+        if(partry.message == 'Success') {
+          bossparty = JSON.parse(JSON.stringify(partry.party))
+        }
+
         if(this.userType=='Director' || this.userType=='Admin') {
           this.projectData.directorSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           if(this.projectData.projectStatus == 'อนุมัติ') {
@@ -1970,6 +1981,9 @@ export default {
           } else {
             this.projectData.directorSign = ''
           }
+          let msg = 'โครงการ รหัส PJ-'+parseInt(this.projectData.projectID) +' ('+this.projectData.projectName+') : '+this.projectData.projectStatus
+          this.sendLindDepartment(this.projectData.departmentID, msg)
+          this.sendLindParty(this.projectData.partyID, msg)
         } else if(this.userType=='Party') {
           await this.getParty()
           this.projectData.partySignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
@@ -1979,6 +1993,9 @@ export default {
           } else {
             this.projectData.partySign = ''
           }
+          let msg = 'รองฝ่ายให้ความเห็นโครงการ รหัส PJ-'+parseInt(this.projectData.projectID) +' ('+this.projectData.projectName+') แล้ว : '+this.projectData.projectStatus
+          this.sendLindDepartment(this.projectData.departmentID, msg)
+          this.sendLindParty(this.bossparty.partyID, msg)
         } else if(this.userType=='Department') {
           this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           if(this.projectData.projectStatus == 'แผนก/งานเห็นชอบ') {
@@ -2246,6 +2263,55 @@ export default {
 
     async getBudgetStatus(res) {
       this.$emit('getProjects', false)
+    },
+
+    async sendLineGroup(msg){
+      if(this.$store.state.lineGroupToken) {
+        await this.$axios.$post('sendline.php', {
+          token: this.$store.state.lineGroupToken,
+          message: msg+'\n'+window.location.origin
+        })
+      }
+    },
+
+    async sendLindDepartment(departmentID, msg) {
+      await this.$axios.$get('user.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          departmentID: departmentID
+        }
+      }).then(result=>{
+        if(result.message == 'Success') {
+          result.user.forEach(async user=>{
+            if(user.userLineToken) {
+              await this.$axios.$post('sendline.php', {
+                token: user.userLineToken,
+                message: msg+'\n'+window.location.origin
+              })
+            }
+          })
+        }
+      })
+    },
+
+    async sendLindParty(partyID, msg) {
+      await this.$axios.$get('user.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          partyID: partyID
+        }
+      }).then(result=>{
+        if(result.message == 'Success') {
+          result.user.forEach(async user=>{
+            if(user.userLineToken) {
+              await this.$axios.$post('sendline.php', {
+                token: user.userLineToken,
+                message: msg+'\n'+window.location.origin
+              })
+            }
+          })
+        }
+      })
     },
 
     moneyFormat(money) {
