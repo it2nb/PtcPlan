@@ -123,8 +123,7 @@ export default {
         {text: 'งานพัสดุ', value: 'Parcel'},
         {text: 'งานวางแผน', value: 'Plan'},
         {text: 'งานบัญชี', value: 'Account'},
-        {text: 'งานการเงิน', value: 'Finance'},
-        {text: 'งานสารบัญ', value: 'Finance'}
+        {text: 'งานการเงิน', value: 'Finance'}
       ],
       insertProgress: false,
       insertValidate: null,

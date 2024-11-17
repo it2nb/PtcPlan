@@ -1016,6 +1016,55 @@ export default {
       }
     },
 
+    showUpdateCompanyDialog(disburse) {
+      this.updateData = JSON.parse(JSON.stringify(disburse))
+      this.getCompany()
+      this.updateCompanyDialog = true
+    },
+
+    async updateDisburseCompany() {
+      this.updateProgress = true
+      let disburseUpdate = await this.$axios.$post('disburse.update.php', {
+        token: this.$store.state.jwtToken,
+        disburseID: this.updateData.disburseID,
+        companyID: this.updateData.companyID,
+        disburseAuditHead: this.updateData.disburseAuditHead,
+        disburseAuditHeadPos: this.updateData.disburseAuditHeadPos,
+        disburseAuditComm: this.updateData.disburseAuditComm,
+        disburseAuditCommPos: this.updateData.disburseAuditCommPos,
+        disburseAuditSecr: this.updateData.disburseAuditSecr,
+        disburseAuditSecrPos: this.updateData.disburseAuditSecrPos
+      })
+
+      if(disburseUpdate.message == 'Success') {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'แก้ไขข้อมูลเป็นที่เรียบร้อยแล้ว',
+          icon: 'success'
+        }).then(()=>{
+          this.disburse.companyID = this.updateData.companyID
+          this.disburse.companyName = this.companies.filter(company => company.companyID==this.updateData.companyID)[0].companyName || ''
+          this.disburse.disburseAuditHead = this.updateData.disburseAuditHead
+          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
+          this.disburse.disburseAuditComm = this.updateData.disburseAuditComm
+          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
+          this.disburse.disburseAuditSecr = this.updateData.disburseAuditSecr
+          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
+          this.updateProgress = false
+          this.updateCompanyDialog = false
+        })
+      } else {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'แก้ไขข้อมูลเป็นที่เรียบร้อยแล้ว',
+          icon: 'success'
+        }).then(()=>{
+          this.updateProgress = false
+          this.updateCompanyDialog = false
+        })
+      }
+    },
+
     async sendLindDepartSys(departmentSys, disburseID) {
       await this.$axios.$get('department.php', {
         params: {
