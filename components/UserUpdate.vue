@@ -162,6 +162,7 @@ export default {
         {'text': 'งานพัสดุ', 'value': 'Supply'},
         {'text': 'งานการเงิน', 'value': 'Finance'},
         {'text': 'งานบัญชี', 'value': 'Accountant'},
+        {'text': 'งานสารบัญ', 'value': 'Index'},
         {'text': 'ผู้อำนวยการ', 'value': 'Director'},
         {'text': 'ผู้ดูแลระบบ', 'value': 'Admin'},
       ],

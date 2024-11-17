@@ -496,7 +496,7 @@ export default {
       if(this.$refs.loginuserForm.validate()) {
         this.user.token = this.$store.state.jwtToken
         let result = await this.$axios.$post('user.login.php', this.user)
-
+        console.log(result)
         if(result.message === 'Success') {
           let user = result.user
 
@@ -517,6 +517,8 @@ export default {
             this.$router.push('/Plan')
           } else if(user.userStatus === 'Finance') {
             this.$router.push('/Finance')
+          } else if(user.userStatus === 'Index') {
+            this.$router.push('/Indexwork')
           } else {
             sessionStorage.clear()
             this.$router.push('/')

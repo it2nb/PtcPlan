@@ -667,6 +667,7 @@ export default {
       Completesearch: '',
       Cancelsearch: '',
       tab: 0,
+      user: {},
       disbursesLoading: true,
       disburses: [],
       CheckDisburses: [],
@@ -696,14 +697,29 @@ export default {
   },
 
   async mounted() {
+    await this.getUser()
     await this.getDisburses()
   },
 
   methods: {
+    async getUser() {
+      await this.$axios.$get('user.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          userID: this.userID
+        }
+      }).then(result=>{
+        if(result.message=='Success') {
+          this.user = JSON.parse(JSON.stringify(result.user))
+          console.log(this.user)
+        }
+      })
+    },
+
     async getDisburses() {
       this.disbursesLoading = true
       let params = {}
-      if(this.departmentSys=='Parcel' || this.departmentSys=='Plan' || this.departmentSys=='Account' || this.departmentSys=='Finance') {
+      if(this.departmentSys=='Parcel' || this.departmentSys=='Plan' || this.departmentSys=='Account' || this.departmentSys=='Finance' || this.user.userStatus=='Index') {
         params = {
           token: this.$store.state.jwtToken,
           disburseYear: this.disburseYear

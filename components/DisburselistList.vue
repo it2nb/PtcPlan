@@ -669,11 +669,11 @@ export default {
         if(this.user.userLineToken) {
           await this.$axios.$post('sendline.php', {
             token: this.user.userLineToken,
-            message: 'ยืนยันรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) อยู่ระหว่างส่งตรวจสอบรายการ\n'+window.location.origin
+            message: 'ยืนยันรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) อยู่ระหว่างส่งตรวจสอบรายการ\n'+window.location.origin
           })
         }
 
-        await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > งานพัสดุ > ตรวจสอบความถูกต้อง')
+        await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) ส่งมาให้ > งานพัสดุ > ตรวจสอบความถูกต้อง')
 
         await this.$axios.$get('department.php', {
           params: {
@@ -694,7 +694,7 @@ export default {
                     if(user.userLineToken) {
                       await this.$axios.$post('sendline.php', {
                         token: user.userLineToken,
-                        message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาตรวจสอบความถูกต้อง\n'+window.location.origin
+                        message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) ส่งมาตรวจสอบความถูกต้อง\n'+window.location.origin
                       })
                     }
                   })
@@ -732,6 +732,7 @@ export default {
     async confirmParty() {
       this.updateProgress = true
       let disburseParReqName = ''
+      let disbursePartyDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
       let partyUserID = 0
       if(this.disburseParStatus=='ตัดแผนแล้ว') {
         disburseParReqName = this.user.partyHead
@@ -743,6 +744,7 @@ export default {
         disburseStatus: this.disburseParStatus,
         disburseParReqName: disburseParReqName,
         disbursePartyDes: this.disbursePartyDes,
+        disbursePartyDate: disbursePartyDate,
         partyUserID: partyUserID
       })
 

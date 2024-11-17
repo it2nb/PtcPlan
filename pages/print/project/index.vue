@@ -206,7 +206,7 @@
         ผู้เสนอโครงการ <img :src="personalSignature" width="150" v-if="personalSignature" /><span v-else>...........................................................</span><br>({{ project.personalPrefix+project.personalName+" "+project.personalSer }})
       </div> -->
       <div class="mt-10 font16 text-center">
-        ผู้เสนอโครงการ <img :src="departmentSignature+'?t='+new Date()" width="150" v-if="departmentSignature" />
+        ผู้เสนอโครงการ <img :src="departmentSignature+'?t='+new Date()" style="max-width: 150px; max-height: 40px;" v-if="departmentSignature" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.departmentSignName">({{ project.departmentSignName }})</span>
         <span class="font16" v-else-if="project.departmentHead">({{ project.departmentHead }})</span>
@@ -214,7 +214,7 @@
         หัวหน้า{{project.departmentName}}
       </div>
       <div class="mt-10 font16 text-center">
-        ผู้เห็นชอบโครงการ <img :src="partySignature+'?t='+new Date()" width="150" v-if="partySignature" />
+        ผู้เห็นชอบโครงการ <img :src="partySignature+'?t='+new Date()" style="max-width: 150px; max-height: 40px;" v-if="partySignature" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.partySignName">({{ project.partySignName }})</span>
         <span class="font16" v-else-if="project.partyHead">({{ project.partyHead }})</span>
@@ -222,7 +222,7 @@
         รองผู้อำนวยการฝ่าย{{project.partyName}}
       </div>
       <div class="mt-10 font16 text-center">
-        ผู้อนุมัติโครงการ <img :src="directorSignature+'?t='+new Date()" width="150" v-if="directorSignature" />
+        ผู้อนุมัติโครงการ <img :src="directorSignature+'?t='+new Date()" style="max-width: 150px; max-height: 40px;" v-if="directorSignature" />
         <span v-else>................................................</span><br>
         <span class="font16" v-if="project.directorSignName">({{ project.directorSignName }})</span>
         <span class="font16" v-else-if="bossparty.partyHead">({{ bossparty.partyHead }})</span>

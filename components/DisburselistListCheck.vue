@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card v-if="departmentSys=='Parcel' || departmentSys=='Plan' || departmentSys=='Account' || departmentSys=='Finance'">
+  <div v-if="user">
+    <v-card v-if="departmentSys=='Parcel' || departmentSys=='Plan' || departmentSys=='Account' || departmentSys=='Finance' || user.userStatus=='Index'">
       <v-card-title class="amber lighten-2">
         <span class="fontBold">เพิ่มรายการ{{ disburse.expenseName }}</span>
         <v-spacer></v-spacer>
@@ -91,7 +91,7 @@
               <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
               {{ disburse.budgettypeName }} : {{ disburse.budgetplanFullname }}
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
               <h3 class="mb-2 fontBold">ร้านค้า</h3>
               {{ disburse.companyName }}
             </v-col>
@@ -101,12 +101,26 @@
               {{ disburse.disburseAuditComm }} {{ disburse.disburseAuditCommPos }} กรรมการ<br>
               {{ disburse.disburseAuditSecr }} {{ disburse.disburseAuditSecrPos }} กรรมการและเลขานุการ
             </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">เลขที่หนังสือ</h3>
+              เลขที่บันทึกขอซื้อฯ {{ disburse.disburseAuditHeadPos }} วันที่ <br>
+              เลขที่บันทึกรายงานขอซื้อฯ {{ disburse.disburseAuditComm }} วันที่ <br>
+              เลขที่คำสั่งคณะกรรมการตรวจรับ {{ disburse.disburseAuditSecr }} วันที่ <br>
+              เลขที่บันทึกรายงานผลการพิจารณาฯ {{ disburse.disburseAuditSecr }} วันที่ 
+            </v-col>
             <v-col cols="12" class="text-center" v-if="departmentSys=='Parcel'">
               <v-btn 
                 small 
                 color="warning"
                 @click="showUpdateCompanyDialog(disburse)"
               >กำหนดร้านค้าและคณะกรรมการตรวจรับ</v-btn>
+            </v-col>
+            <v-col cols="12" class="text-center" v-if="user.userStatus=='Index'&&disburse.disburseStatus=='ตัดแผนแล้ว'">
+              <v-btn 
+                small 
+                color="warning"
+                @click="showUpdateCompanyDialog(disburse)"
+              >กำหนดเลขที่หนังสืองานสารบัญ</v-btn>
             </v-col>
             <v-col>
               <v-data-table
@@ -299,11 +313,12 @@
             </div>
             <div v-else-if="departmentSys=='Account'">
               <v-row no-gutters>
-                <v-col cols="12" md="4" class="mx-auto">
+                <v-col cols="12" md="4" class="ml-auto">
                   <v-radio-group
                     v-model="disburse.disburseAccoCheck"
                     row
                     class="text-center justify-center"
+                    required
                   >
                     <v-radio
                       label="ถูกต้อง"
@@ -316,6 +331,20 @@
                       color="error"
                     ></v-radio>
                   </v-radio-group>
+                </v-col>
+                <v-col cols="12" md="6"  class="mr-auto">
+                  <v-autocomplete
+                    v-model="disburse.ledgerID"
+                    label="รหัสบัญชีแยกประเภท"
+                    :items="ledgers"
+                    item-text="ledgerID"
+                    item-value="ledgerID"
+                    outlined
+                  >
+                  <template v-slot:item="{ item }">
+                    GL-{{ item.ledgerID }} : {{ item.ledgerName }}
+                  </template>
+                  </v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="10" class="mx-auto">
                   <v-textarea
@@ -660,6 +689,7 @@ export default {
   data() {
     return {
       user: {},
+      ledgers: [],
       disburseuser: {},
       disburselists: [],
       disburselistcs: [],
@@ -695,10 +725,15 @@ export default {
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
       await this.getDisburselistQty(this.disburse.disburseID)
+      await this.getLedger()
       if(this.disburse.userID>0) {
         await this.getDisburseUser(this.disburse.userID)
       }
     }
+  },
+
+  beforeDestroy() {
+    this.$emit('getUpdateStatus', {'status': true})
   },
 
   methods: {
@@ -712,6 +747,19 @@ export default {
 
       if(result.message == 'Success') {
         this.disburseuser = JSON.parse(JSON.stringify(result.user))
+      }
+    },
+
+    async getLedger() {
+      let result = await this.$axios.$get('ledger.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          fn: 'All'
+        }
+      })
+
+      if(result.message == 'Success') {
+        this.ledgers = JSON.parse(JSON.stringify(result.ledger))
       }
     },
 
@@ -775,6 +823,7 @@ export default {
       let lineMsg = ''
       if(this.departmentSys == 'Parcel') {
         lineMsg = 'งานพัสดุ'
+        disburse.disburseParcDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.departmentHead
           disburse.parcUserID = this.user.userID
@@ -783,6 +832,7 @@ export default {
         }
       } else if(this.departmentSys == 'Plan') {
         lineMsg = 'งานวางแผนฯ'
+        disburse.disbursePlanDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
         if(disburse.disbursePlanCheck=='ถูกต้อง') {
           disburse.disbursePlanHead = this.user.departmentHead
           disburse.planUserID = this.user.userID
@@ -792,6 +842,7 @@ export default {
       }
       if(this.departmentSys == 'Account') {
         lineMsg = 'งานการบัญชี'
+        disburse.disburseAccoDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
         if(disburse.disburseAccoCheck=='ถูกต้อง') {
           disburse.disburseAccoHead = this.user.departmentHead
           disburse.accoUserID = this.user.userID
@@ -801,6 +852,7 @@ export default {
       }
       if(this.departmentSys == 'Finance') {
         lineMsg = 'งานการเงิน'
+        disburse.disburseFinaDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
         if(disburse.disburseFinaCheck=='ถูกต้อง') {
           disburse.finaUserID = this.user.userID
           disburse.disburseFinaHead = this.user.departmentHead
@@ -942,6 +994,7 @@ export default {
           icon: 'success'
         }).then(()=>{
           this.disburse.companyID = this.updateData.companyID
+          this.disburse.companyName = this.companies.filter(company => company.companyID==this.updateData.companyID)[0].companyName || ''
           this.disburse.disburseAuditHead = this.updateData.disburseAuditHead
           this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
           this.disburse.disburseAuditComm = this.updateData.disburseAuditComm
@@ -1053,6 +1106,11 @@ export default {
   watch: {
     async disburse() {
       await this.getDisburselist(this.disburse.disburseID)
+      await this.getDisburselistQty(this.disburse.disburseID)
+      await this.getLedger()
+      if(this.disburse.userID>0) {
+        await this.getDisburseUser(this.disburse.userID)
+      }
       this.insertData = {}
     }
   }

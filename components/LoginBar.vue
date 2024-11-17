@@ -158,6 +158,8 @@ export default {
             this.$router.push('/Plan')
           } else if(user.userStatus === 'Finance') {
             this.$router.push('/Finance')
+          } else if(user.userStatus === 'Index') {
+            this.$router.push('/Indexwork')
           } else {
             sessionStorage.clear()
             this.$router.push('/')

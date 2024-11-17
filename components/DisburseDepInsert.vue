@@ -466,7 +466,7 @@ export default {
             }
             await this.$axios.$post('project.update.php', updateProject)
           }
-
+          
           Swal.fire({
             title: 'สำเร็จ',
             text: result.msg,

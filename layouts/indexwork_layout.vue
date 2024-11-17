@@ -33,7 +33,7 @@
                   size="48"
                 >
                   <v-icon color="grey lighten-2">
-                    fas fa-user
+                    fas fa-cog
                   </v-icon>
 
                 </v-avatar>
@@ -57,55 +57,6 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <v-divider></v-divider>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item
-          v-for="(item) in itemsSys"
-          :key="item.key"
-          :to="item.to"
-          router
-          exact
-          color="teal darken-2"
-          v-if="user.departmentSys=='Parcel' || user.departmentSys=='Plan' || user.departmentSys=='Account' || user.departmentSys=='Finance'"
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item
-          to="/Department/company"
-          router
-          exact
-          color="teal darken-2"
-          v-if="user.departmentSys=='Parcel'"
-        >
-          <v-list-item-action>
-            <v-icon>fas fa-dot-circle</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>ร้านค้า</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item
-          to="/Department/ledger"
-          router
-          exact
-          color="teal darken-2"
-          v-if="user.departmentSys=='Account'"
-        >
-          <v-list-item-action>
-            <v-icon>fas fa-dot-circle</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>รหัสบัญชีแยกประเภท</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <Headerapp :drawer="drawer" @getDrawer="drawerChange" />
@@ -126,7 +77,7 @@
 <script>
 import Headerapp from '~/components/Headerapp'
 export default {
-  name: 'DepartmentLayout',
+  name: 'IndexworkLayout',
 
   components: {
     Headerapp
@@ -135,39 +86,41 @@ export default {
   data () {
     return {
       user: {},
-      department: {},
       drawer: true,
       title: this.$store.state.appTitle,
       items: [
         {
           icon: 'fas fa-dot-circle ',
+          title: 'Info',
+          to: '/Indexwork/',
+        },
+        {
+          icon: 'fas fa-dot-circle ',
           title: 'ข้อมูลส่วนตัว',
-          to: '/Department/',
+          to: '/Indexwork/me',
         },
-        {
-          icon: 'fas fa-dot-circle',
-          title: 'โครงการ',
-          to: '/Department/project'
-        },
-        {
-          icon: 'fas fa-dot-circle',
-          title: 'การจัดซื้อ/เบิกเงิน',
-          to: '/Department/disburse'
-        },
-      ],
-      itemsSys: [
         {
           icon: 'fas fa-dot-circle',
           title: 'ตรวจสอบรายการจัดซื้อ',
-          to: '/Department/disbursecheck'
+          to: '/Indexwork/disbursecheck'
         },
+        // {
+        //   icon: 'fas fa-dot-circle',
+        //   title: 'แผนกงาน',
+        //   to: '/Indexwork/department'
+        // },
+        // {
+        //   icon: 'fas fa-dot-circle ',
+        //   title: 'นโยบายที่เกี่ยวข้อง',
+        //   to: '/Indexwork/strategic',
+        // },
       ],
     }
   },
 
-  async mounted() {
+  mounted() {
     let loginUser = JSON.parse(sessionStorage.getItem("loginuser")) || {type: ''}
-    if(loginUser.type == 'Department') {
+    if(loginUser.type == 'Index') {
       this.user = loginUser.user
     } else {
       this.$router.replace('/')
@@ -175,7 +128,6 @@ export default {
   },
 
   methods: {
-
     drawerChange(data) {
       this.drawer = data.drawer
     },

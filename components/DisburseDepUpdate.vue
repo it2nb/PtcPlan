@@ -451,7 +451,7 @@ export default {
         }
 
         let result = await this.$axios.$post('disburse.update.php', this.updateData)
-console.log(result)
+
         if(result.message == 'Success') {
           if(this.updateData.disburseType==='โครงการ' && this.disburse==='ค่าใช้จ่าย') {
             let updateProject = {
