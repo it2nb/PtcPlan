@@ -314,7 +314,8 @@ export default {
     },
 
     async showUpdateDialog(pjbudget) {
-      this.pjbudgetData = pjbudget
+      pjbudget.pjbudgetallocMoney = 0
+      this.pjbudgetData = JSON.parse(JSON.stringify(pjbudget))
       this.pjbudgetData.token = this.$store.state.jwtToken
       let pjbudgetalloc = {}
       await this.$axios.$get('pjbudgetalloc.php', {
@@ -325,11 +326,13 @@ export default {
         }
       }).then(result=>{
         if(result.message == 'Success') {
-          pjbudgetalloc = result.pjbudgetalloc
+          pjbudgetalloc = JSON.parse(JSON.stringify(result.pjbudgetalloc))
+          this.pjbudgetData.pjbudgetallocMoney = parseFloat(pjbudgetalloc.pjbudgetallocMoney)
+          this.updateDialog = true
         }
       })
-      this.pjbudgetData.pjbudgetallocMoney = parseFloat(pjbudgetalloc.pjbudgetallocMoney)
-      this.updateDialog = true
+      
+      
     },
 
     async updatePjbudget(res) {
@@ -385,6 +388,7 @@ export default {
 
   watch: {
     async projectID() {
+      await this.getPjbudget()
       await this.getPjbudget()
     }
   }

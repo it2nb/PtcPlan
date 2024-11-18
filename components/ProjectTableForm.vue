@@ -14,8 +14,8 @@
             ทั้งหมดจำนวน {{ projectDatas.length }} โครงการ งบประมาณ
             <span v-if="projectDatas.length>0">
               <span class="fontBold" v-if="projectDatas[0].projectStatus=='เสนอโครงการ'">{{ moneyFormat(projectSum.pjbudgetWaitApproveMoney) }} </span>
-              <span class="fontBold" v-else-if="status=='ฝ่ายเห็นชอบ'">{{ moneyFormat(projectSum.pjbudgetParApproveMoney) }} </span>
-              <span class="fontBold" v-else-if="status=='อนุมัติ'">{{ moneyFormat(projectSum.pjbudgetApproveMoney) }} </span>
+              <!-- <span class="fontBold" v-else-if="status=='ฝ่ายเห็นชอบ'">{{ moneyFormat(projectSum.pjbudgetParApproveMoney) }} </span> -->
+              <!-- <span class="fontBold" v-else-if="status=='อนุมัติ'">{{ moneyFormat(projectSum.pjbudgetApproveMoney) }} </span> -->
               <span class="fontBold" v-else>{{ moneyFormat(projectSum.pjbudgetMoney) }} </span>
             </span>
             <span class="fontBold" v-else>
@@ -1669,6 +1669,7 @@ export default {
   async mounted() {
     await this.getProjects()
     await this.getParties()
+    console.log(this.partyID)
   },
 
   methods: {
@@ -1699,13 +1700,14 @@ export default {
     },
 
     async getParty() {
+      console.log(this.partyID)
       let result = await this.$axios.$get('party.php', {
         params: {
           token: this.$store.state.jwtToken,
           partyID: this.partyID
         }
       })
-
+  
       if(result.message === 'Success') {
         this.party = result.party
       }
@@ -1968,6 +1970,7 @@ export default {
           partyName: 'อำนวยการ'
         }
         let partry = await this.$axios.$get('party.php', {params})
+        console.log(partry)
         if(partry.message == 'Success') {
           bossparty = JSON.parse(JSON.stringify(partry.party))
         }
@@ -1995,7 +1998,7 @@ export default {
           }
           let msg = 'รองฝ่ายให้ความเห็นโครงการ รหัส PJ-'+parseInt(this.projectData.projectID) +' ('+this.projectData.projectName+') แล้ว : '+this.projectData.projectStatus
           this.sendLindDepartment(this.projectData.departmentID, msg)
-          this.sendLindParty(this.bossparty.partyID, msg)
+          this.sendLindParty(bossparty.partyID, msg)
         } else if(this.userType=='Department') {
           this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           if(this.projectData.projectStatus == 'แผนก/งานเห็นชอบ') {

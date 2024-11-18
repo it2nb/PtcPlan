@@ -343,7 +343,9 @@ export default {
         projectPlanStatus: 'อนุมัติหลักการ',
         projectYear: this.insertData.disburseYear
       }
+
       let result = await this.$axios.$get('project.php', {params})
+
       if(result.message == 'Success') {
         this.projects = JSON.parse(JSON.stringify(result.project))
       }

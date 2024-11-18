@@ -711,7 +711,6 @@ export default {
       }).then(result=>{
         if(result.message=='Success') {
           this.user = JSON.parse(JSON.stringify(result.user))
-          console.log(this.user)
         }
       })
     },
@@ -737,7 +736,11 @@ export default {
             this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseAccoCheck === '' || disburse.disburseAccoCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ' && disburse.disbursePlanCheck == 'ถูกต้อง')
           } else if(this.departmentSys == 'Finance') {
             this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseFinaCheck === '' || disburse.disburseFinaCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ' && disburse.disburseAccoCheck == 'ถูกต้อง')
+          } else if(this.user.userStatus == 'Index') {
+            this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseStatus=='ตัดแผนแล้ว' && (disburse.disburseRecNo=='' || disburse.disburseRecNo==null) && (disburse.reportRecNo=='' || disburse.reportRecNo==null) && (disburse.checkComNo=='' || disburse.checkComNo==null) && (disburse.resultRecNo=='' || disburse.resultRecNo==null)))
           }
+
+
           this.CorrectDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง'))
           this.WrongDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ไม่ถูกต้อง' || disburse.disbursePlanCheck === 'ไม่ถูกต้อง' || disburse.disburseAccoCheck === 'ไม่ถูกต้อง' || disburse.disburseFinaCheck === 'ไม่ถูกต้อง'))
         }

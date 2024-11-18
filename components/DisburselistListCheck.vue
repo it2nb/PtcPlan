@@ -91,7 +91,7 @@
               <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
               {{ disburse.budgettypeName }} : {{ disburse.budgetplanFullname }}
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">ร้านค้า</h3>
               {{ disburse.companyName }}
             </v-col>
@@ -119,10 +119,10 @@
               <v-btn 
                 small 
                 color="warning"
-                @click="showUpdateCompanyDialog(disburse)"
+                @click="showUpdateIndexDialog(disburse)"
               >กำหนดเลขที่หนังสืองานสารบัญ</v-btn>
             </v-col>
-            <v-col>
+            <v-col cols="12">
               <v-data-table
               :headers="[
                 {text: 'รายการ', value: 'disburselistName', align: 'left', class: 'text-center'},
@@ -667,6 +667,106 @@
       </v-dialog>
     </v-row>
 
+    <v-row justify="center">
+      <v-dialog
+        v-model="updateIndexDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-10 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="amber lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="updateIndexDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <v-card-title class="amber lighten-2">
+                  <span class="fontBold">กำหนดเลขที่งานสารบัญ</span>
+                </v-card-title>
+                <v-form
+                  v-model="updateCompanyValidate"
+                  ref="updateCompanyForm"
+                  lazy-validation
+                  @submit.prevent="updateDisburseCompany"
+                  class="mt-4"
+                >
+                  <v-card-text>
+                    <v-row dense>
+                      <v-col cols="12">
+                        <v-autocomplete
+                          v-model="updateData.companyID"
+                          label="ชื่อร้านค้า"
+                          :items="companies"
+                          item-text="companyName"
+                          item-value="companyID"
+                          dense
+                          outlined
+                        ></v-autocomplete>
+                      </v-col>
+                      <v-col cols="12" class="pb-3">
+                        <v-divider></v-divider>
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <v-text-field
+                          v-model="updateData.disburseAuditHead"
+                          label="ประธานกรรมการตรวจรับ"
+                          outlined
+                          dense
+                        />
+                        <v-text-field
+                          v-model="updateData.disburseAuditHeadPos"
+                          label="ตำแหน่ง"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <v-text-field
+                          v-model="updateData.disburseAuditComm"
+                          label="กรรมการตรวจรับ"
+                          outlined
+                          dense
+                        />
+                        <v-text-field
+                          v-model="updateData.disburseAuditCommPos"
+                          label="ตำแหน่ง"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <v-text-field
+                          v-model="updateData.disburseAuditSecr"
+                          label="กรรมการและเลขานุการตรวจรับ"
+                          outlined
+                          dense
+                        />
+                        <v-text-field
+                          v-model="updateData.disburseAuditSecrPos"
+                          label="ตำแหน่ง"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" class="text-center">
+                        <v-progress-circular indeterminate color="primary" class="mx-auto" v-if="updateProgress"></v-progress-circular>
+                        <v-btn large color="warning" type="submit" class="col-4" v-else>
+                          <v-icon small class="mr-1">fas fa-edit</v-icon> แก้ไข
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-form>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
   </div>
 </template>
 
@@ -715,7 +815,9 @@ export default {
       confirmCheck: null,
       updateCompanyDialog: false,
       updateCompanyValidate: null,
-      companies: []
+      companies: [],
+      updateIndexDialog: false,
+      updateIndexValidate: null,
     }
   },
 
@@ -1016,13 +1118,13 @@ export default {
       }
     },
 
-    showUpdateCompanyDialog(disburse) {
+    showUpdateIndexDialog(disburse) {
       this.updateData = JSON.parse(JSON.stringify(disburse))
       this.getCompany()
-      this.updateCompanyDialog = true
+      this.updateIndexDialog = true
     },
 
-    async updateDisburseCompany() {
+    async updateDisburseIndex() {
       this.updateProgress = true
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
         token: this.$store.state.jwtToken,
@@ -1060,7 +1162,7 @@ export default {
           icon: 'success'
         }).then(()=>{
           this.updateProgress = false
-          this.updateCompanyDialog = false
+          this.updateIndexDialog = false
         })
       }
     },

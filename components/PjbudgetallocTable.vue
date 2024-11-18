@@ -322,12 +322,6 @@ export default {
 
   },
 
-  computed: {
-    pjbudgetID() {
-      return this.pjbudget.pjbudgetID
-    }
-  },
-
   watch: {
     async pjbudgetID() {
       await this.getPjsubactivity()
