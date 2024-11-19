@@ -82,6 +82,22 @@
                   <template v-slot:item.disburseDate="{ item }">
                     {{ thaiDateBf(item.disburseDate) }}
                   </template>
+                  <template v-slot:item.disburseParcCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disburseParcCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disburseParcCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
+                  <template v-slot:item.disbursePlanCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disbursePlanCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disbursePlanCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
+                  <template v-slot:item.disburseAccoCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disburseAccoCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disburseAccoCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
+                  <template v-slot:item.disburseFinaCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disburseFinaCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disburseFinaCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
                   <template v-slot:item.actions="{ item }">
                     <div>
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
@@ -501,7 +517,7 @@
                     </div>
                   </template>
                   <template v-slot:item.actions="{ item }">
-                    <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว')">
+                    <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว' && item.disburseStatus!='เบิกจ่ายแล้ว')">
                       <v-chip color="success" x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>
@@ -804,6 +820,10 @@ export default {
         { text: 'วันที่', value: 'disburseDate', align: 'center', class: 'text-center' },
         { text: 'หมวดงบประมาณรายรับ', value: 'budgetplanFullname', align: 'left', class: 'text-center' },
         { text: 'แผนก/งาน', value: 'departmentName', align: 'left', class: 'text-center' },
+        { text: 'พัสดุตรวจสอบ', value: 'disburseParcCheck', align: 'center', class: 'text-center' },
+        { text: 'แผนตรวจสอบ', value: 'disbursePlanCheck', align: 'center', class: 'text-center' },
+        { text: 'บัญชีตรวจสอบ', value: 'disburseAccoCheck', align: 'center', class: 'text-center' },
+        { text: 'การเงินตรวจสอบ', value: 'disburseFinaCheck', align: 'center', class: 'text-center' },
         { text: '', value: 'actions', align: 'center' },
       ],
       Planheaders: [

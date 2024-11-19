@@ -16,7 +16,7 @@
         </v-col>
         <v-col cols="6" class="mt-5 font17" v-if="state">
             ใบสั่งเลขที่<br>
-            วันที่ {{ thaiDate(disburse.disburseDate) }}<br>
+            วันที่ <br>
             ส่วนราชการ {{ state.appSubTitle }}<br>
             ที่อยู่ ถ.เหมืองหิต ต.ในเวียง อ.เมืองแพร่ จ.แพร่ <br>
             โทรศัพท์  054-511142,054-511530
@@ -70,11 +70,11 @@
               <tr>
                 <td colspan="3" rowspan="3" class="font17 font-weight-bold text-center">{{ thaiBaht(disburse.disburseMoney) }}</td>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงิน</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*0.07)) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney*100/107) }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">ภาษีมูลค่าเพิ่ม</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney*0.07) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
@@ -85,8 +85,8 @@
         </v-col>
         <v-col cols="12" class="mt-3 font17">
             การซื้อ อยู่ภายใต้เงื่อนไขต่อไปนี้<br>
-            1.  กำหนดส่งมอบภายใน 5 วันทำการ นับจากวันที่ผู้ขายได้รับใบสั่งซื้อ<br>
-            2.  ครบกำหนดส่งมอบวันที่ {{ addDays(disburse.disburseDate, 5) }}<br>
+            1.  กำหนดส่งมอบภายใน ____ วันทำการ นับจากวันที่ผู้ขายได้รับใบสั่งซื้อ<br>
+            2.  ครบกำหนดส่งมอบวันที่ _______________________<br>
             3.  สถานที่ส่งมอบ  วิทยาลัยเทคนิคแพร่ ถนนเหมืองหิต<br>
             4.  ระยะเวลารับประกัน  -<br>
             5.  สงวนสิทธ์ค่าปรับกรณีส่งมอบเกินกำหนด โดยคิดค่าปรับเป็นรายวันในอัตราร้อยละ 0.20 ของราคาสิ่งของที่ยังไม่ได้รับมอบ<br>
@@ -94,7 +94,7 @@
             7.  การประเมินผลการปฏิบัติงานของผู้ประกอบการ หน่วยงานของรัฐสามารถนำผลการปฏิบัติงานแล้วเสร็จตามสัญญาหรือข้อตกลงของคู่สัญญาเพื่อนำมาประเมินผลการปฏิบัติงานของผู้ประกอบการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งซื้อมีผลตามกฎหมาย<br>
-            2. ใบสั่งซื้อนี้ ซื้อ<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งซื้อนี้ ซื้อ<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งซื้อ</div>
@@ -127,7 +127,7 @@
         </v-col>
         <v-col cols="6" class="mt-5 font17" v-if="state">
             ใบสั่งจ้างเลขที่<br>
-            วันที่ {{ thaiDate(disburse.disburseDate) }}<br>
+            วันที่ <br>
             ส่วนราชการ {{ state.appSubTitle }}<br>
             ที่อยู่ ถ.เหมืองหิต ต.ในเวียง อ.เมืองแพร่ จ.แพร่ <br>
             โทรศัพท์  054-511142,054-511530
@@ -196,8 +196,8 @@
         </v-col>
         <v-col cols="12" class="mt-3 font17">
             การจ้าง อยู่ภายใต้เงื่อนไขต่อไปนี้<br>
-            1.  กำหนดส่งมอบภายใน 5 วันทำการ นับจากวันที่ผู้รับจ้างได้รับใบสั่งจ้าง<br>
-            2.  ครบกำหนดส่งมอบวันที่ {{ addDays(disburse.disburseDate, 5) }}<br>
+            1.  กำหนดส่งมอบภายใน ____ วันทำการ นับจากวันที่ผู้รับจ้างได้รับใบสั่งจ้าง<br>
+            2.  ครบกำหนดส่งมอบวันที่ _______________________<br>
             3.  สถานที่ส่งมอบ  วิทยาลัยเทคนิคแพร่ ถนนเหมืองหิต<br>
             4.  ระยะเวลารับประกัน  -<br>
             5.  สงวนสิทธ์ค่าปรับกรณีส่งมอบเกินกำหนด โดยคิดค่าปรับเป็นรายวันในอัตราร้อยละ 0.1 ของราคาสิ่งของที่ยังไม่ได้รับมอบแต่จะต้องไม่ต่ำกว่ากันวันละ 100.00 บาท<br>
@@ -206,7 +206,7 @@
             8.  การประเมินผลการปฏิบัติงานของผู้ประกอบการ หน่วยงานของรัฐสามารถนำผลการปฏิบัติงานแล้วเสร็จตามสัญญา หรือข้อตกลงของคู่สัญญาเพื่อนำมาประเมินผลการปฏิบัติงานของผู้ประกอบการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งจ้างมีผลตามกฎหมาย<br>
-            2. ใบสั่งจ้างนี้ จ้าง<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งจ้างนี้ จ้าง<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งจ้่าง</div>
@@ -239,7 +239,7 @@
         </v-col>
         <v-col cols="6" class="mt-5 font17" v-if="state">
             ใบสั่งเช่าเลขที่<br>
-            วันที่ {{ thaiDate(disburse.disburseDate) }}<br>
+            วันที่ <br>
             ส่วนราชการ {{ state.appSubTitle }}<br>
             ที่อยู่ ถ.เหมืองหิต ต.ในเวียง อ.เมืองแพร่ จ.แพร่ <br>
             โทรศัพท์  054-511142,054-511530
@@ -308,15 +308,15 @@
         </v-col>
         <v-col cols="12" class="mt-3 font17">
             การเช่า อยู่ภายใต้เงื่อนไขต่อไปนี้<br>
-            1.  กำหนดส่งมอบภายใน 5 วันทำการ นับจากวันที่ผู้รับเช่าได้รับใบสั่งเช่า<br>
-            2.  ครบกำหนดส่งมอบวันที่ {{ addDays(disburse.disburseDate, 5) }}<br>
+            1.  กำหนดส่งมอบภายใน ____ วันทำการ นับจากวันที่ผู้รับเช่าได้รับใบสั่งเช่า<br>
+            2.  ครบกำหนดส่งมอบวันที่ _______________________<br>
             3.  สถานที่ส่งมอบ  วิทยาลัยเทคนิคแพร่ ถนนเหมืองหิต<br>
             4.  ระยะเวลารับประกัน  -<br>
             5.  สงวนสิทธ์ค่าปรับกรณีส่งมอบเกินกำหนด โดยคิดค่าปรับเป็นรายวันในอัตราร้อยละ 0.10 ของราคางานเช่าแต่ต้องไม่ต่ำกว่าวันละ 100.00 บาท<br>
             6.   ส่วนราชการสงวนสิทธิ์ที่จะไม่รับมอบถ้าปรากฏว่าสินค้านั้นมีลักษณะไม่ตรงตามรายการที่ระบุไว้ในใบสั่งเช่า กรณีนี้ผู้รับเช่าจะต้องดำเนินการเปลี่ยนใหม่ให้ถูกต้องตามใบสั่งเช่าทุกประการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งเช่ามีผลตามกฎหมาย<br>
-            2. ใบสั่งเช่านี้ เช่า<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งเช่านี้ เช่า<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งเช่า</div>
@@ -450,6 +450,17 @@ export default {
             this.company = result.company
         }
       })
+    },
+
+    subDepartment(departmentName) {
+      if(departmentName) {
+        let subd = departmentName.substring(departmentName.indexOf("(") + 1, departmentName.lastIndexOf(")"))
+        if(subd){
+          return subd
+        } else {
+          return departmentName
+        }
+      }
     },
 
     thaiDate(inDate) {

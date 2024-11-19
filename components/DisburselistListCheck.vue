@@ -198,12 +198,29 @@
                     </div>
                 </div>
               </template>
+              <template slot="body.append" v-if="disburse.disburseExcludeVat==1">
+                <tr>
+                  <td colspan="4" class="">ภาษีมูลค่าเพิ่ม 7 %</td>
+                  <td class="text-right">
+                    {{ moneyFormat(vat) }}
+                  </td>
+                </tr>
+              </template>
               <template slot="foot">
                 <tr class="grey lighten-3">
                   <td colspan="4" class="px-4 py-2 text-center font-weight-bold">รวม</td>
-                  <td class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(disburseSum) }}</td>
-                  <td class="px-4 py-2 text-right font-weight-bold"></td>
-                  <td class="px-4 py-2 text-right font-weight-bold"></td>
+                  <td class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(parseFloat(disburseSum)+parseFloat(vat)) }}</td>
+                  <td></td>
+                  <td colspan="2" class="px-4 py-2 text-right font-weight-bold">
+                    <v-checkbox
+                      v-model="disburse.disburseExcludeVat"
+                      label="คิด Vat 7%"
+                      :true-value="1"
+                      :false-value="0"
+                      @change="excludeVatChange"
+                      v-if="disburse.disburseStatus == 'ตรวจสอบรายการ' && departmentSys=='Parcel'"
+                    ></v-checkbox>
+                  </td>
                 </tr>
               </template>
             </v-data-table>
@@ -818,6 +835,7 @@ export default {
       companies: [],
       updateIndexDialog: false,
       updateIndexValidate: null,
+      vat: 0,
     }
   },
 
@@ -877,6 +895,7 @@ export default {
         this.disburselists = JSON.parse(JSON.stringify(result.disburselist))
         this.disburselistcs = JSON.parse(JSON.stringify(result.disburselist))
         this.disburseSum = this.disburselists.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburselistSumPrice), 0);
+        this.calVat()
       }
     },
 
@@ -1028,10 +1047,13 @@ export default {
         disburselist.token = this.$store.state.jwtToken
         let result = await this.$axios.$post('disburselist.update.php', disburselist)
         await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+            if(this.disburse.disburseExcludeVat==1){
+              this.calVat()
+            }
             await this.$axios.$post('disburse.update.php', {
             token: this.$store.state.jwtToken,
             disburseID: this.disburse.disburseID,
-            disburseMoney: this.disburseSum
+            disburseMoney: parseFloat(this.disburseSum)+parseFloat(this.vat)
           })
         })
         //if(result.message == 'Success') {
@@ -1080,6 +1102,19 @@ export default {
         this.deleteProgress = false
         this.deleteDialog = false
       }
+    },
+
+    async excludeVatChange() {
+      this.calVat()
+      await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+        await this.$axios.$post('disburse.update.php', {
+          token: this.$store.state.jwtToken,
+          disburseID: this.disburse.disburseID,
+          disburseMoney: parseFloat(this.disburseSum)+parseFloat(this.vat),
+          disburseExcludeVat: this.disburse.disburseExcludeVat
+        })
+      })
+      this.$emit('getUpdateStatus', {'status': true})
     },
 
     async confirmList() {
@@ -1244,6 +1279,13 @@ export default {
           })
         }
       })
+    },
+
+    async calVat() {
+      if(this.disburse.disburseExcludeVat==1)
+        this.vat = parseFloat(this.disburseSum)*0.07
+      else
+        this.vat = 0
     },
 
     async sendLineGroup(msg){

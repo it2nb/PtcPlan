@@ -137,7 +137,7 @@
                 {text: 'ราคา', value: 'disburselistPrice', align: 'right', class: 'text-center'},
                 {text: 'รวม', value: 'disburselistSumPrice', align: 'right', class: 'text-center'},
                 {text: 'หมายเหตุ', value: 'disburselistDes', align: 'left', class: 'text-center'},
-                {text: 'หมายเหตุ', value: 'disburselistStatus', align: 'left', class: 'text-center'},
+                {text: 'สถานะ', value: 'disburselistStatus', align: 'left', class: 'text-center'},
                 {text: '', value:'actions', align: 'right'}
               ]"
               :items="disburselists"
@@ -166,12 +166,29 @@
                   <v-icon small class="mr-1">fas fa-trash</v-icon>
                 </v-btn>
               </template>
+              <template slot="body.append" v-if="disburse.disburseExcludeVat==1">
+                <tr>
+                  <td colspan="4" class="">ภาษีมูลค่าเพิ่ม 7 %</td>
+                  <td class="text-right">
+                    {{ moneyFormat(vat) }}
+                  </td>
+                </tr>
+              </template>
               <template slot="foot">
                 <tr class="grey lighten-3">
                   <td colspan="4" class="px-4 py-2 text-center font-weight-bold">รวม</td>
-                  <td class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(disburseSum) }}</td>
-                  <td class="px-4 py-2 text-right font-weight-bold"></td>
-                  <td class="px-4 py-2 text-right font-weight-bold"></td>
+                  <td class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(parseFloat(disburseSum)+parseFloat(vat)) }}</td>
+                  <td></td>
+                  <td colspan="2" class="px-4 py-2 text-right font-weight-bold">
+                    <v-checkbox
+                      v-model="disburse.disburseExcludeVat"
+                      label="คิด Vat 7%"
+                      :true-value="1"
+                      :false-value="0"
+                      @change="excludeVatChange"
+                      v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'"
+                    ></v-checkbox>
+                  </td>
                 </tr>
               </template>
             </v-data-table>
@@ -204,7 +221,7 @@
             ></v-progress-circular>
             <div v-else-if="disburselists.length > 0">
               <v-row class="mb-1 justify-center"  >
-                <v-checkbox
+                  <v-checkbox
                   v-model="confirmCheck"
                   label="เมื่อยืนยันและส่งตรวจสอบรายการแล้วจะไม่สามารถแก้ไขได้"
                 ></v-checkbox>
@@ -490,7 +507,7 @@ export default {
       disburseuser: {},
       userType: null,
       disburselists: [],
-      disburseSum: [],
+      disburseSum: 0,
       disburseParStatus: null,
       disbursePartyDes: null,
       insertData: {},
@@ -510,6 +527,7 @@ export default {
       updateDialog: false,
       deleteDialog: false,
       confirmCheck: null,
+      vat: 0,
     }
   },
 
@@ -550,6 +568,7 @@ export default {
       if(result.message == 'Success') {
         this.disburselists = JSON.parse(JSON.stringify(result.disburselist))
         this.disburseSum = this.disburselists.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburselistSumPrice), 0);
+        this.calVat()
       }
     },
 
@@ -563,10 +582,13 @@ export default {
         if(result.message == 'Success') {
           this.insertData = {}
           await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
-              await this.$axios.$post('disburse.update.php', {
+            if(this.disburse.disburseExcludeVat==1){
+              this.calVat()
+            }
+            await this.$axios.$post('disburse.update.php', {
               token: this.$store.state.jwtToken,
               disburseID: this.disburse.disburseID,
-              disburseMoney: this.disburseSum
+              disburseMoney: parseFloat(this.disburseSum)+parseFloat(this.vat)
             })
           })
           this.$emit('getUpdateStatus', {'status': true})
@@ -589,10 +611,13 @@ export default {
         let result = await this.$axios.$post('disburselist.update.php', this.updateData)
         if(result.message == 'Success') {
           await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
-              await this.$axios.$post('disburse.update.php', {
+            if(this.disburse.disburseExcludeVat==1){
+              this.calVat()
+            }
+            await this.$axios.$post('disburse.update.php', {
               token: this.$store.state.jwtToken,
               disburseID: this.disburse.disburseID,
-              disburseMoney: this.disburseSum
+              disburseMoney: parseFloat(this.disburseSum)+parseFloat(this.vat)
             })
           })
           this.$emit('getUpdateStatus', {'status': true})
@@ -616,10 +641,13 @@ export default {
         let result = await this.$axios.$post('disburselist.delete.php', this.deleteData)
         if(result.message == 'Success') {
           await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+            if(this.disburse.disburseExcludeVat==1){
+              this.calVat()
+            }
               await this.$axios.$post('disburse.update.php', {
               token: this.$store.state.jwtToken,
               disburseID: this.disburse.disburseID,
-              disburseMoney: this.disburseSum
+              disburseMoney: parseFloat(this.disburseSum)+parseFloat(this.vat)
             })
           })
           this.$emit('getUpdateStatus', {'status': true})
@@ -648,7 +676,7 @@ export default {
         planUserID: 0,
         accoUserID: 0,
         finaUserID: 0,
-        disburseParReqName: '',
+        disburseParReqName: ''
       })
 
       if(disburseUpdate.message == 'Success') {
@@ -706,6 +734,19 @@ export default {
         this.$emit('getUpdateStatus', {'status': true})
       }
       this.updateProgress = false
+    },
+
+    async excludeVatChange() {
+      this.calVat()
+      await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+        await this.$axios.$post('disburse.update.php', {
+          token: this.$store.state.jwtToken,
+          disburseID: this.disburse.disburseID,
+          disburseMoney: parseFloat(this.disburseSum)+parseFloat(this.vat),
+          disburseExcludeVat: this.disburse.disburseExcludeVat
+        })
+      })
+      this.$emit('getUpdateStatus', {'status': true})
     },
 
     async confirmRequest() {
@@ -827,6 +868,13 @@ export default {
       }
     },
 
+    async calVat() {
+      if(this.disburse.disburseExcludeVat==1)
+        this.vat = parseFloat(this.disburseSum)*0.07
+      else
+        this.vat = 0
+    },
+
     thaiDate(inDate) {
       let result = ''
       if(inDate) {
@@ -858,7 +906,8 @@ export default {
     async disburse() {
       await this.getDisburselist(this.disburse.disburseID)
       this.insertData = {}
-    }
+      this.vat = 0
+    },
   }
 }
 </script>

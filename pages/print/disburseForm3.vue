@@ -18,7 +18,7 @@
             ที่&emsp;&emsp;&emsp;&emsp;&emsp;/{{ parseInt(formDate[0])+543 }}
         </v-col>
         <v-col cols="6" class="font17">
-            วันที่ {{ thaiDate(disburse.disburseDate) }}
+            วันที่
         </v-col>
         <v-col cols="12" class="font17">
           เรื่อง รายงานขอ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>
@@ -27,16 +27,17 @@
           เรียน ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="pt-3 font17">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่มีความประสงค์จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ซึ่งมีรายละเอียด ดังต่อไปนี้
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่มีความประสงค์จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ซึ่งมีรายละเอียด ดังต่อไปนี้
         </v-col>
         <v-col cols="12" class="pt-1 font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;1. เหตุผลความจำเป็นที่ต้อง<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span> เพื่อ{{ disburse.disburseDes }}
         </v-col>
-        <v-col cols="12" class="font17">
+        <v-col cols="12" class="font17" v-if="disburse.disburseType">
             &emsp;&emsp;&emsp;&emsp;&emsp;2. รายละเอียดของพัสดุ
-            <div class="font17"  v-for="disburselist, index in disburselists" :key="disburselist.key">
+            <!-- <div class="font17"  v-for="disburselist, index in disburselists" :key="disburselist.key">
                 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ index+1 }}. {{ disburselist.disburselistName }} &emsp;{{ disburselist.disburselistQty }} {{ disburselist.disburselistUnit }}
-            </div>
+            </div> --><br>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;รายการ{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }} จำนวน {{ disburselists.length }} รายการ
         </v-col>
         <v-col cols="12" class="font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;3. ราคากลางของพัสดุที่จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span> จำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท
@@ -67,6 +68,7 @@
           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;2. ลงนามในคำสั่งแต่งตั้งคณะกรรมการตรวจรับพัสดุโดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="5" class="mt-10 ml-auto text-center font17">
+          <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" /><br>
           ({{ disburse.disburseParcHead }})<br>
           หัวหน้าเจ้าหน้าที่พัสดุ
         </v-col>
@@ -91,7 +93,8 @@ export default {
         financeName: null,
         disburse: {},
         disburselists: [],
-        formDate: []
+        formDate: [],
+        parcSign: null
     }
   },
 
@@ -112,6 +115,9 @@ export default {
         })
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
+            if(this.disburse.parcUserID) {
+              this.parcSign = await this.getDepartmentSignature(this.disburse.parcUserID)
+            }
 
             this.formDate = this.disburse.disburseDate.split('-')
 
@@ -177,6 +183,34 @@ export default {
           }
         }
       })
+    },
+
+    async getDepartmentSignature(userID) {
+      let result = await this.$axios.$get('signature.image.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            signatureType: 'Department',
+            signatureID: userID,
+            function: 'signatureImageGet'
+          }
+        })
+
+        if(result.message == 'Success') {
+          return result.signatureImagePath+JSON.parse(JSON.stringify(result.signatureImages))[0]
+        } else {
+          return null
+        }
+    },
+
+    subDepartment(departmentName) {
+      if(departmentName) {
+        let subd = departmentName.substring(departmentName.indexOf("(") + 1, departmentName.lastIndexOf(")"))
+        if(subd){
+          return subd
+        } else {
+          return departmentName
+        }
+      }
     },
 
     thaiDate(inDate) {

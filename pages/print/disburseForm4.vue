@@ -12,14 +12,14 @@
             คำสั่งวิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="text-center font17 font-weight-bold">
-            ที่&emsp;&emsp;
+            ที่&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
         </v-col>
         <v-col cols="12" class="text-center font17 font-weight-bold">
-            เรื่อง แต่งตั้ง คณะกรรมการตรวจรับพัสดุ สำหรับ<span class="font17 font-weight-bold" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17 font-weight-bold" v-else>ซื้อ</span><span class="font17 font-weight-bold" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17 font-weight-bold" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} <br>{{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ 
+            เรื่อง แต่งตั้ง คณะกรรมการตรวจรับพัสดุ สำหรับ<span class="font17 font-weight-bold" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17 font-weight-bold" v-else>ซื้อ</span><span class="font17 font-weight-bold" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17 font-weight-bold" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} <br>{{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ 
 <br>โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="12" class="pt-3 font17">
-          &emsp;&emsp;&emsp;&emsp;&emspด้วยวิทยาลัยเทคนิคแพร่ มีความประสงค์จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง และเพื่อให้เป็นไปตามระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 จึงขอแต่งตั้งรายชื่อต่อไปนี้เป็น คณะกรรมการตรวจรับพัสดุสำหรับ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+          &emsp;&emsp;&emsp;&emsp;&emspด้วยวิทยาลัยเทคนิคแพร่ มีความประสงค์จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง และเพื่อให้เป็นไปตามระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 จึงขอแต่งตั้งรายชื่อต่อไปนี้เป็น คณะกรรมการตรวจรับพัสดุสำหรับ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="12" class="pt-1 font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;1. {{ disburse.disburseAuditHead }}&emsp;&emsp;&emsp;&emsp;&emsp;ประธานกรรมการฯ<br>
@@ -151,6 +151,17 @@ export default {
           }
         }
       })
+    },
+
+    subDepartment(departmentName) {
+      if(departmentName) {
+        let subd = departmentName.substring(departmentName.indexOf("(") + 1, departmentName.lastIndexOf(")"))
+        if(subd){
+          return subd
+        } else {
+          return departmentName
+        }
+      }
     },
 
     thaiDate(inDate) {

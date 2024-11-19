@@ -37,7 +37,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="disburselist, index in disburselists" :key="disburselist.key">
+              <!-- <tr v-for="disburselist, index in disburselists" :key="disburselist.key">
                 <td class="font17 text-center">{{ index==0 ? disburse.expenseName : '' }}</td>
                 <td class="font17">
                   {{index+1}}. {{ disburselist.disburselistName }}
@@ -54,6 +54,25 @@
                 <td class="font17">
                   <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                   {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
+                </td>
+              </tr> -->
+
+              <tr>
+                <td></td>
+                <td class="font17">
+                  {{ disburse.disburseType=='โครงการ'? subDepartment(disburse.pjdepartmentName) : subDepartment(disburse.departmentName) }}
+                </td>
+                <td class="font17 pl-2">
+                  
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  
+                </td>
+                <td class="font17">
+                  
                 </td>
               </tr>
               <tr>
@@ -272,6 +291,17 @@ export default {
     //     this.projectSum = JSON.parse(JSON.stringify(result.project))
     //   }
     // },
+
+    subDepartment(departmentName) {
+      if(departmentName) {
+        let subd = departmentName.substring(departmentName.indexOf("(") + 1, departmentName.lastIndexOf(")"))
+        if(subd){
+          return subd
+        } else {
+          return departmentName
+        }
+      }
+    },
 
     thaiDate(inDate) {
       let result = ''
