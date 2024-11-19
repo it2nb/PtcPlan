@@ -910,6 +910,28 @@ export default {
       this.updateDialog = true
     },
 
+    // async updateDisburselist() {
+    //   await this.$refs.updateForm.validate()
+    //   if(this.updateValidate) {
+    //     this.updateProgress = true
+    //     this.updateData.token = this.$store.state.jwtToken
+    //     this.updateData.disburselistStatus = ''
+    //     let result = await this.$axios.$post('disburselist.update.php', this.updateData)
+    //     if(result.message == 'Success') {
+    //       await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+    //           await this.$axios.$post('disburse.update.php', {
+    //           token: this.$store.state.jwtToken,
+    //           disburseID: this.disburse.disburseID,
+    //           disburseMoney: this.disburseSum
+    //         })
+    //       })
+    //       this.$emit('getUpdateStatus', {'status': true})
+    //     }
+    //     this.updateProgress = false
+    //     this.updateDialog = false
+    //   }
+    // },
+
     async updateDisburse(disburse) {
       disburse.token = this.$store.state.jwtToken
       let disburseUpdate = await this.$axios.$post('disburse.update.php', disburse)
@@ -1005,7 +1027,13 @@ export default {
         this.updateProgress = true
         disburselist.token = this.$store.state.jwtToken
         let result = await this.$axios.$post('disburselist.update.php', disburselist)
-        await this.getDisburselist(this.disburse.disburseID)
+        await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+            await this.$axios.$post('disburse.update.php', {
+            token: this.$store.state.jwtToken,
+            disburseID: this.disburse.disburseID,
+            disburseMoney: this.disburseSum
+          })
+        })
         //if(result.message == 'Success') {
         await this.getDisburselistQty(this.disburse.disburseID).then(async ()=>{
             if(this.disburselistQty.wrongQty > 0) {

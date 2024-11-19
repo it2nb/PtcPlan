@@ -12,10 +12,10 @@
             บันทึกข้อความ
         </v-col>
         <v-col cols="12" class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
-            ส่วนราชการ &emsp; {{ disburse.departmentName }} ฝ่าย{{ disburse.partyName}}
+            ส่วนราชการ &emsp; {{ disburse.departmentName }} ฝ่าย{{ disburse.partyName}} วิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="font17" v-if="disburse.disburseType=='โครงการ'">
-            ส่วนราชการ &emsp; {{ disburse.pjdepartmentName }} ฝ่าย{{ disburse.pjpartyName}}
+            ส่วนราชการ &emsp; {{ disburse.pjdepartmentName }} ฝ่าย{{ disburse.pjpartyName}} วิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="6" class="font17">
             ที่&emsp;&emsp;&emsp;&emsp;&emsp;/{{ parseInt(formDate[0])+543 }}
@@ -30,7 +30,15 @@
           เรียน ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="pt-1 font17">
-          สิ่งที่ส่งมาด้วย แบบโครงการและประมาณการค่าใช้จ่าย
+          <table>
+            <tr>
+              <td class="font17" valign="top">สิ่งที่ส่งมาด้วย</td>
+              <td class="pl-3 font17">
+                1. แบบโครงการและประมาณการค่าใช้จ่าย<br>
+                2. แบบตรวจสอบรายการคำขอจัดซื้อจัดจ้าง รหัส DB-{{ parseInt(disburseID) }}
+              </td>
+            </tr>
+          </table>
         </v-col>
         <v-col cols="12" class="pt-1 font17">
           &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ disburse.departmentName }} มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }} จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
@@ -63,6 +71,7 @@
               <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
               <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseSign" /><br>
               ({{ disburse.disburseReqName }})<br>
+              หัวหน้า{{ disburse.departmentName }}<br>
               ผู้ขอจัดซื้อ
             </v-col>
             <v-col align-self="start" class="text-center font17" v-if="disburse.departmentID!=disburse.pjdepartmentID">

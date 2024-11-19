@@ -12,6 +12,9 @@
             คำสั่งวิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="text-center font17 font-weight-bold">
+            ที่&emsp;&emsp;
+        </v-col>
+        <v-col cols="12" class="text-center font17 font-weight-bold">
             เรื่อง แต่งตั้ง คณะกรรมการตรวจรับพัสดุ สำหรับ<span class="font17 font-weight-bold" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17 font-weight-bold" v-else>ซื้อ</span><span class="font17 font-weight-bold" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ disburse.departmentName }}</span><span class="font17 font-weight-bold" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} <br>{{ disburse.projectName }} {{ disburse.pjdepartmentName }}</span> จำนวน {{ disburselists.length }} รายการ 
 <br>โดยวิธีเฉพาะเจาะจง
         </v-col>
