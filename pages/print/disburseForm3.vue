@@ -15,19 +15,19 @@
             ส่วนราชการ &emsp; งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="6" class="font17">
-            ที่&emsp;&emsp;&emsp;&emsp;&emsp;/{{ parseInt(formDate[0])+543 }}
+            ที่ &emsp; {{ disburse.reportRecNo }}
         </v-col>
         <v-col cols="6" class="font17">
-            วันที่
+            วันที่ &nbsp; {{  thaiDate(disburse.recDate) }}
         </v-col>
         <v-col cols="12" class="font17">
-          เรื่อง รายงานขอ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>
+          เรื่อง รายงานขอ{{disburse.disburseSubtype}}
         </v-col>
         <v-col cols="12" class="pt-1 font17">
           เรียน ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="pt-3 font17">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่มีความประสงค์จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ซึ่งมีรายละเอียด ดังต่อไปนี้
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ซึ่งมีรายละเอียด ดังต่อไปนี้
         </v-col>
         <v-col cols="12" class="pt-1 font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;1. เหตุผลความจำเป็นที่ต้อง<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span> เพื่อ{{ disburse.disburseDes }}
@@ -37,7 +37,7 @@
             <!-- <div class="font17"  v-for="disburselist, index in disburselists" :key="disburselist.key">
                 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ index+1 }}. {{ disburselist.disburselistName }} &emsp;{{ disburselist.disburselistQty }} {{ disburselist.disburselistUnit }}
             </div> --><br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;รายการ{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }} จำนวน {{ disburselists.length }} รายการ
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(ตามรายละเอียดแนบท้าย จำนวน {{ disburselists.length }} รายการ)
         </v-col>
         <v-col cols="12" class="font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;3. ราคากลางของพัสดุที่จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span> จำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท

@@ -118,6 +118,9 @@
             <v-col cols="12" class="font17 text-center">
               ({{ disburse.disburseParcHead? disburse.disburseParcHead : '..............................................................' }})
             </v-col>
+            <v-col cols="12" class="font17 text-center">
+              วันที่ {{ disburse.disburseParcDate? thaiDate(disburse.disburseParcDate) : '.........../.........................../................' }}
+            </v-col>
           </v-row>
         </v-col>
         <v-col cols="12" class="mt-2 font17">
@@ -133,10 +136,13 @@
             <v-col cols="12" class="font17 text-center">
               ({{ disburse.disbursePlanHead? disburse.disbursePlanHead  : '..............................................................' }})
             </v-col>
+            <v-col cols="12" class="font17 text-center">
+              วันที่ {{ disburse.disbursePlanDate? thaiDate(disburse.disbursePlanDate) : '.........../.........................../................' }}
+            </v-col>
           </v-row>
         </v-col>
         <v-col cols="12" class="mt-2 font17">
-          4. ความเห็นหัวหน้างานบัญชี<br/>
+          3. ความเห็นหัวหน้างานบัญชี<br/>
           &emsp;&emsp;เห็นควรอนุญาตดำเนินการ <span>GL-{{ disburse.ledgerID }}</span><br>
           <v-row no-gutters class="mt-2">
             <v-col cols="12" class="font17 text-center">
@@ -145,6 +151,9 @@
             </v-col>
             <v-col cols="12" class="font17 text-center">
               ({{ disburse.disburseAccoHead? disburse.disburseAccoHead  : '..............................................................' }})
+            </v-col>
+            <v-col cols="12" class="font17 text-center">
+              วันที่ {{ disburse.disburseAccoDate? thaiDate(disburse.disburseAccoDate) : '.........../.........................../................' }}
             </v-col>
           </v-row>
         </v-col>
@@ -158,6 +167,9 @@
             </v-col>
             <v-col cols="12" class="font17 text-center">
               ({{ disburse.disburseFinaHead? disburse.disburseFinaHead  : '..............................................................' }})
+            </v-col>
+            <v-col cols="12" class="font17 text-center">
+              วันที่ {{ disburse.disburseFinaDate? thaiDate(disburse.disburseFinaDate) : '.........../.........................../................' }}
             </v-col>
           </v-row>
         </v-col>

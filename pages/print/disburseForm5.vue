@@ -15,19 +15,19 @@
             ส่วนราชการ &emsp; งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="6" class="font17">
-            ที่&emsp;&emsp;&emsp;&emsp;&emsp;/{{ parseInt(formDate[0])+543 }}
+            ที่ &emsp;{{ disburse.resultRecNo }}
         </v-col>
         <v-col cols="6" class="font17">
-            วันที่ 
+            วันที่ &nbsp; {{  thaiDate(disburse.recDate) }}
         </v-col>
         <v-col cols="12" class="font17">
-          เรื่อง รายงานผลการพิจารณาและขออนุมัติสั่ง<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>
+          เรื่อง รายงานผลการพิจารณาและขออนุมัติสั่ง{{disburse.disburseSubtype}}
         </v-col>
         <v-col cols="12" class="pt-1 font17">
           เรียน ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="pt-3 font17">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ขอรายงานผลการพิจารณาการจัด<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ดังนี้
+          &emsp;&emsp;&emsp;&emsp;&emsp;ขอรายงานผลการพิจารณาการจัด{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ดังนี้
         </v-col>
         <v-col cols="12" class="pt-2 font17">
             <table width="100%" class="tableNormal">
@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="font17">จัด<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ</td>
+                        <td class="font17">จัด{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ</td>
                         <td class="font17">{{ disburse.companyName }}</td>
                         <td class="font17 text-right text-no-wrap">{{ moneyFormat(disburse.disburseMoney) }}</td>
                         <td class="font17 text-right text-no-wrap">{{ moneyFormat(disburse.disburseMoney) }}</td>
@@ -61,8 +61,8 @@
             โดยเกณฑ์การพิจารณาผลการยื่นข้อเสนอครั้งนี้ จะพิจารณาตัดสินโดยใช้หลักเกณฑ์ราคา
         </v-col>
         <v-col cols="12" class="mt-2 font17">
-            &emsp;&emsp;&emsp;&emsp;&emsp;วิทยาลัยเทคนิคแพร่พิจารณาแล้ว เห็นสมควรจัด<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>จากผู้เสนอราคาดังกล่าว<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรดพิจารณา หากเห็นชอบขอได้โปรดอนุมัติให้สั่ง<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>จากผู้เสนอราคาดังกล่าว
+            &emsp;&emsp;&emsp;&emsp;วิทยาลัยเทคนิคแพร่พิจารณาแล้ว เห็นสมควรจัด<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>จากผู้เสนอราคาดังกล่าว<br>
+            &emsp;&emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรดพิจารณา หากเห็นชอบขอได้โปรดอนุมัติให้สั่ง<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>จากผู้เสนอราคาดังกล่าว
         </v-col>
         <v-col cols="5" class="mt-10 pt-5 ml-auto text-center font17">
           <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" /><br>

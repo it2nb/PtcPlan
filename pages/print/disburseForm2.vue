@@ -58,7 +58,9 @@
               </tr> -->
 
               <tr>
-                <td></td>
+                <td class="font17">
+                  {{ disburse.expenseName }}
+                </td>
                 <td class="font17">
                   {{ disburse.disburseType=='โครงการ'? subDepartment(disburse.pjdepartmentName) : subDepartment(disburse.departmentName) }}
                 </td>
@@ -114,12 +116,12 @@
               <tr>
                 <td></td>
                 <td colspan="3" class="font17 font-weight-bold">รวมทั้งสิ้น</td>
-                <td class="font17 text-right font-weight-bold">{{ disburse.disburseMoney }}</td>
+                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
                 <td></td>
               </tr>
               <tr>
                 <td></td>
-                <td colspan="5" class="font17 font-weight-bold">รวมทั้งสิ้น(อักษร) {{ thaiBaht(disburse.disburseMoney) }}</td>
+                <td colspan="5" class="font17 font-weight-bold">รวมทั้งสิ้น(อักษร) ({{ thaiBaht(disburse.disburseMoney) }})</td>
               </tr>
             </tbody>
           </table>

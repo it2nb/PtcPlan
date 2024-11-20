@@ -1,6 +1,6 @@
 <template>
   <div style="line-height: 1.8">
-    <div class="printPage3x2">
+    <div class="printPage3x2" v-if="disburse.disburseSubtype=='ซื้อ'">
       <v-row no-gutters class="mb-2">
         <v-col cols="12" align-self="end" class="text-center font19 font-weight-bold">
             ใบสั่งซื้อ
@@ -15,8 +15,8 @@
             ธนาคาร {{ company.companyBankName }}
         </v-col>
         <v-col cols="6" class="mt-5 font17" v-if="state">
-            ใบสั่งเลขที่<br>
-            วันที่ <br>
+            ใบสั่งซื้อเลขที่ &nbsp; {{ disburse.orderNo }}<br>
+            วันที่ &nbsp; {{  thaiDate(disburse.recDate) }} <br>
             ส่วนราชการ {{ state.appSubTitle }}<br>
             ที่อยู่ ถ.เหมืองหิต ต.ในเวียง อ.เมืองแพร่ จ.แพร่ <br>
             โทรศัพท์  054-511142,054-511530
@@ -54,10 +54,10 @@
                 <td class="font17">
                   {{ disburselist.disburselistName }}
                 </td>
-                <td class="font17 text-right">
+                <td class="font17 text-center">
                     {{ disburselist.disburselistQty }}
                 </td>
-                <td class="font17">
+                <td class="font17 text-center">
                     {{ disburselist.disburselistUnit }}
                 </td>
                 <td class="font17 text-right  text-no-wrap">
@@ -78,15 +78,15 @@
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
-                <td class="font17 text-right font-weight-bold">{{ disburse.disburseMoney }}</td>
+                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
             </tbody>
           </table>
         </v-col>
         <v-col cols="12" class="mt-3 font17">
             การซื้อ อยู่ภายใต้เงื่อนไขต่อไปนี้<br>
-            1.  กำหนดส่งมอบภายใน ____ วันทำการ นับจากวันที่ผู้ขายได้รับใบสั่งซื้อ<br>
-            2.  ครบกำหนดส่งมอบวันที่ _______________________<br>
+            1.  กำหนดส่งมอบภายใน {{ disburse.orderSendDay }} วันทำการ นับจากวันที่ผู้ขายได้รับใบสั่งซื้อ<br>
+            2.  ครบกำหนดส่งมอบวันที่ {{ thaiDate(disburse.orderSendDate) }}<br>
             3.  สถานที่ส่งมอบ  วิทยาลัยเทคนิคแพร่ ถนนเหมืองหิต<br>
             4.  ระยะเวลารับประกัน  -<br>
             5.  สงวนสิทธ์ค่าปรับกรณีส่งมอบเกินกำหนด โดยคิดค่าปรับเป็นรายวันในอัตราร้อยละ 0.20 ของราคาสิ่งของที่ยังไม่ได้รับมอบ<br>
@@ -94,24 +94,24 @@
             7.  การประเมินผลการปฏิบัติงานของผู้ประกอบการ หน่วยงานของรัฐสามารถนำผลการปฏิบัติงานแล้วเสร็จตามสัญญาหรือข้อตกลงของคู่สัญญาเพื่อนำมาประเมินผลการปฏิบัติงานของผู้ประกอบการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งซื้อมีผลตามกฎหมาย<br>
-            2. ใบสั่งซื้อนี้ ซื้อ<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งซื้อนี้ ซื้อ<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งซื้อ</div>
           ({{ directorName }})<br>
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
-          {{ thaiDate(disburse.disburseDate) }}
+          วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
         <v-col cols="8" class="mt-5 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้รับใบสั่งซื้อ</div>
           ({{ company.companyOwner }})<br>
           ผู้จัดการ<br>
-          {{ thaiDate(disburse.disburseDate) }}
+          วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
       </v-row>
     </div>
 
-    <div class="printPage3x2">
+    <div class="printPage3x2" v-if="disburse.disburseSubtype=='จ้าง'">
       <v-row no-gutters class="mb-2">
         <v-col cols="12" align-self="end" class="text-center font19 font-weight-bold">
             ใบสั่งจ้าง
@@ -126,8 +126,8 @@
             ธนาคาร {{ company.companyBankName }}
         </v-col>
         <v-col cols="6" class="mt-5 font17" v-if="state">
-            ใบสั่งจ้างเลขที่<br>
-            วันที่ <br>
+            ใบสั่งจ้างเลขที่ &nbsp; {{ disburse.orderNo }}<br>
+            วันที่ &nbsp; {{  thaiDate(disburse.recDate) }} <br>
             ส่วนราชการ {{ state.appSubTitle }}<br>
             ที่อยู่ ถ.เหมืองหิต ต.ในเวียง อ.เมืองแพร่ จ.แพร่ <br>
             โทรศัพท์  054-511142,054-511530
@@ -165,10 +165,10 @@
                 <td class="font17">
                   {{ disburselist.disburselistName }}
                 </td>
-                <td class="font17 text-right">
+                <td class="font17 text-center">
                     {{ disburselist.disburselistQty }}
                 </td>
-                <td class="font17">
+                <td class="font17 text-center">
                     {{ disburselist.disburselistUnit }}
                 </td>
                 <td class="font17 text-right  text-no-wrap">
@@ -189,15 +189,15 @@
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
-                <td class="font17 text-right font-weight-bold">{{ disburse.disburseMoney }}</td>
+                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
             </tbody>
           </table>
         </v-col>
         <v-col cols="12" class="mt-3 font17">
             การจ้าง อยู่ภายใต้เงื่อนไขต่อไปนี้<br>
-            1.  กำหนดส่งมอบภายใน ____ วันทำการ นับจากวันที่ผู้รับจ้างได้รับใบสั่งจ้าง<br>
-            2.  ครบกำหนดส่งมอบวันที่ _______________________<br>
+            1.  กำหนดส่งมอบภายใน {{ disburse.orderSendDay }} วันทำการ นับจากวันที่ผู้รับจ้างได้รับใบสั่งจ้าง<br>
+            2.  ครบกำหนดส่งมอบวันที่ {{ thaiDate(disburse.orderSendDate) }}<br>
             3.  สถานที่ส่งมอบ  วิทยาลัยเทคนิคแพร่ ถนนเหมืองหิต<br>
             4.  ระยะเวลารับประกัน  -<br>
             5.  สงวนสิทธ์ค่าปรับกรณีส่งมอบเกินกำหนด โดยคิดค่าปรับเป็นรายวันในอัตราร้อยละ 0.1 ของราคาสิ่งของที่ยังไม่ได้รับมอบแต่จะต้องไม่ต่ำกว่ากันวันละ 100.00 บาท<br>
@@ -206,24 +206,24 @@
             8.  การประเมินผลการปฏิบัติงานของผู้ประกอบการ หน่วยงานของรัฐสามารถนำผลการปฏิบัติงานแล้วเสร็จตามสัญญา หรือข้อตกลงของคู่สัญญาเพื่อนำมาประเมินผลการปฏิบัติงานของผู้ประกอบการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งจ้างมีผลตามกฎหมาย<br>
-            2. ใบสั่งจ้างนี้ จ้าง<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งจ้างนี้ จ้าง<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งจ้่าง</div>
           ({{ directorName }})<br>
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
-          {{ thaiDate(disburse.disburseDate) }}
+          วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
         <v-col cols="8" class="mt-5 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้รับใบสั่งจ้าง</div>
           ({{ company.companyOwner }})<br>
           ผู้จัดการ<br>
-          {{ thaiDate(disburse.disburseDate) }}
+          วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
       </v-row>
     </div>
 
-    <div class="printPage3x2">
+    <div class="printPage3x2" v-if="disburse.disburseSubtype=='เช่า'">
       <v-row no-gutters class="mb-2">
         <v-col cols="12" align-self="end" class="text-center font19 font-weight-bold">
           ใบสั่งเช่า
@@ -238,8 +238,8 @@
             ธนาคาร {{ company.companyBankName }}
         </v-col>
         <v-col cols="6" class="mt-5 font17" v-if="state">
-            ใบสั่งเช่าเลขที่<br>
-            วันที่ <br>
+            ใบสั่งเช่าเลขที่ &nbsp; {{ disburse.orderNo }}<br>
+            วันที่  &nbsp; {{  thaiDate(disburse.recDate) }}<br>
             ส่วนราชการ {{ state.appSubTitle }}<br>
             ที่อยู่ ถ.เหมืองหิต ต.ในเวียง อ.เมืองแพร่ จ.แพร่ <br>
             โทรศัพท์  054-511142,054-511530
@@ -277,10 +277,10 @@
                 <td class="font17">
                   {{ disburselist.disburselistName }}
                 </td>
-                <td class="font17 text-right">
+                <td class="font17 text-center">
                     {{ disburselist.disburselistQty }}
                 </td>
-                <td class="font17">
+                <td class="font17 text-center">
                     {{ disburselist.disburselistUnit }}
                 </td>
                 <td class="font17 text-right  text-no-wrap">
@@ -301,34 +301,34 @@
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
-                <td class="font17 text-right font-weight-bold">{{ disburse.disburseMoney }}</td>
+                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
             </tbody>
           </table>
         </v-col>
         <v-col cols="12" class="mt-3 font17">
             การเช่า อยู่ภายใต้เงื่อนไขต่อไปนี้<br>
-            1.  กำหนดส่งมอบภายใน ____ วันทำการ นับจากวันที่ผู้รับเช่าได้รับใบสั่งเช่า<br>
-            2.  ครบกำหนดส่งมอบวันที่ _______________________<br>
+            1.  กำหนดส่งมอบภายใน {{ disburse.orderSendDay }} วันทำการ นับจากวันที่ผู้รับเช่าได้รับใบสั่งเช่า<br>
+            2.  ครบกำหนดส่งมอบวันที่ {{ thaiDate(disburse.orderSendDate) }}<br>
             3.  สถานที่ส่งมอบ  วิทยาลัยเทคนิคแพร่ ถนนเหมืองหิต<br>
             4.  ระยะเวลารับประกัน  -<br>
             5.  สงวนสิทธ์ค่าปรับกรณีส่งมอบเกินกำหนด โดยคิดค่าปรับเป็นรายวันในอัตราร้อยละ 0.10 ของราคางานเช่าแต่ต้องไม่ต่ำกว่าวันละ 100.00 บาท<br>
             6.   ส่วนราชการสงวนสิทธิ์ที่จะไม่รับมอบถ้าปรากฏว่าสินค้านั้นมีลักษณะไม่ตรงตามรายการที่ระบุไว้ในใบสั่งเช่า กรณีนี้ผู้รับเช่าจะต้องดำเนินการเปลี่ยนใหม่ให้ถูกต้องตามใบสั่งเช่าทุกประการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งเช่ามีผลตามกฎหมาย<br>
-            2. ใบสั่งเช่านี้ เช่า<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'">{{ disburse.expenseplanDes }} {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.expenseName }} {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งเช่านี้ เช่า<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งเช่า</div>
           ({{ directorName }})<br>
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
-          {{ thaiDate(disburse.disburseDate) }}
+          วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
         <v-col cols="8" class="mt-5 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้รับใบสั่งเช่า</div>
           ({{ company.companyOwner }})<br>
           ผู้จัดการ<br>
-          {{ thaiDate(disburse.disburseDate) }}
+          วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
       </v-row>
     </div>

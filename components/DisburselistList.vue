@@ -166,18 +166,18 @@
                   <v-icon small class="mr-1">fas fa-trash</v-icon>
                 </v-btn>
               </template>
-              <template slot="body.append" v-if="disburse.disburseExcludeVat==1">
-                <tr>
-                  <td colspan="4" class="">ภาษีมูลค่าเพิ่ม 7 %</td>
-                  <td class="text-right">
+              <!-- <template slot="body.append" v-if="disburse.disburseExcludeVat==1">
+                <tr :class="{'v-data-table__mobile-table-row':isMobile}">
+                  <td :colspan="`${isMobile?4:4}`" :class="{'v-data-table__mobile-row':isMobile}" class="text-right" >ภาษีมูลค่าเพิ่ม 7 %</td>
+                  <td :colspan="`${isMobile?4:1}`" :class="{'v-data-table__mobile-row':isMobile}" class="text-right" >
                     {{ moneyFormat(vat) }}
                   </td>
                 </tr>
               </template>
               <template slot="foot">
-                <tr class="grey lighten-3">
-                  <td colspan="4" class="px-4 py-2 text-center font-weight-bold">รวม</td>
-                  <td class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(parseFloat(disburseSum)+parseFloat(vat)) }}</td>
+                <tr :class="{'v-data-table__mobile-table-row':isMobile}" class="grey lighten-3">
+                  <td :colspan="`${isMobile?4:4}`" :class="{'v-data-table__mobile-row':isMobile}" class="px-4 py-2 text-center font-weight-bold">รวม</td>
+                  <td :colspan="`${isMobile?4:1}`" :class="{'v-data-table__mobile-row':isMobile}" class="px-4 py-2 text-right font-weight-bold">{{ moneyFormat(parseFloat(disburseSum)+parseFloat(vat)) }}</td>
                   <td></td>
                   <td colspan="2" class="px-4 py-2 text-right font-weight-bold">
                     <v-checkbox
@@ -190,8 +190,41 @@
                     ></v-checkbox>
                   </td>
                 </tr>
-              </template>
+                <tr class="grey lighten-3">
+                  <td colspan="4"></td>
+                  <td colspan="4" class="px-4 py-2 text-right font-weight-bold">
+                    <v-btn>เพิ่ม Vat</v-btn>
+                    <v-btn>ลบ Vat</v-btn>
+                  </td>
+                </tr>
+              </template> -->
             </v-data-table>
+            </v-col>
+            <v-col cols="12">
+              <v-divider></v-divider>
+            </v-col>
+            <v-col cols="12" md="9" class="pt-2 font-weight-bold text-right"  v-if="disburse.disburseExcludeVat==1">
+              ภาษีมูลค่าเพิ่ม (7 %) {{ moneyFormat(parseFloat(vat)) }} บาท
+            </v-col>
+            <v-col cols="12" md="9" class="pt-2 font-weight-bold text-right">
+              รวม {{ moneyFormat(parseFloat(disburseSum)+parseFloat(vat)) }} บาท
+            </v-col>
+            <v-col cols="12" md="10" class="pt-2 font-weight-bold text-right" v-if="updateProgress">
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              </v-col>
+            <v-col cols="12" md="10" class="pt-2 font-weight-bold text-right" v-else-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
+                <v-btn small color="success" class="mr-1" @click="excludeVatChange(1)">
+                  <v-icon x-small class="mr-1">fas fa-plus</v-icon>
+                  บวก Vat
+                </v-btn>
+                <v-btn small color="error" class="mr-1" @click="excludeVatChange(0)">
+                  <v-icon x-small class="mr-1">fas fa-minus</v-icon>
+                  ลบ Vat
+                </v-btn>
             </v-col>
             <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseParcCheck=='ไม่ถูกต้อง'">
               <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานพัสดุ</h3>
@@ -736,9 +769,11 @@ export default {
       this.updateProgress = false
     },
 
-    async excludeVatChange() {
-      this.calVat()
+    async excludeVatChange(disburseExcludeVat) {
+      this.updateProgress = true
+      this.disburse.disburseExcludeVat = disburseExcludeVat
       await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+        this.calVat()
         await this.$axios.$post('disburse.update.php', {
           token: this.$store.state.jwtToken,
           disburseID: this.disburse.disburseID,
@@ -747,6 +782,7 @@ export default {
         })
       })
       this.$emit('getUpdateStatus', {'status': true})
+      this.updateProgress = false
     },
 
     async confirmRequest() {
@@ -901,6 +937,12 @@ export default {
     },
 
   },
+
+  computed:{
+  isMobile(){
+    return this.$vuetify.breakpoint.name==='xs'
+   }
+},
 
   watch: {
     async disburse() {

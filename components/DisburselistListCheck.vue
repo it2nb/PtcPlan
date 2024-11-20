@@ -103,17 +103,17 @@
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">เลขที่หนังสือ</h3>
-              เลขที่บันทึกขอซื้อฯ {{ disburse.disburseAuditHeadPos }} วันที่ <br>
-              เลขที่บันทึกรายงานขอซื้อฯ {{ disburse.disburseAuditComm }} วันที่ <br>
-              เลขที่คำสั่งคณะกรรมการตรวจรับ {{ disburse.disburseAuditSecr }} วันที่ <br>
-              เลขที่บันทึกรายงานผลการพิจารณาฯ {{ disburse.disburseAuditSecr }} วันที่ 
+              เลขที่บันทึกรายงานขอซื้อฯ {{ disburse.reportRecNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
+              เลขที่บันทึกรายงานผลการพิจารณาฯ {{ disburse.resultRecNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
+              เลขที่ใบสั่งฯ {{ disburse.orderNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
+              กำหนดส่งมอบภายใน {{ disburse.orderSendDay }} วัน วันที่ {{ thaiDate(disburse.orderSendDate) }}
             </v-col>
             <v-col cols="12" class="text-center" v-if="departmentSys=='Parcel'">
               <v-btn 
                 small 
                 color="warning"
                 @click="showUpdateCompanyDialog(disburse)"
-              >กำหนดร้านค้าและคณะกรรมการตรวจรับ</v-btn>
+              >กำหนดร้านค้า คณะกรรมการตรวจรับ และเลขที่เอกสาร</v-btn>
             </v-col>
             <v-col cols="12" class="text-center" v-if="user.userStatus=='Index'&&disburse.disburseStatus=='ตัดแผนแล้ว'">
               <v-btn 
@@ -198,7 +198,7 @@
                     </div>
                 </div>
               </template>
-              <template slot="body.append" v-if="disburse.disburseExcludeVat==1">
+              <!-- <template slot="body.append" v-if="disburse.disburseExcludeVat==1">
                 <tr>
                   <td colspan="4" class="">ภาษีมูลค่าเพิ่ม 7 %</td>
                   <td class="text-right">
@@ -222,8 +222,34 @@
                     ></v-checkbox>
                   </td>
                 </tr>
-              </template>
+              </template> -->
             </v-data-table>
+            </v-col>
+            <v-col cols="12">
+              <v-divider></v-divider>
+            </v-col>
+            <v-col cols="12" md="9" class="pt-2 font-weight-bold text-right"  v-if="disburse.disburseExcludeVat==1">
+              ภาษีมูลค่าเพิ่ม (7 %) {{ moneyFormat(parseFloat(vat)) }} บาท
+            </v-col>
+            <v-col cols="12" md="9" class="pt-2 font-weight-bold text-right">
+              รวม {{ moneyFormat(parseFloat(disburseSum)+parseFloat(vat)) }} บาท
+            </v-col>
+            <v-col cols="12" md="10" class="pt-2 font-weight-bold text-right" v-if="updateProgress">
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              </v-col>
+            <v-col cols="12" md="10" class="pt-2 font-weight-bold text-right" v-else-if="disburse.disburseStatus == 'ตรวจสอบรายการ' && departmentSys=='Parcel' && disburse.disburseParcCheck!='ถูกต้อง'">
+                <v-btn small color="success" class="mr-1" @click="excludeVatChange(1)">
+                  <v-icon x-small class="mr-1">fas fa-plus</v-icon>
+                  บวก Vat
+                </v-btn>
+                <v-btn small color="error" class="mr-1" @click="excludeVatChange(0)">
+                  <v-icon x-small class="mr-1">fas fa-minus</v-icon>
+                  ลบ Vat
+                </v-btn>
             </v-col>
             <v-col cols="12" class="mt-2 red--text" v-if="disburse.disburseParcCheck=='ไม่ถูกต้อง'">
               <h3 class="mb-2 fontBold"><v-icon small color="error">fas fa-times</v-icon> งานพัสดุ</h3>
@@ -245,7 +271,7 @@
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
         <v-card-actions>
-          <div class="col-12 text-center" v-if="disburse.disburseStatus == 'ขอซื้อ'">
+          <!-- <div class="col-12 text-center" v-if="disburse.disburseStatus == 'ขอซื้อ'">
             <v-progress-circular
               indeterminate
               color="success"
@@ -267,8 +293,8 @@
                 ยืนยันและส่งตรวจสอบรายการ
               </v-btn>
             </div>  
-          </div>
-          <div class="col-12" v-else-if="disburse.disburseStatus == 'ตรวจสอบรายการ'">
+          </div> -->
+          <div class="col-12" v-if="disburse.disburseStatus == 'ตรวจสอบรายการ'">
             <div v-if="departmentSys == 'Parcel'">
               <v-row no-gutters>
                 <v-col cols="12" md="4" class="mx-auto">
@@ -601,7 +627,7 @@
                   </v-btn>
                 </v-card-actions>
                 <v-card-title class="amber lighten-2">
-                  <span class="fontBold">แก้ไขร้านค้าและคณะกรรมการตรวจรับ</span>
+                  <span class="fontBold">แก้ไขร้านค้า คณะกรรมการตรวจรับ และเลขที่เอกสาร</span>
                 </v-card-title>
                 <v-form
                   v-model="updateCompanyValidate"
@@ -613,6 +639,9 @@
                   <v-card-text>
                     <v-row dense>
                       <v-col cols="12">
+                        <h3 class="font-weight-bold">ข้อมูลร้านค้า</h3>
+                      </v-col>
+                      <v-col cols="12">
                         <v-autocomplete
                           v-model="updateData.companyID"
                           label="ชื่อร้านค้า"
@@ -621,10 +650,14 @@
                           item-value="companyID"
                           dense
                           outlined
+                          v-if="companies"
                         ></v-autocomplete>
                       </v-col>
                       <v-col cols="12" class="pb-3">
                         <v-divider></v-divider>
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="font-weight-bold">ข้อมูลคณะกรรมการตรวจรับ</h3>
                       </v-col>
                       <v-col cols="12" md="4">
                         <v-text-field
@@ -666,6 +699,72 @@
                           label="ตำแหน่ง"
                           outlined
                           dense
+                        />
+                      </v-col>
+                      <v-col cols="12" class="pb-3">
+                        <v-divider></v-divider>
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="font-weight-bold">ข้อมูลเลขที่เอกสาร</h3>
+                      </v-col>
+                      <v-col cols="12" md="3">
+                        <v-text-field
+                          v-model="updateData.reportRecNo"
+                          label="เลขที่บันทึกรายงานขอซื้อ"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="3">
+                        <v-text-field
+                          v-model="updateData.resultRecNo"
+                          label="เลขที่บันทึกรายงานผลการพิจารณา"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="3">
+                        <v-text-field
+                          v-model="updateData.orderNo"
+                          label="เลขที่ใบสั่ง"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="3">
+                        <v-text-field
+                          v-model="updateData.recDate"
+                          label="วันที่"
+                          type="date"
+                          outlined
+                          dense
+                          :hint="thaiDate(updateData.recDate)"
+                          persistent-hint
+                        />
+                      </v-col>
+                      <v-col cols="12" class="pb-3">
+                        <v-divider></v-divider>
+                      </v-col>
+                      <v-col cols="12">
+                        <h3 class="font-weight-bold">ข้อมูลกำหนดส่งมอบ</h3>
+                      </v-col>
+                      <v-col cols="12" md="3">
+                        <v-text-field
+                          v-model="updateData.orderSendDay"
+                          label="กำหนดส่งมอบภายใน (วัน)"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="3">
+                        <v-text-field
+                          v-model="updateData.orderSendDate"
+                          label="ภายในวันที่"
+                          type="date"
+                          outlined
+                          dense
+                          :hint="thaiDate(updateData.orderSendDate)"
+                          persistent-hint
                         />
                       </v-col>
                       <v-col cols="12" class="text-center">
@@ -843,6 +942,7 @@ export default {
     let loginuser = JSON.parse(sessionStorage.getItem('loginuser'))
     this.user = JSON.parse(JSON.stringify(loginuser.user))
     if(this.disburse) {
+      this.disburse.companyID = parseInt(this.disburse.companyID)
       await this.getDisburselist(this.disburse.disburseID)
       await this.getDisburselistQty(this.disburse.disburseID)
       await this.getLedger()
@@ -1104,9 +1204,11 @@ export default {
       }
     },
 
-    async excludeVatChange() {
-      this.calVat()
+    async excludeVatChange(disburseExcludeVat) {
+      this.updateProgress = true
+      this.disburse.disburseExcludeVat = disburseExcludeVat
       await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
+        this.calVat()
         await this.$axios.$post('disburse.update.php', {
           token: this.$store.state.jwtToken,
           disburseID: this.disburse.disburseID,
@@ -1115,6 +1217,7 @@ export default {
         })
       })
       this.$emit('getUpdateStatus', {'status': true})
+      this.updateProgress = false
     },
 
     async confirmList() {
@@ -1132,9 +1235,9 @@ export default {
       this.updateProgress = false
     },
 
-    showUpdateCompanyDialog(disburse) {
+    async showUpdateCompanyDialog(disburse) {
       this.updateData = JSON.parse(JSON.stringify(disburse))
-      this.getCompany()
+      await this.getCompany()
       this.updateCompanyDialog = true
     },
 
@@ -1149,7 +1252,13 @@ export default {
         disburseAuditComm: this.updateData.disburseAuditComm,
         disburseAuditCommPos: this.updateData.disburseAuditCommPos,
         disburseAuditSecr: this.updateData.disburseAuditSecr,
-        disburseAuditSecrPos: this.updateData.disburseAuditSecrPos
+        disburseAuditSecrPos: this.updateData.disburseAuditSecrPos,
+        reportRecNo: this.updateData.reportRecNo,
+        resultRecNo: this.updateData.resultRecNo,
+        recDate: this.updateData.recDate,
+        orderNo: this.updateData.orderNo,
+        orderSendDay: this.updateData.orderSendDay,
+        orderSendDate: this.updateData.orderSendDate,
       })
 
       if(disburseUpdate.message == 'Success') {
@@ -1163,9 +1272,15 @@ export default {
           this.disburse.disburseAuditHead = this.updateData.disburseAuditHead
           this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
           this.disburse.disburseAuditComm = this.updateData.disburseAuditComm
-          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
+          this.disburse.disburseAuditCommPos = this.updateData.disburseAuditCommPos
           this.disburse.disburseAuditSecr = this.updateData.disburseAuditSecr
-          this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
+          this.disburse.disburseAuditSecrPos = this.updateData.disburseAuditSecrPos
+          this.disburse.reportRecNo = this.updateData.reportRecNo
+          this.disburse.resultRecNo = this.updateData.resultRecNo
+          this.disburse.recDate = this.updateData.recDate
+          this.disburse.orderNo = this.updateData.orderNo
+          this.disburse.orderSendDay = this.updateData.orderSendDay
+          this.disburse.orderSendDate = this.updateData.orderSendDate
           this.updateProgress = false
           this.updateCompanyDialog = false
         })
@@ -1181,9 +1296,9 @@ export default {
       }
     },
 
-    showUpdateIndexDialog(disburse) {
+    async showUpdateIndexDialog(disburse) {
       this.updateData = JSON.parse(JSON.stringify(disburse))
-      this.getCompany()
+      await this.getCompany()
       this.updateIndexDialog = true
     },
 
