@@ -433,6 +433,7 @@
         </v-col>
       </v-row>
     </div>
+    <ProjectPrint :pid="disburse.projectID" v-if="disburse.projectID"/>
   </div>
 </template>
 <script>
