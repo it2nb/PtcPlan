@@ -224,15 +224,8 @@ export default {
 
   },
 
-  computed: {
-    expenseplanID() {
-        return this.expensealloc.expenseplanID
-    }
-  },
-
-
   watch: {
-    async expenseplanID() {
+    async expensealloc() {
       if(this.expensealloc) {
         this.updateData = JSON.parse(JSON.stringify(this.expensealloc))
         await this.getDepartment()

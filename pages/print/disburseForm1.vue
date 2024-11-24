@@ -58,7 +58,7 @@
               <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
               <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseSign" /><br>
               ({{ disburse.disburseReqName }})<br>
-              หัวหน้างาน{{ disburse.departmentName }}
+              หัวหน้า{{ disburse.departmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font17">
               <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign" /><br>

@@ -40,7 +40,7 @@
               ]"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="4">
             <h3 class="mb-2 fontBold">วันที่ขอจัดซื้อ/เบิกเงิน</h3>
             <v-text-field
               v-model="updateData.disburseDate"
@@ -55,8 +55,31 @@
               ]"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">ประเภทจัดซื้อ/เบิกเงิน</h3>
+          <v-col cols="12" md="4">
+            <h3 class="mb-2 fontBold">ประเภทคำขอ</h3>
+            <v-radio-group
+              v-model="updateData.disburseSubtype"
+              row
+              :rules="[
+                ()=>!!updateData.disburseSubtype || 'กรุณากรอกข้อมูล'
+              ]"
+            >
+              <v-radio
+                label="ขอซื้อ"
+                value="ซื้อ"
+              ></v-radio>
+              <v-radio
+                label="ขอจ้าง"
+                value="จ้าง"
+              ></v-radio>
+              <v-radio
+                label="ขอเช่า"
+                value="เช่า"
+              ></v-radio>
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12" md="">
+            <h3 class="mb-2 fontBold">ประเภทกิจกรรม</h3>
             <v-radio-group
               v-model="updateData.disburseType"
               row
@@ -201,7 +224,7 @@
             </v-autocomplete>
           </v-col>
           <v-col cols="12" md="8" v-if="updateData.disburseType=='โครงการ'||updateData.disburseType=='ค่าใช้จ่าย'">
-            <h3 class="mb-2 fontBold">รายการ</h3>
+            <h3 class="mb-2 fontBold">วัตถุประสงค์เพื่อ</h3>
             <v-text-field
               v-model="updateData.disburseDes"
               label="รายการ"
@@ -223,6 +246,63 @@
                 ()=>!!updateData.disburseMoney || 'กรุณากรอกข้อมูล'
               ]"
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6" v-if="updateData.disburseType=='โครงการ'||updateData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">วันที่เริ่มต้น</h3>
+            <v-text-field
+              v-model="updateData.disburseStart"
+              label="วันที่เริ่มต้น"
+              type="date"
+              outlined
+              required
+              persistent-hint
+              :hint="thaiDate(updateData.disburseStart)"
+              :rules="[
+                ()=>!!updateData.disburseStart || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6" v-if="updateData.disburseType=='โครงการ'||updateData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">วันที่สิ้นสุด</h3>
+            <v-text-field
+              v-model="updateData.disburseEnd"
+              label="วันที่สิ้นสุด"
+              type="date"
+              outlined
+              required
+              persistent-hint
+              :hint="thaiDate(updateData.disburseEnd)"
+              :rules="[
+                ()=>!!updateData.disburseEnd || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6" v-if="updateData.disburseType=='โครงการ'||updateData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
+            <v-textarea
+              v-model="updateData.disburseProduct"
+              label="ระบุผลผลิต และจำนวน(หน่วย)"
+              outlined
+              required
+              :rules="[
+                ()=>!!updateData.disburseProduct || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-textarea>
+          </v-col>
+          <v-col cols="12" md="6" v-if="updateData.disburseType=='โครงการ'||updateData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">รหัสบัญชีแยกประเภท</h3>
+            <v-autocomplete
+              v-model="updateData.ledgerID"
+              label="รหัสบัญชีแยกประเภท"
+              :items="ledgers"
+              item-text="ledgerID"
+              item-value="ledgerID"
+              outlined
+            >
+            <template v-slot:item="{ item }">
+              GL-{{ item.ledgerID }} : {{ item.ledgerName }}
+            </template>
+            </v-autocomplete>
           </v-col>
         </v-row>
       </v-card-text>
@@ -275,6 +355,7 @@ export default {
       updateData: {},
       updateProgress: false,
       updateValidate: null,
+      ledgers: [],
     }
   },
 
@@ -283,6 +364,7 @@ export default {
       this.updateData = JSON.parse(JSON.stringify(this.disburse))
       await this.getDepartment()
       await this.getExpaeseplan()
+      await this.getLedger()
       if(this.updateData.disburseType == 'ค่าใช้จ่าย') {
         await this.getExpaesebudget(this.updateData.expenseplanID)
       }
@@ -317,6 +399,19 @@ export default {
 
     async expenseplanIDChange() {
       await this.getExpaesebudget(this.updateData.expenseplanID)
+    },
+
+    async getLedger() {
+      let result = await this.$axios.$get('ledger.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          fn: 'All'
+        }
+      })
+
+      if(result.message == 'Success') {
+        this.ledgers = JSON.parse(JSON.stringify(result.ledger))
+      }
     },
 
     async getProject() {
@@ -363,14 +458,23 @@ export default {
       if(this.updateValidate) {
         this.updateProgress = true
 
+        if(this.updateData.disburseType=='โครงการ') {
+          this.updateData.expenseplanID = ''
+        }
+        else if(this.updateData.disburseType=='ค่าใช้จ่าย') {
+          this.updateData.projectID = ''
+          this.updateData.expenseID = ''
+          this.updateData.pjbudgetID = ''
+        }
+
         this.updateData.disburseMoney = numeral(this.updateData.disburseMoney).value()
         if(this.expensebudgets.length > 0) {
           let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.updateData.expenseplanID)
-          if(budgetplan) {
+          if(budgetplan.expenseID) {
             this.updateData.expenseID = budgetplan.expenseID
           }
         }
-        if(this.pjbudgets.length > 0) {
+        if(this.pjbudgets.length > 0 && this.updateData.disburseType=='โครงการ') {
           let pjbudget = await this.pjbudgets.find(pjbudget => pjbudget.pjbudgetID==this.updateData.pjbudgetID)
           if(pjbudget) {
             this.updateData.budgetplanID = pjbudget.budgetplanID
@@ -439,6 +543,7 @@ export default {
         this.updateData = JSON.parse(JSON.stringify(this.disburse))
         await this.getDepartment()
         await this.getExpaeseplan()
+        await this.getLedger()
         if(this.updateData.disburseType == 'ค่าใช้จ่าย') {
           await this.getExpaesebudget(this.updateData.expenseplanID)
         }

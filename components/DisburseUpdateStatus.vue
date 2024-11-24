@@ -179,6 +179,7 @@ export default {
   async mounted() {
     if(this.disburse) {
       this.updateData = JSON.parse(JSON.stringify(this.disburse))
+      this.updateData.disburseFinMoney = this.updateData.disburseMoney
       await this.getDepartment()
       await this.getExpaeseplan()
       if(this.updateData.disburseType == 'ค่าใช้จ่าย') {
@@ -263,6 +264,9 @@ export default {
 
         this.updateData.disburseMoney = numeral(this.updateData.disburseMoney).value()
         this.updateData.disburseFinMoney = numeral(this.updateData.disburseFinMoney).value()
+        if(!this.updateData.disburseFinDate) {
+          this.updateData.disburseFinDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
         if(this.expensebudgets.length > 0) {
           let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.updateData.expenseplanID)
           if(budgetplan) {
@@ -324,6 +328,7 @@ export default {
     async disburse() {
       if(this.disburse) {
         this.updateData = JSON.parse(JSON.stringify(this.disburse))
+        this.updateData.disburseFinMoney = this.updateData.disburseMoney
         await this.getDepartment()
         await this.getExpaeseplan()
         if(this.updateData.disburseType == 'ค่าใช้จ่าย') {
