@@ -132,10 +132,10 @@
                       <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
                         <v-icon small class="mr-1">fas fa-list</v-icon>
                       </v-btn>
-                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='ไม่ถูกต้อง')">
+                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='ไม่ถูกต้อง' || item.disburseStatus=='ฝ่ายไม่เห็นชอบ')">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>
-                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='ไม่ถูกต้อง')">
+                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='ไม่ถูกต้อง' || item.disburseStatus=='ฝ่ายไม่เห็นชอบ')">
                         <v-icon small class="mr-1">fas fa-trash</v-icon>
                       </v-btn>
                     </div>

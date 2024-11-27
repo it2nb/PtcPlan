@@ -316,6 +316,14 @@
                     ></v-radio>
                   </v-radio-group>
                 </v-col>
+                <v-col cols="12" md="4" class="mx-auto">
+                  <v-text-field
+                    v-model="disburse.disburseParcDate"
+                    label="ลงวันที่"
+                    type="date"
+                    outlined
+                  ></v-text-field>
+                </v-col>
                 <v-col cols="12" md="10" class="mx-auto">
                   <v-textarea
                     v-model="disburse.disburseParcDes"
@@ -345,6 +353,14 @@
                     ></v-radio>
                   </v-radio-group>
                 </v-col>
+                <v-col cols="12" md="4" class="mx-auto">
+                  <v-text-field
+                    v-model="disburse.disbursePlanDate"
+                    label="ลงวันที่"
+                    type="date"
+                    outlined
+                  ></v-text-field>
+                </v-col>
                 <v-col cols="12" md="10" class="mx-auto">
                   <v-textarea
                     v-model="disburse.disbursePlanDes"
@@ -356,7 +372,7 @@
             </div>
             <div v-else-if="departmentSys=='Account'">
               <v-row no-gutters>
-                <v-col cols="12" md="4" class="ml-auto">
+                <v-col cols="12" md="4" class="mx-auto">
                   <v-radio-group
                     v-model="disburse.disburseAccoCheck"
                     row
@@ -375,7 +391,7 @@
                     ></v-radio>
                   </v-radio-group>
                 </v-col>
-                <v-col cols="12" md="6"  class="mr-auto">
+                <v-col cols="12" md="4"  class="mx-auto">
                   <v-autocomplete
                     v-model="disburse.ledgerID"
                     label="รหัสบัญชีแยกประเภท"
@@ -388,6 +404,15 @@
                     GL-{{ item.ledgerID }} : {{ item.ledgerName }}
                   </template>
                   </v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="10" class="mx-auto">
+                  <v-text-field
+                    v-model="disburse.disburseAccoDate"
+                    label="ลงวันที่"
+                    type="date"
+                    outlined
+                    class="col-12 col-md-4 ml-auto"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="10" class="mx-auto">
                   <v-textarea
@@ -417,6 +442,14 @@
                       color="error"
                     ></v-radio>
                   </v-radio-group>
+                </v-col>
+                <v-col cols="12" md="4" class="mx-auto">
+                  <v-text-field
+                    v-model="disburse.disburseFinaDate"
+                    label="ลงวันที่"
+                    type="date"
+                    outlined
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="10" class="mx-auto">
                   <v-textarea
@@ -1066,7 +1099,9 @@ export default {
       let lineMsg = ''
       if(this.departmentSys == 'Parcel') {
         lineMsg = 'งานพัสดุ'
-        disburse.disburseParcDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        if(!disburse.disburseParcDate) {
+          disburse.disburseParcDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.departmentHead
           disburse.parcUserID = this.user.userID
@@ -1075,7 +1110,9 @@ export default {
         }
       } else if(this.departmentSys == 'Plan') {
         lineMsg = 'งานวางแผนฯ'
-        disburse.disbursePlanDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        if(!disburse.disbursePlanDate) {
+          disburse.disbursePlanDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
         if(disburse.disbursePlanCheck=='ถูกต้อง') {
           disburse.disbursePlanHead = this.user.departmentHead
           disburse.planUserID = this.user.userID
@@ -1085,7 +1122,9 @@ export default {
       }
       if(this.departmentSys == 'Account') {
         lineMsg = 'งานการบัญชี'
-        disburse.disburseAccoDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        if(!disburse.disburseAccoDate) {
+          disburse.disburseAccoDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
         if(disburse.disburseAccoCheck=='ถูกต้อง') {
           disburse.disburseAccoHead = this.user.departmentHead
           disburse.accoUserID = this.user.userID
@@ -1095,7 +1134,9 @@ export default {
       }
       if(this.departmentSys == 'Finance') {
         lineMsg = 'งานการเงิน'
-        disburse.disburseFinaDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        if(!disburse.disburseFinaDate) {
+          disburse.disburseFinaDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
         if(disburse.disburseFinaCheck=='ถูกต้อง') {
           disburse.finaUserID = this.user.userID
           disburse.disburseFinaHead = this.user.departmentHead

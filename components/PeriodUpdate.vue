@@ -160,7 +160,7 @@ export default {
 
         this.updateData.periodYear = parseInt(this.updateData.periodYear)-543
 
-        console.log(this.updateData)
+        //console.log(this.updateData)
 
         let result = await this.$axios.$post('period.update.php', this.updateData)
 

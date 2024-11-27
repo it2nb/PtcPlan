@@ -80,6 +80,7 @@
               row
               v-if="userType=='Plan' || userType=='Admin' || userType=='Finance'"
             >
+              <v-radio label="ตรวจสอบรายการ" value="ตรวจสอบรายการ" color="primary"></v-radio>
               <v-radio label="ตัดแผนแล้ว" value="ตัดแผนแล้ว" color="primary"></v-radio>
               <v-radio label="เบิกจ่ายแล้ว" value="เบิกจ่ายแล้ว" color="success" v-if="userType=='Finance'"></v-radio>
               <v-radio label="ยกเลิก" value="ยกเลิก"  color="red darken-2" v-if="userType=='Finance'"></v-radio>

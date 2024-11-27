@@ -102,7 +102,7 @@ export default {
   async mounted() {
     if(this.pjbudgetalloc) {
       this.insertData = JSON.parse(JSON.stringify(this.pjbudgetalloc))
-      console.log(this.insertData)
+      //console.log(this.insertData)
       await this.getDepartment()
     }
   },

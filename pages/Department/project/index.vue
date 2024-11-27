@@ -76,7 +76,7 @@ export default {
       //   this.periodYears.reverse()
       //   this.projectYear = this.periodYears[0].periodYear
       // }
-      console.log(this.periodYears)
+      //console.log(this.periodYears)
     }
   },
 

@@ -58,10 +58,18 @@
                 lazy-validation
                 @submit.prevent="insertDisburselist"
                 class="mt-4"
-                v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง') && userType=='Department'"
+                v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'"
               >
                 <v-card-text>
                   <v-row dense>
+                    <v-col cols="12" class="mb-2">
+                      <v-btn small color=success @click="showImportExcelDialog">
+                        <v-icon small class="mr-1">fas fa-file-import</v-icon>
+                        นำเข้าจาก Excel
+                      </v-btn>
+                      ดาวน์โหลดไฟล์ต้นแบบ
+                      <v-divider class="mt-3"></v-divider>
+                    </v-col>
                     <v-col cols="12" md="5">
                       <v-text-field
                         v-model="insertData.disburselistName"

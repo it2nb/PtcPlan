@@ -1669,7 +1669,7 @@ export default {
   async mounted() {
     await this.getProjects()
     await this.getParties()
-    console.log(this.partyID)
+    //console.log(this.partyID)
   },
 
   methods: {
@@ -1700,7 +1700,7 @@ export default {
     },
 
     async getParty() {
-      console.log(this.partyID)
+      //console.log(this.partyID)
       let result = await this.$axios.$get('party.php', {
         params: {
           token: this.$store.state.jwtToken,
@@ -1970,7 +1970,7 @@ export default {
           partyName: 'อำนวยการ'
         }
         let partry = await this.$axios.$get('party.php', {params})
-        console.log(partry)
+        //console.log(partry)
         if(partry.message == 'Success') {
           bossparty = JSON.parse(JSON.stringify(partry.party))
         }

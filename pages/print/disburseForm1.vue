@@ -119,7 +119,7 @@
               ({{ disburse.disburseParcHead? disburse.disburseParcHead : '..............................................................' }})
             </v-col>
             <v-col cols="12" class="font17 text-center">
-              วันที่ {{ disburse.disburseParcDate? thaiDate(disburse.disburseParcDate) : '.........../.........................../................' }}
+              วันที่ {{ disburse.disburseParcDate? ((new Date(disburse.disburseParcDate).getDay()==0)? thaiDate(minusDate(disburse.disburseParcDate, 2)) : ((new Date(disburse.disburseParcDate).getDay()==6)? thaiDate(minusDate(disburse.disburseParcDate, 1)) : thaiDate(disburse.disburseParcDate))) : '.........../.........................../................' }}
             </v-col>
           </v-row>
         </v-col>
@@ -137,7 +137,7 @@
               ({{ disburse.disbursePlanHead? disburse.disbursePlanHead  : '..............................................................' }})
             </v-col>
             <v-col cols="12" class="font17 text-center">
-              วันที่ {{ disburse.disbursePlanDate? thaiDate(disburse.disbursePlanDate) : '.........../.........................../................' }}
+              วันที่ {{ disburse.disbursePlanDate? ((new Date(disburse.disbursePlanDate).getDay()==0)? thaiDate(minusDate(disburse.disbursePlanDate, 2)) : ((new Date(disburse.disbursePlanDate).getDay()==6)? thaiDate(minusDate(disburse.disbursePlanDate, 1)) : thaiDate(disburse.disbursePlanDate))) : '.........../.........................../................' }}
             </v-col>
           </v-row>
         </v-col>
@@ -153,7 +153,7 @@
               ({{ disburse.disburseAccoHead? disburse.disburseAccoHead  : '..............................................................' }})
             </v-col>
             <v-col cols="12" class="font17 text-center">
-              วันที่ {{ disburse.disburseAccoDate? thaiDate(disburse.disburseAccoDate) : '.........../.........................../................' }}
+              วันที่ {{ disburse.disburseAccoDate? ((new Date(disburse.disburseAccoDate).getDay()==0)? thaiDate(minusDate(disburse.disburseAccoDate, 2)) : ((new Date(disburse.disburseAccoDate).getDay()==6)? thaiDate(minusDate(disburse.disburseAccoDate, 1)) : thaiDate(disburse.disburseAccoDate))) : '.........../.........................../................' }}
             </v-col>
           </v-row>
         </v-col>
@@ -169,7 +169,7 @@
               ({{ disburse.disburseFinaHead? disburse.disburseFinaHead  : '..............................................................' }})
             </v-col>
             <v-col cols="12" class="font17 text-center">
-              วันที่ {{ disburse.disburseFinaDate? thaiDate(disburse.disburseFinaDate) : '.........../.........................../................' }}
+              วันที่ {{ disburse.disburseFinaDate? ((new Date(disburse.disburseFinaDate).getDay()==0)? thaiDate(minusDate(disburse.disburseFinaDate, 2)) : ((new Date(disburse.disburseFinaDate).getDay()==6)? thaiDate(minusDate(disburse.disburseFinaDate, 1)) : thaiDate(disburse.disburseFinaDate))) : '.........../.........................../................' }}
             </v-col>
           </v-row>
         </v-col>
@@ -543,6 +543,12 @@ export default {
         } else {
           return null
         }
+    },
+
+    minusDate(inDate, days) {
+      let newDate = new Date(inDate);
+      newDate.setDate(newDate.getDate() - days);
+      return newDate;
     },
 
     thaiDate(inDate) {

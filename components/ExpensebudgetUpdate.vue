@@ -118,7 +118,7 @@ export default {
       let result = await this.$axios.$get('expensealloc.php', {params})
       if(result.message == 'Success') {
         this.expensealloc = JSON.parse(JSON.stringify(result.expensealloc))
-        console.log(this.expensealloc)
+        //console.log(this.expensealloc)
       }
     },
 

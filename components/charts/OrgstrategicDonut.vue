@@ -137,7 +137,7 @@ export default {
         orgstrategicEnd: period[0]?.endDate,
         fn: 'SummaryProgress'
       }
-      console.log(params, period)
+      //console.log(params, period)
       let result = await this.$axios.$get('orgstrategic.php', {params})
 
       if(result.message=="Success") {

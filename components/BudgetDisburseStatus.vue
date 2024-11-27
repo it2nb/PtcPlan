@@ -291,7 +291,7 @@ export default {
         fn: 'getSummaryPeriodByBudgetYear'
       }
       let result = await this.$axios.$get('budgetslip.php', {params})
-      console.log(result)
+      //console.log(result)
       if(result.message === 'Success') {
         this.budgetslips = JSON.parse(JSON.stringify(result.budgetslip))
       }

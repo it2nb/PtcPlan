@@ -330,7 +330,7 @@
         if(result.message == 'Success') {
           this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
         }
-        console.log(this.orgstrategics)
+        //console.log(this.orgstrategics)
       },
   
       async getPjpolicy() {

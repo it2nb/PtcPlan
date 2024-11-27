@@ -96,7 +96,6 @@
                           label="ชื่อผู้ใช้ระบบ"
                           dense
                           outlined
-                          readonly
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="8">
@@ -569,9 +568,18 @@ export default {
             text: msg,
             icon: 'success'
           }).then(async ()=> {
-            await this.getUser()
-            await this.getDepartment()
-            this.updateDialog = false
+            //console.log(this.user.userName, this.userUpdate.userName)
+            // if(this.user.userName==this.userUpdate.userName) {
+            //   await this.getUser()
+            //   await this.getDepartment()
+            //   this.updateDialog = false
+            // } else {
+              sessionStorage.setItem('loginuser', JSON.stringify({
+                type: this.userUpdate.userStatus,
+                user: this.userUpdate
+              }))
+              location.reload();
+            // }
           })
         } else {
           let msg = ''

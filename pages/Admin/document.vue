@@ -32,7 +32,7 @@ export default {
       //   message: 'Test \nทดสอบ'
       // })
 
-      console.log(result)
+      //console.log(result)
     }
   }
 }

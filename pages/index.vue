@@ -45,6 +45,7 @@ export default {
         fn: 'All'
       }
       let result = await this.$axios.$get('period.php', {params})
+      //console.log(result)
       if(result.message == 'Success') {
         this.periods = JSON.parse(JSON.stringify(result.period))
         if(this.periods.length > 0) {

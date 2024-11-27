@@ -426,57 +426,68 @@ export default {
       if(this.updateValidate) {
         this.updateProgress = true
 
-        if(this.updateData.disburseType=='โครงการ') {
-          this.updateData.expenseplanID = ''
-        }
-        else if(this.updateData.disburseType=='ค่าใช้จ่าย') {
-          this.updateData.projectID = ''
-          this.updateData.expenseID = ''
-          this.updateData.pjbudgetID = ''
-        }
+        if(new Date(this.updateData.disburseDate).getDay()!=0&&new Date(this.updateData.disburseDate).getDay()!=6) {
 
-        this.updateData.disburseMoney = numeral(this.updateData.disburseMoney).value()
-        if(this.expensebudgets.length > 0) {
-          let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.updateData.expenseplanID)
-          if(budgetplan.expenseID) {
-            this.updateData.expenseID = budgetplan.expenseID
+          if(this.updateData.disburseType=='โครงการ') {
+            this.updateData.expenseplanID = ''
           }
-        }
-        if(this.pjbudgets.length > 0 && this.updateData.disburseType=='โครงการ') {
-          let pjbudget = await this.pjbudgets.find(pjbudget => pjbudget.pjbudgetID==this.updateData.pjbudgetID)
-          if(pjbudget) {
-            this.updateData.budgetplanID = pjbudget.budgetplanID
-            this.updateData.expenseID = pjbudget.expenseID
+          else if(this.updateData.disburseType=='ค่าใช้จ่าย') {
+            this.updateData.projectID = ''
+            this.updateData.expenseID = ''
+            this.updateData.pjbudgetID = ''
           }
-        }
 
-        let result = await this.$axios.$post('disburse.update.php', this.updateData)
-
-        if(result.message == 'Success') {
-          if(this.updateData.disburseType==='โครงการ' && this.disburse==='ค่าใช้จ่าย') {
-            let updateProject = {
-              token: this.$store.state.jwtToken,
-              projectID: this.updateData.projectID,
-              projectProgress: 'อยู่ระหว่างดำเนินการ'
+          this.updateData.disburseMoney = numeral(this.updateData.disburseMoney).value()
+          if(this.expensebudgets.length > 0) {
+            let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.updateData.expenseplanID)
+            if(budgetplan.expenseID) {
+              this.updateData.expenseID = budgetplan.expenseID
             }
-            await this.$axios.$post('project.update.php', updateProject)
           }
-          Swal.fire({
-            title: 'สำเร็จ',
-            text: result.msg,
-            icon: 'success'
-          }).then(async ()=> {
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+          if(this.pjbudgets.length > 0 && this.updateData.disburseType=='โครงการ') {
+            let pjbudget = await this.pjbudgets.find(pjbudget => pjbudget.pjbudgetID==this.updateData.pjbudgetID)
+            if(pjbudget) {
+              this.updateData.budgetplanID = pjbudget.budgetplanID
+              this.updateData.expenseID = pjbudget.expenseID
+            }
+          }
+
+          let result = await this.$axios.$post('disburse.update.php', this.updateData)
+
+          if(result.message == 'Success') {
+            if(this.updateData.disburseType==='โครงการ' && this.disburse==='ค่าใช้จ่าย') {
+              let updateProject = {
+                token: this.$store.state.jwtToken,
+                projectID: this.updateData.projectID,
+                projectProgress: 'อยู่ระหว่างดำเนินการ'
+              }
+              await this.$axios.$post('project.update.php', updateProject)
+            }
+            Swal.fire({
+              title: 'สำเร็จ',
+              text: result.msg,
+              icon: 'success'
+            }).then(async ()=> {
+              this.updateProgress = false
+              this.$emit('getUpdateStatus', {'status': true})
+            })
+          } else {
+            Swal.fire({
+              title: 'ไม่สำเร็จ',
+              text: result.msg,
+              icon: 'error'
+            }).then(()=>{
+              this.updateProgress = false
+              this.$emit('getUpdateStatus', {'status': true})
+            })
+          }
         } else {
           Swal.fire({
-            title: 'ไม่สำเร็จ',
-            text: result.msg,
-            icon: 'error'
+            title: 'ผิดพลาด',
+            text: 'วันจัดซื้อตรงกับเสาร์ หรือ อาทิตย์ กรุณาเลือกวันอื่น',
+            icon: 'warning'
           }).then(()=>{
             this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
           })
         }
       }
