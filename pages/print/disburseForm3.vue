@@ -27,7 +27,7 @@
           เรียน ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
         <v-col cols="12" class="pt-3 font17">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ซึ่งมีรายละเอียด ดังต่อไปนี้
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย งานพัสดุ ฝ่ายบริหารทรัพยากร วิทยาลัยเทคนิคแพร่มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'">{{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง ซึ่งมีรายละเอียด ดังต่อไปนี้
         </v-col>
         <v-col cols="12" class="pt-1 font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;1. เหตุผลความจำเป็นที่ต้อง<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span> เพื่อ{{ disburse.disburseDes }}
@@ -44,7 +44,7 @@
         </v-col>
         <v-col cols="12" class="font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;4. วงเงินที่จะ<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span><br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ disburse.budgettypeName }} {{ disburse.budgetplanDes }} พ.ศ.{{parseInt(disburse.disburseYear)+543}} จำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ disburse.budgettypeName }} {{ (disburse.budgettypeName!=disburse.budgetplanDes)? disburse.budgetplanDes : '' }} พ.ศ.{{parseInt(disburse.disburseYear)+543}} จำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท
         </v-col>
         <v-col cols="12" class="font17">
             &emsp;&emsp;&emsp;&emsp;&emsp;5. กำหนดเวลาที่ต้องการใช้พัสดุนั้น หรือให้งานนั้นแล้วเสร็จ<br>
