@@ -177,7 +177,9 @@ export default {
         dedirectorName: null,
         directorName: null,
         disburse: {},
+        disburselistall: [],
         disburselists: [],
+        disburselistdis: [],
         formDate: []
     }
   },
@@ -210,7 +212,9 @@ export default {
             })
 
             if(disburselistQuery.message == 'Success') {
-              this.disburselists = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
+              this.disburselistall = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
+              this.disburselists = this.disburselistall.filter(disburselist => disburselist.disburselistPrice>=0)
+              this.disburselistdis = this.disburselistall.filter(disburselist => disburselist.disburselistPrice<0)
             }
         }
     },

@@ -221,6 +221,9 @@
                   </template>
                   <template v-slot:item.actions="{ item }">
                     <div  class="text-no-wrap">
+                      <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
+                        <v-icon small class="mr-1">fas fa-list</v-icon>
+                      </v-btn>
                       <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว'">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>
@@ -310,6 +313,9 @@
                   </template>
                   <template v-slot:item.actions="{ item }">
                     <div  class="text-no-wrap">
+                      <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
+                        <v-icon small class="mr-1">fas fa-list</v-icon>
+                      </v-btn>
                       <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว'">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>
@@ -421,6 +427,9 @@
                       </v-chip>
                     </div>
                     <div  class="text-no-wrap">
+                      <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
+                        <v-icon small class="mr-1">fas fa-list</v-icon>
+                      </v-btn>
                       <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว'">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>

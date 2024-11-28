@@ -80,20 +80,23 @@
               {{ thaiDate(disburse.disburseDate) }}
             </v-col>
             <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">คำขอ</h3>
+              ขอจัด{{disburse.disburseSubtype}}<span v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }}
+            </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
+              {{ disburse.expenseName }} : {{ disburse.budgettypeName }} {{ disburse.budgetplanDes }}
+            </v-col>
+            <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
               {{ disburse.disburseProduct }}
             </v-col>
             <v-col cols="12" md="6">
-              <h3 class="mb-2 fontBold">ค่าใช้จ่าย : โครงการ</h3>
-              {{  disburse.disburseName }}
-            </v-col>
-            <v-col cols="12" md="6">
-              <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
-              {{ disburse.budgettypeName }} : {{ disburse.budgetplanFullname }}
-            </v-col>
-            <v-col cols="12" md="6">
-              <h3 class="mb-2 fontBold">ร้านค้า</h3>
-              {{ disburse.companyName }}
+              <h3 class="mb-2 fontBold">เลขที่หนังสือ</h3>
+              เลขที่บันทึกรายงานขอซื้อฯ {{ disburse.reportRecNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
+              เลขที่บันทึกรายงานผลการพิจารณาฯ {{ disburse.resultRecNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
+              เลขที่ใบสั่งฯ {{ disburse.orderNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
+              กำหนดส่งมอบภายใน {{ disburse.orderSendDay }} วัน วันที่ {{ thaiDate(disburse.orderSendDate) }}
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">กรรมการตรวจรับ</h3>
@@ -102,11 +105,8 @@
               {{ disburse.disburseAuditSecr }} {{ disburse.disburseAuditSecrPos }} กรรมการและเลขานุการ
             </v-col>
             <v-col cols="12" md="6">
-              <h3 class="mb-2 fontBold">เลขที่หนังสือ</h3>
-              เลขที่บันทึกรายงานขอซื้อฯ {{ disburse.reportRecNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
-              เลขที่บันทึกรายงานผลการพิจารณาฯ {{ disburse.resultRecNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
-              เลขที่ใบสั่งฯ {{ disburse.orderNo }} วันที่ {{ thaiDate(disburse.recDate) }}<br>
-              กำหนดส่งมอบภายใน {{ disburse.orderSendDay }} วัน วันที่ {{ thaiDate(disburse.orderSendDate) }}
+              <h3 class="mb-2 fontBold">ร้านค้า</h3>
+              {{ disburse.companyName }}
             </v-col>
             <v-col cols="12" class="text-center" v-if="departmentSys=='Parcel'">
               <v-btn 

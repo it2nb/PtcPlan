@@ -28,6 +28,14 @@
               {{ thaiDate(disburse.disburseDate) }}
             </v-col>
             <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">คำขอ</h3>
+              ขอจัด{{disburse.disburseSubtype}}<span v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }}
+            </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
+              {{ disburse.expenseName }} : {{ disburse.budgettypeName }} {{ disburse.budgetplanDes }}
+            </v-col>
+            <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
               {{ disburse.disburseProduct }}
             </v-col>
@@ -44,14 +52,6 @@
               {{ disburse.expenseName }}( {{ disburse.expenseplanDes }} )
             </v-col> -->
             <v-col cols="12">
-              <h3 class="mb-2 fontBold">คำขอ :ค่าใช้จ่าย : โครงการ</h3>
-              {{ disburse.disburseSubtype }} : {{  disburse.disburseName }}
-            </v-col>
-            <v-col cols="12">
-              <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
-              {{ disburse.budgettypeName }} : {{ disburse.budgetplanFullname }}
-            </v-col>
-            <v-col cols="12">
               <v-form
                 v-model="insertValidate"
                 ref="insertForm"
@@ -62,14 +62,14 @@
               >
                 <v-card-text>
                   <v-row dense>
-                    <v-col cols="12" class="mb-2">
+                    <!-- <v-col cols="12" class="mb-2">
                       <v-btn small color=success @click="showImportExcelDialog">
                         <v-icon small class="mr-1">fas fa-file-import</v-icon>
                         นำเข้าจาก Excel
                       </v-btn>
                       ดาวน์โหลดไฟล์ต้นแบบ
                       <v-divider class="mt-3"></v-divider>
-                    </v-col>
+                    </v-col> -->
                     <v-col cols="12" md="5">
                       <v-text-field
                         v-model="insertData.disburselistName"
@@ -112,6 +112,7 @@
                         v-model="insertData.disburselistPrice"
                         label="ราคา"
                         outlined
+                        type="number"
                         dense
                         required
                         :rules="[

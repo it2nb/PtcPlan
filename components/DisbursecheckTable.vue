@@ -215,8 +215,14 @@
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
                         <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
                       </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ฝ่ายไม่เห็นชอบ'">
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ฝ่ายไม่เห็นชอบ
+                      </v-chip>
                       <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
+                      </v-chip>
+                      <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
                       </v-chip>
                       <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
                         <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
@@ -321,6 +327,9 @@
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
                         <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ฝ่ายไม่เห็นชอบ'">
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ฝ่ายไม่เห็นชอบ
                       </v-chip>
                       <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
@@ -428,6 +437,9 @@
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
                         <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                      </v-chip>
+                      <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ฝ่ายไม่เห็นชอบ'">
+                        <v-icon x-small class="mr-1">fas fa-times</v-icon> ฝ่ายไม่เห็นชอบ
                       </v-chip>
                       <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
@@ -741,8 +753,8 @@ export default {
           }
 
 
-          this.CorrectDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง'))
-          this.WrongDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ไม่ถูกต้อง' || disburse.disbursePlanCheck === 'ไม่ถูกต้อง' || disburse.disburseAccoCheck === 'ไม่ถูกต้อง' || disburse.disburseFinaCheck === 'ไม่ถูกต้อง'))
+          this.CorrectDisburses = this.disburses.filter(disburse => ((disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง') && disburse.disburseStatus !== 'ฝ่ายไม่เห็นชอบ'))
+          this.WrongDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ไม่ถูกต้อง' || disburse.disbursePlanCheck === 'ไม่ถูกต้อง' || disburse.disburseAccoCheck === 'ไม่ถูกต้อง' || disburse.disburseFinaCheck === 'ไม่ถูกต้อง' || disburse.disburseStatus === 'ไม่ถูกต้อง' || disburse.disburseStatus === 'ฝ่ายไม่เห็นชอบ'))
         }
       }
       // params = {

@@ -419,6 +419,29 @@
                   {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
                 </td>
               </tr>
+              <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
+                <td></td>
+                <td class="font17">
+                  - {{ disburselist.disburselistName }}
+                </td>
+                <td class="font17 text-right text-no-wrap">
+                  {{ qtyFormat(disburselist.disburselistQty) }}
+                </td>
+                <td class="font17 pl-2">
+                  {{ disburselist.disburselistUnit }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistPrice) }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
+                </td>
+                <td class="font17">
+                  {{ disburselist.disburselistDes }}
+                  <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
+                  {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
+                </td>
+              </tr>
               <tr v-if="disburse.disburseExcludeVat==1">
                 <td colspan="5" class="font17 text-right">ภาษีมูลค่าเพิ่ม 7%</td>
                 <td class="font17 text-right">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) }}</td>
@@ -454,7 +477,9 @@ export default {
         planSign: null,
         accoSign: null,
         finaSign: null,
+        disburselistall: [],
         disburselists: [],
+        disburselistdis: [],
         formDate: []
     }
   },
@@ -506,7 +531,9 @@ export default {
             })
 
             if(disburselistQuery.message == 'Success') {
-              this.disburselists = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
+              this.disburselistall = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
+              this.disburselists = this.disburselistall.filter(disburselist => disburselist.disburselistPrice>=0)
+              this.disburselistdis = this.disburselistall.filter(disburselist => disburselist.disburselistPrice<0)
             }
         }
     },

@@ -67,6 +67,24 @@
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
               </tr>
+              <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
+                <td class="font17 text-center"></td>
+                <td class="font17">
+                  - {{ disburselist.disburselistName }}
+                </td>
+                <td class="font17 text-center">
+                    {{ disburselist.disburselistQty }}
+                </td>
+                <td class="font17 text-center">
+                    {{ disburselist.disburselistUnit }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistPrice) }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
+                </td>
+              </tr>
               <tr>
                 <td colspan="3" rowspan="3" class="font17 font-weight-bold text-center">{{ thaiBaht(disburse.disburseMoney) }}</td>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงิน</td>
@@ -164,6 +182,24 @@
                 <td class="font17 text-center">{{index+1}}</td>
                 <td class="font17">
                   {{ disburselist.disburselistName }}
+                </td>
+                <td class="font17 text-center">
+                    {{ disburselist.disburselistQty }}
+                </td>
+                <td class="font17 text-center">
+                    {{ disburselist.disburselistUnit }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistPrice) }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
+                </td>
+              </tr>
+              <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
+                <td class="font17 text-center"></td>
+                <td class="font17">
+                  - {{ disburselist.disburselistName }}
                 </td>
                 <td class="font17 text-center">
                     {{ disburselist.disburselistQty }}
@@ -290,6 +326,24 @@
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
               </tr>
+              <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
+                <td class="font17 text-center"></td>
+                <td class="font17">
+                  - {{ disburselist.disburselistName }}
+                </td>
+                <td class="font17 text-center">
+                    {{ disburselist.disburselistQty }}
+                </td>
+                <td class="font17 text-center">
+                    {{ disburselist.disburselistUnit }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistPrice) }}
+                </td>
+                <td class="font17 text-right  text-no-wrap">
+                  {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
+                </td>
+              </tr>
               <tr>
                 <td colspan="3" rowspan="3" class="font17 font-weight-bold text-center">{{ thaiBaht(disburse.disburseMoney) }}</td>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงิน</td>
@@ -349,7 +403,9 @@ export default {
         directorName: null,
         disburse: {},
         company: {},
+        disburselistall: [],
         disburselists: [],
+        disburselistdis: [],
         formDate: []
     }
   },
@@ -383,7 +439,9 @@ export default {
             })
 
             if(disburselistQuery.message == 'Success') {
-              this.disburselists = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
+              this.disburselistall = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
+              this.disburselists = this.disburselistall.filter(disburselist => disburselist.disburselistPrice>=0)
+              this.disburselistdis = this.disburselistall.filter(disburselist => disburselist.disburselistPrice<0)
             }
         }
     },
