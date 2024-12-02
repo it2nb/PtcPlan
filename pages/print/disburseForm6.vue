@@ -70,7 +70,7 @@
               <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
                 <td class="font17 text-center"></td>
                 <td class="font17">
-                  - {{ disburselist.disburselistName }}
+                  {{ disburselist.disburselistName }}
                 </td>
                 <td class="font17 text-center">
                     {{ disburselist.disburselistQty }}
@@ -199,7 +199,7 @@
               <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
                 <td class="font17 text-center"></td>
                 <td class="font17">
-                  - {{ disburselist.disburselistName }}
+                  {{ disburselist.disburselistName }}
                 </td>
                 <td class="font17 text-center">
                     {{ disburselist.disburselistQty }}
@@ -329,7 +329,7 @@
               <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
                 <td class="font17 text-center"></td>
                 <td class="font17">
-                  - {{ disburselist.disburselistName }}
+                  {{ disburselist.disburselistName }}
                 </td>
                 <td class="font17 text-center">
                     {{ disburselist.disburselistQty }}
