@@ -88,11 +88,11 @@
               <tr>
                 <td colspan="3" rowspan="3" class="font17 font-weight-bold text-center">{{ thaiBaht(disburse.disburseMoney) }}</td>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงิน</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney*100/107) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney*100/107) : moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">ภาษีมูลค่าเพิ่ม</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) : '-' }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
@@ -116,14 +116,15 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งซื้อ</div>
-          ({{ directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
         <v-col cols="8" class="mt-5 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้รับใบสั่งซื้อ</div>
-          ({{ company.companyOwner }})<br>
-          ผู้จัดการ<br>
+          ( {{ company.companyOwner? company.companyOwner : '..............................................................' }} )<br>
+          {{ company.companyPosition? company.companyPosition : 'ตำแหน่ง..............................................................' }}<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
       </v-row>
@@ -217,11 +218,11 @@
               <tr>
                 <td colspan="3" rowspan="3" class="font17 font-weight-bold text-center">{{ thaiBaht(disburse.disburseMoney) }}</td>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงิน</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*0.07)) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney*100/107) : moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">ภาษีมูลค่าเพิ่ม</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney*0.07) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) : '-' }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
@@ -246,14 +247,15 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งจ้่าง</div>
-          ({{ directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
         <v-col cols="8" class="mt-5 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้รับใบสั่งจ้าง</div>
-          ({{ company.companyOwner }})<br>
-          ผู้จัดการ<br>
+          ( {{ company.companyOwner? company.companyOwner : '..............................................................' }} )<br>
+          {{ company.companyPosition? company.companyPosition : 'ตำแหน่ง..............................................................' }}<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
       </v-row>
@@ -347,11 +349,11 @@
               <tr>
                 <td colspan="3" rowspan="3" class="font17 font-weight-bold text-center">{{ thaiBaht(disburse.disburseMoney) }}</td>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงิน</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*0.07)) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney*100/107) : moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">ภาษีมูลค่าเพิ่ม</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney*0.07) }}</td>
+                <td class="font17 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) : '-' }}</td>
               </tr>
               <tr>
                 <td colspan="2" class="font17 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
@@ -374,14 +376,15 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งเช่า</div>
-          ({{ directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
         <v-col cols="8" class="mt-5 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้รับใบสั่งเช่า</div>
-          ({{ company.companyOwner }})<br>
-          ผู้จัดการ<br>
+          ( {{ company.companyOwner? company.companyOwner : '..............................................................' }} )<br>
+          {{ company.companyPosition? company.companyPosition : 'ตำแหน่ง..............................................................' }}<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
       </v-row>

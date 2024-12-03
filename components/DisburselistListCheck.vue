@@ -674,7 +674,7 @@
                       <v-col cols="12">
                         <h3 class="font-weight-bold">ข้อมูลร้านค้า</h3>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="9">
                         <v-autocomplete
                           v-model="updateData.companyID"
                           label="ชื่อร้านค้า"
@@ -685,6 +685,16 @@
                           outlined
                           v-if="companies"
                         ></v-autocomplete>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-checkbox
+                          v-model="updateData.disburseIncludeVat"
+                          label="ภาษีมูลค่าเพิ่ม 7%"
+                          :true-value="1"
+                          :false-value="0"
+                          dense
+                          outlined
+                        ></v-checkbox>
                       </v-col>
                       <v-col cols="12" class="pb-3">
                         <v-divider></v-divider>
@@ -773,6 +783,14 @@
                           dense
                           :hint="thaiDate(updateData.recDate)"
                           persistent-hint
+                        />
+                      </v-col>
+                      <v-col cols="12" md="3">
+                        <v-text-field
+                          v-model="updateData.redirectorName"
+                          label="ชื่อรักษาการแทนผู้อำนวยการ"
+                          outlined
+                          dense
                         />
                       </v-col>
                       <v-col cols="12" class="pb-3">
@@ -975,7 +993,7 @@ export default {
     let loginuser = JSON.parse(sessionStorage.getItem('loginuser'))
     this.user = JSON.parse(JSON.stringify(loginuser.user))
     if(this.disburse) {
-      this.disburse.companyID = parseInt(this.disburse.companyID)
+      //this.disburse.companyID = parseInt(this.disburse.companyID)
       await this.getDisburselist(this.disburse.disburseID)
       await this.getDisburselistQty(this.disburse.disburseID)
       await this.getLedger()
@@ -1288,6 +1306,7 @@ export default {
         token: this.$store.state.jwtToken,
         disburseID: this.updateData.disburseID,
         companyID: this.updateData.companyID,
+        disburseIncludeVat: this.updateData.disburseIncludeVat,
         disburseAuditHead: this.updateData.disburseAuditHead,
         disburseAuditHeadPos: this.updateData.disburseAuditHeadPos,
         disburseAuditComm: this.updateData.disburseAuditComm,
@@ -1300,6 +1319,7 @@ export default {
         orderNo: this.updateData.orderNo,
         orderSendDay: this.updateData.orderSendDay,
         orderSendDate: this.updateData.orderSendDate,
+        redirectorName: this.updateData.redirectorName
       })
 
       if(disburseUpdate.message == 'Success') {
@@ -1309,7 +1329,9 @@ export default {
           icon: 'success'
         }).then(()=>{
           this.disburse.companyID = this.updateData.companyID
+          if(this.updateData.companyID)
           this.disburse.companyName = this.companies.filter(company => company.companyID==this.updateData.companyID)[0].companyName || ''
+          this.disburse.disburseIncludeVat = this.updateData.disburseIncludeVat
           this.disburse.disburseAuditHead = this.updateData.disburseAuditHead
           this.disburse.disburseAuditHeadPos = this.updateData.disburseAuditHeadPos
           this.disburse.disburseAuditComm = this.updateData.disburseAuditComm
@@ -1322,6 +1344,7 @@ export default {
           this.disburse.orderNo = this.updateData.orderNo
           this.disburse.orderSendDay = this.updateData.orderSendDay
           this.disburse.orderSendDate = this.updateData.orderSendDate
+          this.disburse.redirectorName = this.updateData.redirectorName
           this.updateProgress = false
           this.updateCompanyDialog = false
         })

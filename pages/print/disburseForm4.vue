@@ -1,6 +1,6 @@
 <template>
   <div style="line-height: 1.8">
-    <div class="printPage3x2">
+    <div class="printPage3x2" v-if="disburse">
       <v-row no-gutters class="mb-2">
         <v-col cols="12" class="text-center">
             <img
@@ -41,7 +41,8 @@
             สั่ง ณ วันที่ {{  thaiDate(disburse.recDate) }}
         </v-col>
         <v-col cols="8"  class="mt-10 ml-auto text-center font17">
-          ({{ directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
       </v-row>

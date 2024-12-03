@@ -49,11 +49,19 @@
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="3">
             <h3 class="mb-2 fontBold">ชื่อเจ้าของ/ผู้จัดการ</h3>
             <v-text-field
               v-model="updateData.companyOwner"
               label="ชื่อเจ้าของ/ผู้จัดการ"
+              outlined
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3">
+            <h3 class="mb-2 fontBold">ชื่อตำแหน่ง</h3>
+            <v-text-field
+              v-model="updateData.companyPosition"
+              label="ชื่อตำแหน่ง"
               outlined
             ></v-text-field>
           </v-col>
