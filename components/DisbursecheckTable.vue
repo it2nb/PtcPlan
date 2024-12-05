@@ -18,10 +18,13 @@
                 <b class="primary--text">รอตรวจสอบ({{ CheckDisburses.length }})</b>
               </v-tab>
               <v-tab>
-                <b class="primary--text">ถูกต้อง({{ CorrectDisburses.length }})</b>
+                <b class="success--text">ถูกต้อง->รอจัดซื้อ({{ CorrectDisburses.length }})</b>
               </v-tab>
               <v-tab>
-                <b class="success--text">ไม่ถูกต้อง({{ WrongDisburses.length }})</b>
+                <b class="success--text">ถูกต้อง->รอเบิกจ่าย({{ Correct2Disburses.length }})</b>
+              </v-tab>
+              <v-tab>
+                <b class="error--text">ไม่ถูกต้อง({{ WrongDisburses.length }})</b>
               </v-tab>
               <v-tab>
                 <b class="grey--text text--darken-2">ทั้งหมด({{ disburses.length }})</b>
@@ -138,7 +141,7 @@
                 </v-data-table>
               </v-tab-item>
               <v-tab-item class="py-5">
-                <!-- ถูกต้อง -->
+                <!-- ถูกต้อง รอจัดซื้อ-->
                 <v-data-table
                   :headers="headers"
                   :items="CorrectDisburses"
@@ -152,7 +155,122 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">ตรวจสอบถูกต้องแล้ว {{ CorrectDisburses.length }} รายการ {{ moneyFormat(budgetSum.disbursePlanMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">ถูกต้อง รอการจัดซื้อ {{ CorrectDisburses.length }} รายการ {{ moneyFormat(budgetSum.disbursePlanMoney) }} บาท</h3>
+                        <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=plan'" target="_blank" v-if="departmentSys=='Admin'||departmentSys=='Director'||departmentSys=='Plan'||departmentSys=='Finance'" class="ml-2">
+                          <v-icon>fas fa-print</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-text-field
+                          v-model="Plansearch"
+                          append-icon="mdi-magnify"
+                          label="ค้นหา"
+                          hide-details
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </template>
+
+                  <template v-slot:item.disburseID="{ item }">
+                    <div  class="text-no-wrap">DB-{{ parseInt(item.disburseID) }}</div>
+                  </template>
+                  <template v-slot:item.disburseYear="{ item }">
+                    {{ parseInt(item.disburseYear)+543 }}
+                  </template>
+                  <template v-slot:item.disburseMoney="{ item }">
+                    <span class="error--text text--darken-2" v-if="item.disburseStatus=='ยกเลิก'">{{ moneyFormat(item.disburseMoney) }}</span>
+                    <span class="success--text text--darken-3 font-weight-bold" v-else-if="item.disburseStatus=='เบิกจ่ายแล้ว'">{{ moneyFormat(item.disburseFinMoney) }}</span>
+                    <span class="primary--text text--darken-2" v-else-if="(item.disburseParcCheck=='ถูกต้อง'&&item.disburseAccoCheck=='ถูกต้อง'&&item.disbursePlanCheck=='ถูกต้อง'&&item.disburseFinaCheck=='ถูกต้อง') || item.disburseStatus=='ตัดแผนแล้ว'">{{ moneyFormat(item.disburseMoney) }}</span>
+                    <span v-else>{{ moneyFormat(item.disburseMoney) }}</span>
+                  </template>
+                  <template v-slot:item.disburseDate="{ item }">
+                    {{ thaiDateBf(item.disburseDate) }}
+                  </template>
+                  <template v-slot:item.disburseFinDate="{ item }">
+                    {{ thaiDateBf(item.disburseFinDate) }}
+                  </template>
+                  <template v-slot:item.disburseParcCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disburseParcCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disburseParcCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
+                  <template v-slot:item.disbursePlanCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disbursePlanCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disbursePlanCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
+                  <template v-slot:item.disburseAccoCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disburseAccoCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disburseAccoCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
+                  <template v-slot:item.disburseFinaCheck="{ item }">
+                    <v-icon small color="success" v-if="item.disburseFinaCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
+                    <v-icon small color="error"  v-if="item.disburseFinaCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
+                  </template>
+                  <template v-slot:item.actions="{ item }">
+                    <div>
+                      <v-btn text small  @click="departmentSys=='Parcel'? showUpdateStatusDialog(item): ()=>{}">
+                        <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
+                          <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
+                        </v-chip>
+                        <v-chip color="yellow" x-small v-if="item.disburseStatus=='ตรวจสอบรายการ'">
+                          <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอตรวจสอบ
+                        </v-chip>
+                        <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ไม่ถูกต้อง'">
+                          <v-icon x-small class="mr-1">fas fa-times</v-icon> ไม่ถูกต้อง
+                        </v-chip>
+                        <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ฝ่ายไม่เห็นชอบ'">
+                          <v-icon x-small class="mr-1">fas fa-times</v-icon> ฝ่ายไม่เห็นชอบ
+                        </v-chip>
+                        <v-chip color="primary" x-small v-if="item.disburseStatus=='รอยืนยันจัดซื้อ'">
+                          <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอยืนยันจัดซื้อ
+                        </v-chip>
+                        <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
+                          <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
+                        </v-chip>
+                        <v-chip color="success darken-3" outlined x-small v-if="item.disburseStatus=='เบิกจ่ายแล้ว'">
+                          <v-icon x-small class="mr-1">fas fa-check-circle</v-icon> {{ item.disburseStatus }}
+                        </v-chip>
+                        <v-chip color="primary" outlined x-small dark v-else-if="item.disburseStatus=='ตัดแผนแล้ว'">
+                          <v-icon x-small class="mr-1">fas fa-clock</v-icon> {{ item.disburseStatus }}
+                        </v-chip>
+                        <v-chip color="red darken-2" outlined x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
+                          <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
+                        </v-chip>
+                      </v-btn>
+                    </div>
+                    <div  class="text-no-wrap">
+                      <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
+                        <v-icon small class="mr-1">fas fa-list</v-icon>
+                      </v-btn>
+                    </div>
+                  </template>
+                  <template slot="body.append">
+                    <tr>
+                      <td colspan="3" class="fontBold text-center">รวม</td>
+                      <td class="fontBold text-right">{{ moneyFormat(budgetSum.disbursePlanMoney) }}</td>
+                      <!-- <td class="fontBold text-right">{{ moneyFormat(budgetSum.budgetrealMoney) }} บาท</td> -->
+                      <td></td>
+                    </tr>
+                  </template>
+                </v-data-table>
+              </v-tab-item>
+              <v-tab-item class="py-5">
+                <!-- ถูกต้อง รอเบิกจ่าย-->
+                <v-data-table
+                  :headers="headers"
+                  :items="Correct2Disburses"
+                  :search="Plansearch"
+                  :items-per-page="50"
+                  :loading="disbursesLoading"
+                  :footer-props="{
+                    showFirstLastPage: true,
+                  }"
+                >
+                  <template v-slot:top>
+                    <v-row>
+                      <v-col cols="12" md="6" class="text-center">
+                        <h3 class="mb-2 fontBold text-center">ถูกต้อง รอการเบิกจ่าย {{ Correct2Disburses.length }} รายการ {{ moneyFormat(budgetSum.disbursePlan2Money) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=plan'" target="_blank" v-if="departmentSys=='Admin'||departmentSys=='Director'||departmentSys=='Plan'||departmentSys=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -265,7 +383,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่เบิกจ่ายแล้ว {{ WrongDisburses.length }} รายการ {{ moneyFormat(budgetSum.disburseCompleteMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">ไม่ถูกต้อง {{ WrongDisburses.length }} รายการ {{ moneyFormat(budgetSum.disburseWrongMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=complete'" target="_blank" v-if="departmentSys=='Admin'||departmentSys=='Director'||departmentSys=='Plan'||departmentSys=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -374,7 +492,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการทั้งหมด {{ budgetSum.disburseQty }} รายการ {{ moneyFormat(budgetSum.disburseMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการทั้งหมด {{ disburses.length }} รายการ {{ moneyFormat(budgetSum.disburseMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=all'" target="_blank" v-if="departmentSys=='Admin'||departmentSys=='Director'||departmentSys=='Plan'||departmentSys=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -684,6 +802,7 @@ export default {
       disburses: [],
       CheckDisburses: [],
       CorrectDisburses: [],
+      Correct2Disburses: [],
       WrongDisburses: [],
       CancelDisburses: [],
       budgetSum: {},
@@ -740,6 +859,7 @@ export default {
       if(result.message === 'Success') {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if(this.disburses) {
+          this.budgetSum.disburseMoney = this.disburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
           if(this.departmentSys == 'Parcel') {
             this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === '' ||disburse.disburseParcCheck === null) && disburse.disburseStatus=='ตรวจสอบรายการ')
           } else if(this.departmentSys == 'Plan') {
@@ -751,10 +871,16 @@ export default {
           } else if(this.user.userStatus == 'Index') {
             this.CheckDisburses = this.disburses.filter(disburse => (disburse.disburseStatus=='ตัดแผนแล้ว' && (disburse.disburseRecNo=='' || disburse.disburseRecNo==null) && (disburse.reportRecNo=='' || disburse.reportRecNo==null) && (disburse.checkComNo=='' || disburse.checkComNo==null) && (disburse.resultRecNo=='' || disburse.resultRecNo==null)))
           }
+          this.budgetSum.disburseReqMoney = this.CheckDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
 
+          this.CorrectDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง') && disburse.disburseStatus == 'ตัดแผนแล้ว' && disburse.parcRecStatus!=1)
+          this.budgetSum.disbursePlanMoney = this.CorrectDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
 
-          this.CorrectDisburses = this.disburses.filter(disburse => ((disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง') && disburse.disburseStatus !== 'ฝ่ายไม่เห็นชอบ'))
+          this.Correct2Disburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ถูกต้อง' && disburse.disbursePlanCheck === 'ถูกต้อง' && disburse.disburseAccoCheck === 'ถูกต้อง' && disburse.disburseFinaCheck === 'ถูกต้อง') && disburse.disburseStatus == 'ตัดแผนแล้ว' && disburse.parcRecStatus==1)
+          this.budgetSum.disbursePlan2Money = this.Correct2Disburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
+
           this.WrongDisburses = this.disburses.filter(disburse => (disburse.disburseParcCheck === 'ไม่ถูกต้อง' || disburse.disbursePlanCheck === 'ไม่ถูกต้อง' || disburse.disburseAccoCheck === 'ไม่ถูกต้อง' || disburse.disburseFinaCheck === 'ไม่ถูกต้อง' || disburse.disburseStatus === 'ไม่ถูกต้อง' || disburse.disburseStatus === 'ฝ่ายไม่เห็นชอบ'))
+          this.budgetSum.disburseWrongMoney = this.WrongDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
         }
       }
       // params = {
@@ -762,11 +888,11 @@ export default {
       //   disburseYear: this.disburseYear,
       //   fn: 'getSummaryByYear'
       // }
-      params.fn = 'getSummaryByYear'
-      let result2 = await this.$axios.$get('disburse.php', {params})
-      if(result2.message === 'Success') {
-        this.budgetSum = JSON.parse(JSON.stringify(result2.disburse))
-      }
+      // params.fn = 'getSummaryByYear'
+      // let result2 = await this.$axios.$get('disburse.php', {params})
+      // if(result2.message === 'Success') {
+      //   this.budgetSum = JSON.parse(JSON.stringify(result2.disburse))
+      // }
       this.disbursesLoading = false
     },
 

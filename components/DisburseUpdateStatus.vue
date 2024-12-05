@@ -85,6 +85,7 @@
               <v-radio label="เบิกจ่ายแล้ว" value="เบิกจ่ายแล้ว" color="success" v-if="userType=='Finance'"></v-radio>
               <v-radio label="ยกเลิก" value="ยกเลิก"  color="red darken-2" v-if="userType=='Finance'"></v-radio>
             </v-radio-group>
+            <v-divider v-else></v-divider>
           </v-col>
           <v-col cols="12" md="6" v-if="updateData.disburseStatus=='เบิกจ่ายแล้ว'">
             <h3 class="mb-2 fontBold">จำนวนเงิน(บาท)</h3>
@@ -116,6 +117,36 @@
               label="หมายเหตุ"
               outlined
               required
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4" v-if="departmentSys=='Parcel'">
+            <h3 class="mb-2 fontBold">สถานะ</h3>
+            <v-checkbox
+              v-model="updateData.parcRecStatus"
+              label="ส่งเอกสารไปยังงานการเงินแล้ว"
+              :true-value="1"
+              :false-value="0"
+              outlined
+              dense
+            ></v-checkbox>
+          </v-col>
+          <v-col cols="12" md="4" v-if="departmentSys=='Parcel' && updateData.parcRecStatus==1">
+            <h3 class="mb-2 fontBold">เลขที่คุมเอกสาร</h3>
+            <v-text-field
+              v-model="updateData.parcRecNo"
+              label="เลขที่คุมเอกสาร"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4" v-if="departmentSys=='Parcel' && updateData.parcRecStatus==1">
+            <h3 class="mb-2 fontBold">วันที่ส่งเอกสาร</h3>
+            <v-text-field
+              v-model="updateData.parcRecDate"
+              label="วันที่ส่งเอกสาร"
+              type="date"
+              outlined
               dense
             ></v-text-field>
           </v-col>
@@ -161,6 +192,10 @@ export default {
     userType: {
       type: String,
       default: null
+    },
+    departmentSys: {
+      type: String,
+      default: null
     }
   },
 
@@ -180,7 +215,9 @@ export default {
   async mounted() {
     if(this.disburse) {
       this.updateData = JSON.parse(JSON.stringify(this.disburse))
-      this.updateData.disburseFinMoney = this.updateData.disburseMoney
+      if(this.userType=='Finance' || this.departmentSys=='Finance') {
+        this.updateData.disburseFinMoney = this.updateData.disburseMoney
+      }
       await this.getDepartment()
       await this.getExpaeseplan()
       if(this.updateData.disburseType == 'ค่าใช้จ่าย') {
@@ -264,10 +301,17 @@ export default {
         this.updateProgress = true
 
         this.updateData.disburseMoney = numeral(this.updateData.disburseMoney).value()
-        this.updateData.disburseFinMoney = numeral(this.updateData.disburseFinMoney).value()
-        if(!this.updateData.disburseFinDate) {
-          this.updateData.disburseFinDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        if(this.userType=='Finance' || this.departmentSys=='Finance') {
+          this.updateData.disburseFinMoney = numeral(this.updateData.disburseFinMoney).value()
+          if(!this.updateData.disburseFinDate) {
+            this.updateData.disburseFinDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+          }
         }
+
+        if(!this.updateData.parcRecDate && this.departmentSys=='Parcel' && this.updateData.parcRecStatus==1) {
+          this.updateData.parcRecDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
+
         if(this.expensebudgets.length > 0) {
           let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.updateData.expenseplanID)
           if(budgetplan) {
