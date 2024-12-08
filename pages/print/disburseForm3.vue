@@ -68,7 +68,9 @@
           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;2. ลงนามในคำสั่งแต่งตั้งคณะกรรมการตรวจรับพัสดุโดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="5" class="mt-10 ml-auto text-center font17">
-          <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" /><br>
+          <span v-if="disburse.reparcHead">&nbsp;</span>
+          <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" />
+          <span v-else>&nbsp;</span><br>
           ({{ disburse.reparcHead? disburse.reparcHead : disburse.disburseParcHead }})<br>
           {{ disburse.reparcHead? 'รักษาราชการแทน' : ''}}หัวหน้าเจ้าหน้าที่พัสดุ
         </v-col>

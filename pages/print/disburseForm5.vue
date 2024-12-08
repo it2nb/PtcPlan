@@ -65,7 +65,9 @@
             &emsp;&emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรดพิจารณา หากเห็นชอบขอได้โปรดอนุมัติให้สั่ง<span class="font17" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font17" v-else>ซื้อ</span>จากผู้เสนอราคาดังกล่าว
         </v-col>
         <v-col cols="5" class="mt-10 pt-5 ml-auto text-center font17">
-          <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" /><br>
+          <span v-if="disburse.reparcHead">&nbsp;</span>
+          <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" />
+          <span v-else>&nbsp;</span><br>
           ({{ disburse.reparcHead? disburse.reparcHead : disburse.disburseParcHead }})<br>
           {{ disburse.reparcHead? 'รักษาราชการแทน' : ''}}หัวหน้าเจ้าหน้าที่พัสดุ
         </v-col>
