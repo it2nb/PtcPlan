@@ -79,8 +79,8 @@
               หัวหน้า{{ disburse.pjdepartmentName }}<br>ผู้รับผิดชอบโครงการ
             </v-col>
             <v-col align-self="start" class="text-center font17" v-else>
-              <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="pjdepartmentSign" /><img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="disburseSign" /><br>
-              ({{ disburse.pjdepartmentHead }})<br>
+              <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="pjdepartmentSign&&disburse.departmentSign==disburse.userID" /><img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="disburseSign" /><br>
+              ({{ disburse.disburseReqName }})<br>
               หัวหน้า{{ disburse.pjdepartmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font17">
@@ -334,9 +334,9 @@
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font17 text-center mt-5" v-else-if="disburse.disburseType=='โครงการ'">
-          <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="pjdepartmentSign" /><img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-else-if="disburseSign" />
+          <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="pjdepartmentSign&&disburse.departmentSign==disburse.userID" /><img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-else-if="disburseSign" />
           <span class="font17" v-else>........................................</span><br>
-          ({{ disburse.pjdepartmentHead }}) <br>
+         ({{ disburse.disburseReqName }}) <br>
           หัวหน้า{{ disburse.pjdepartmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>

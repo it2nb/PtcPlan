@@ -1,6 +1,6 @@
 <template>
   <div style="line-height: 1.8">
-    <div class="printPage3x2">
+    <div class="printPage3x2" style="padding-left: 2cm;">
       <v-row no-gutters class="mb-2">
         <v-col cols="12" align-self="end" class="text-center font19 font-weight-bold">
             ใบเบิกเงิน{{ disburse.budgettypeName }} ({{ disburse.budgetplanDes }})

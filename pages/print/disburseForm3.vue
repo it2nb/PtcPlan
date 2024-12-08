@@ -69,8 +69,8 @@
         </v-col>
         <v-col cols="5" class="mt-10 ml-auto text-center font17">
           <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" /><br>
-          ({{ disburse.disburseParcHead }})<br>
-          หัวหน้าเจ้าหน้าที่พัสดุ
+          ({{ disburse.reparcHead? disburse.reparcHead : disburse.disburseParcHead }})<br>
+          {{ disburse.reparcHead? 'รักษาราชการแทน' : ''}}หัวหน้าเจ้าหน้าที่พัสดุ
         </v-col>
       </v-row>
     </div>

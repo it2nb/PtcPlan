@@ -116,7 +116,7 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งซื้อ</div>
-          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
           {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
@@ -247,7 +247,7 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งจ้่าง</div>
-          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
           {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
@@ -376,7 +376,7 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งเช่า</div>
-          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
           {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
@@ -402,8 +402,8 @@ export default {
         disburseID: null,
         parcelName: null,
         financeName: null,
-        dedirectorName: null,
-        directorName: null,
+        // dedirectorName: null,
+        // directorName: null,
         disburse: {},
         company: {},
         disburselistall: [],
@@ -451,27 +451,27 @@ export default {
 
     async getName() {
       let token = this.$store.state.jwtToken
-      await this.$axios.$get('party.php', {
-        params: {
-          token: token,
-          partyName: 'อำนวยการ'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          this.directorName = result.party.partyHead
-        }
-      })
+      // await this.$axios.$get('party.php', {
+      //   params: {
+      //     token: token,
+      //     partyName: 'อำนวยการ'
+      //   }
+      // }).then(result=> {
+      //   if(result.message == 'Success') {
+      //     this.directorName = result.party.partyHead
+      //   }
+      // })
 
-      await this.$axios.$get('party.php', {
-        params: {
-          token: token,
-          partyName: 'บริหารทรัพยากร'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          this.dedirectorName = result.party.partyHead
-        }
-      })
+      // await this.$axios.$get('party.php', {
+      //   params: {
+      //     token: token,
+      //     partyName: 'บริหารทรัพยากร'
+      //   }
+      // }).then(result=> {
+      //   if(result.message == 'Success') {
+      //     this.dedirectorName = result.party.partyHead
+      //   }
+      // })
 
       await this.$axios.$get('department.php', {
         params: {

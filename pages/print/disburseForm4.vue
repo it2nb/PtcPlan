@@ -41,7 +41,7 @@
             สั่ง ณ วันที่ {{  thaiDate(disburse.recDate) }}
         </v-col>
         <v-col cols="8"  class="mt-10 ml-auto text-center font17">
-          ({{ disburse.redirectorName? disburse.redirectorName : directorName }})<br>
+          ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
           {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
@@ -60,8 +60,8 @@ export default {
     return {
         state: null,
         disburseID: null,
-        directorName: null,
-        dedirectorName: null,
+        // directorName: null,
+        // dedirectorName: null,
         parcelName: null,
         financeName: null,
         disburse: {},
@@ -109,27 +109,27 @@ export default {
 
     async getName() {
       let token = this.$store.state.jwtToken
-      await this.$axios.$get('party.php', {
-        params: {
-          token: token,
-          partyName: 'อำนวยการ'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          this.directorName = result.party.partyHead
-        }
-      })
+      // await this.$axios.$get('party.php', {
+      //   params: {
+      //     token: token,
+      //     partyName: 'อำนวยการ'
+      //   }
+      // }).then(result=> {
+      //   if(result.message == 'Success') {
+      //     this.directorName = result.party.partyHead
+      //   }
+      // })
 
-      await this.$axios.$get('party.php', {
-        params: {
-          token: token,
-          partyName: 'บริหารทรัพยากร'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          this.dedirectorName = result.party.partyHead
-        }
-      })
+      // await this.$axios.$get('party.php', {
+      //   params: {
+      //     token: token,
+      //     partyName: 'บริหารทรัพยากร'
+      //   }
+      // }).then(result=> {
+      //   if(result.message == 'Success') {
+      //     this.dedirectorName = result.party.partyHead
+      //   }
+      // })
 
       await this.$axios.$get('department.php', {
         params: {

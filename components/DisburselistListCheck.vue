@@ -785,7 +785,15 @@
                           persistent-hint
                         />
                       </v-col>
-                      <v-col cols="12" md="3">
+                      <v-col cols="12" md="4">
+                        <v-text-field
+                          v-model="updateData.reparcHead"
+                          label="ชื่อรักษาการแทนหัวหน้าเจ้าหน้าที่พัสดุ"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="4">
                         <v-text-field
                           v-model="updateData.redirectorName"
                           label="ชื่อรักษาการแทนผู้อำนวยการ"
@@ -956,6 +964,7 @@ export default {
   data() {
     return {
       user: {},
+      parcUsers: [],
       ledgers: [],
       disburseuser: {},
       disburselists: [],
@@ -1075,6 +1084,20 @@ export default {
       }
     },
 
+    async getParcUser() {
+        let result = await this.$axios.$get('user.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          departmentID: this.user.departmentID
+        }
+      })
+
+      if(result.message == 'Success') {
+        this.parcUsers = JSON.parse(JSON.stringify(result.user))
+        this.parcUsers = this.parcUsers.filter(user => user.userEnable=="Enable")
+      }
+    },
+
     showUpdateDialog(disburselist) {
       this.updateData = JSON.parse(JSON.stringify(disburselist))
       this.updateDialog = true
@@ -1123,6 +1146,16 @@ export default {
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.departmentHead
           disburse.parcUserID = this.user.userID
+          await this.$axios.$get('party.php', {
+            params: {
+              token: this.$store.state.jwtToken,
+              partyName: 'อำนวยการ'
+            }
+          }).then(result=> {
+            if(result.message == 'Success') {
+              this.disburse.directorName = result.party.partyHead
+            }
+          })
           await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > งานวางแผนฯ > ตรวจสอบความถูกต้อง')
           await this.sendLindDepartSys('Plan', this.disburse.disburseID)
         }
@@ -1167,6 +1200,16 @@ export default {
         lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ไม่ถูกต้อง > โปรดแก้ไขและยืนยันคำขออีกครั้ง'
       } else if(disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง') {
         disburse.disburseStatus = 'รอฝ่ายเห็นชอบ'
+        await this.$axios.$get('party.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            partyName: 'อำนวยการ'
+          }
+        }).then(result=> {
+          if(result.message == 'Success') {
+            this.disburse.directorName = result.party.partyHead
+          }
+        })
         await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+' > ให้ความเห็นชอบ')
         lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ถูกต้อง > รอให้รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+'ให้ความเห็นชอบ'
         this.sendLindParty(disburse.pjpartyID? disburse.pjpartyID: disburse.partyID, disburse.disburseID)
@@ -1297,6 +1340,7 @@ export default {
     async showUpdateCompanyDialog(disburse) {
       this.updateData = JSON.parse(JSON.stringify(disburse))
       await this.getCompany()
+      await this.getParcUser()
       this.updateCompanyDialog = true
     },
 
@@ -1319,7 +1363,8 @@ export default {
         orderNo: this.updateData.orderNo,
         orderSendDay: this.updateData.orderSendDay,
         orderSendDate: this.updateData.orderSendDate,
-        redirectorName: this.updateData.redirectorName
+        redirectorName: this.updateData.redirectorName,
+        reparcHead: this.updateData.reparcHead
       })
 
       if(disburseUpdate.message == 'Success') {
@@ -1345,6 +1390,7 @@ export default {
           this.disburse.orderSendDay = this.updateData.orderSendDay
           this.disburse.orderSendDate = this.updateData.orderSendDate
           this.disburse.redirectorName = this.updateData.redirectorName
+          this.disburse.reparcHead = this.updateData.reparcHead
           this.updateProgress = false
           this.updateCompanyDialog = false
         })

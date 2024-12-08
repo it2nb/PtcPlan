@@ -459,7 +459,7 @@ export default {
           }
 
           let result = await this.$axios.$post('disburse.insert.php', this.insertData)
-
+console.log(result)
           if(result.message == 'Success') {
             if(this.insertData.disburseType==='โครงการ') {
               let updateProject = {
