@@ -85,7 +85,7 @@
             </v-col>
             <v-col align-self="start" class="text-center font17">
               <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign" /><br>
-              ({{ disburse.pjpartyHead }})<br>
+              ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.pjpartyHead }})<br>
               รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}
             </v-col>
           </v-row>
@@ -315,7 +315,7 @@
         <v-col cols="6" class="font17 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
           <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign" />
           <span class="font17" v-else>........................................</span><br>
-          ({{ disburse.partyHead }}) <br>
+          ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.pjpartyHead }}) <br>
           รองผู้อำนวยการฝ่าย{{ disburse.partyName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>

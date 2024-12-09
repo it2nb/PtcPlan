@@ -65,7 +65,7 @@ export default {
     // baseURL: 'http://localhost/ptcplan-api/',
     // baseURL: 'http://113.53.238.204/PlanApi/',
     baseURL: '/Api/',
-    prefix: '/Local/',
+    prefix: '/Api/',
     proxy: true,
   },
   proxy: {
