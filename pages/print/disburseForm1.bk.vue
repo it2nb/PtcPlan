@@ -62,8 +62,8 @@
             </v-col>
             <v-col align-self="start" class="text-center font17">
               <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
-              <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseDepartmentSign" /><br>
-              ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : (disburse.userID==disburse.departmentHeadUserID? disburse.disburseReqName : disburse.departmentHeadFullname) }})<br>
+              <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseSign" /><br>
+              ({{ disburse.userID==disburse.departmentHeadUserID? disburse.disburseReqName : disburse.departmentHeadFullname }})<br>
               หัวหน้า{{ disburse.departmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font17">
@@ -80,15 +80,13 @@
               ผู้ขอจัดซื้อ
             </v-col>
             <v-col align-self="start" class="text-center font17" v-if="disburse.departmentID!=disburse.pjdepartmentID">
-              <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseDepartmentSign" /><br>
-              ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.pjdepartmentHead }})<br>
+              <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="pjdepartmentSign" /><br>
+              ({{ disburse.pjdepartmentHead }})<br>
               หัวหน้า{{ disburse.pjdepartmentName }}<br>ผู้รับผิดชอบโครงการ
             </v-col>
             <v-col align-self="start" class="text-center font17" v-else>
-              <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseDepartmentSign" />
-              <!-- <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="disburseSign" /> -->
-              <br>
-              ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }})<br>
+              <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="pjdepartmentSign&&disburse.departmentSign==disburse.userID" /><img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="disburseSign" /><br>
+              ({{ disburse.disburseReqName }})<br>
               หัวหน้า{{ disburse.pjdepartmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font17">
@@ -321,16 +319,16 @@
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย' && disburse.userID!=disburse.departmentHeadUserID">
-          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
+          <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign" />
           <span class="font17" v-else>........................................</span><br>
-          ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
+          ({{ disburse.departmentHeadFullname }}) <br>
           หัวหน้า{{ disburse.departmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font17 text-center mt-5" v-else-if="disburse.disburseType=='ค่าใช้จ่าย'">
-          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
+          <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign" />
           <span class="font17" v-else>........................................</span><br>
-          ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
+          ({{ disburse.disburseReqName }}) <br>
           หัวหน้า{{ disburse.departmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
@@ -355,22 +353,21 @@
           ผู้ขอจัดซื้อ<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
-        <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && (disburse.departmentID!=disburse.pjdepartmentID || disburse.userID!=disburse.departmentHeadUserID)">
-          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
+        <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
+          <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="pjdepartmentSign" />
           <span class="font17" v-else>........................................</span><br>
-          ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.pjdepartmentHead }}) <br>
+          ({{ disburse.pjdepartmentHead }}) <br>
           หัวหน้า{{ disburse.pjdepartmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font17 text-center mt-5" v-else-if="disburse.disburseType=='โครงการ'">
-          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
-          <!-- <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-else-if="disburseSign" /> -->
+          <img :src="pjdepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="pjdepartmentSign&&disburse.departmentSign==disburse.userID" /><img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-else-if="disburseSign" />
           <span class="font17" v-else>........................................</span><br>
-         ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
+         ({{ disburse.disburseReqName }}) <br>
           หัวหน้า{{ disburse.pjdepartmentName }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
-        <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && (disburse.departmentID!=disburse.pjdepartmentID || disburse.userID!=disburse.departmentHeadUserID)">
+        <v-col cols="4" class="font17 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && disburse.departmentID!=disburse.pjdepartmentID">
           <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign" />
           <span class="font17" v-else>........................................</span><br>
           ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.pjpartyHead }}) <br>
@@ -529,7 +526,7 @@ export default {
                 disburseID: this.disburseID
             }
         })
-console.log(disburseQuery)
+        console.log(disburseQuery)
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
             if(this.disburse.partyUserID) {
@@ -538,12 +535,12 @@ console.log(disburseQuery)
             if(this.disburse.userID) {
               this.disburseSign = await this.getDepartmentSignature(this.disburse.userID)
             }
-            if(this.disburse.departmentUserID) {
-              this.disburseDepartmentSign = await this.getDepartmentSignature(this.disburse.departmentUserID)
+            if(this.disburse.departmentHeadUserID) {
+              this.disburseDepartmentSign = await this.getDepartmentSignature(this.disburse.departmentHeadUserID)
             }
-            // if(this.disburse.departmentSign) {
-            //   this.pjdepartmentSign = await this.getDepartmentSignature(this.disburse.departmentSign)
-            // }
+            if(this.disburse.departmentSign) {
+              this.pjdepartmentSign = await this.getDepartmentSignature(this.disburse.departmentSign)
+            }
             if(this.disburse.parcUserID) {
               this.parcSign = await this.getDepartmentSignature(this.disburse.parcUserID)
             }

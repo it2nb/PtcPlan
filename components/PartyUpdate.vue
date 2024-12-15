@@ -8,54 +8,40 @@
       v-model="updateValidate"
       ref="updateForm"
       lazy-validation
-      @submit.prevent="updateDepartment"
+      @submit.prevent="updateParty"
       class="mt-4"
     >
       <v-card-text>
         <v-row dense>
-            <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">ฝ่าย</h3>
-            <v-select
-              v-model="updateData.partyID"
-              label="ฝ่าย"
-              :items="parties"
-              item-text="partyName"
-              item-value="partyID"
-              outlined
-              :rules="[
-                ()=>!!updateData.partyID || 'กรุณากรอกข้อมูล'
-              ]"
-            ></v-select>
-          </v-col>
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">ชื่อแผนก/งาน</h3>
             <v-text-field
-              v-model="updateData.departmentName"
+              v-model="updateData.partyName"
               label="ชื่อแผนก/งาน"
               outlined
               required
               :rules="[
-                ()=>!!updateData.departmentName || 'กรุณากรอกข้อมูล'
+                ()=>!!updateData.partyName || 'กรุณากรอกข้อมูล'
               ]"
             ></v-text-field>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-2 fontBold">คำอธิบาย</h3>
             <v-textarea
-              v-model="updateData.departmentDetail"
+              v-model="updateData.partyDetail"
               label="คำอธิบาย"
               outlined
             ></v-textarea>
           </v-col>
           <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">หัวหน้าแผนก/งาน</h3>
+            <h3 class="mb-2 fontBold">หัวหน้าฝ่าย</h3>
             <!-- <v-text-field
-              v-model="updateData.departmentHead"
+              v-model="updateData.partyHead"
               label="ชื่อ-สกุล หัวหน้าแผนก/งาน"
               outlined
             ></v-text-field> -->
             <v-autocomplete
-              v-model="updateData.departmentHeadUserID"
+              v-model="updateData.partyHeadUserID"
               :items="users"
               item-text="userFullname"
               item-value="userID"
@@ -63,28 +49,19 @@
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">รักษาราชการแทนหัวหน้าแผนก/งาน</h3>
+            <h3 class="mb-2 fontBold">รักษาราชการแทนหัวหน้าฝ่าย</h3>
             <v-autocomplete
-              v-model="updateData.departmentReheadUserID"
+              v-model="updateData.partyReheadUserID"
               :items="users"
               item-text="userFullname"
               item-value="userID"
               outlined
             ></v-autocomplete>
-          </v-col>
-          <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">สิทธิ์ของระบบ</h3>
-            <v-select
-              v-model="updateData.departmentSys"
-              label="สิทธิ์ของระบบ"
-              :items="departmentSyses"
-              outlined
-            ></v-select>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-2 fontBold">สถานะ</h3>
             <v-switch
-              v-model="updateData.departmentEnable"
+              v-model="updateData.partyEnable"
               label="สถานะ"
               :true-value="1"
               :false-value="0"
@@ -125,7 +102,7 @@
 import Swal from 'sweetalert2'
 export default {
   props: {
-    department: {
+    party: {
       type: Object,
       default: () => {}
     },
@@ -133,10 +110,9 @@ export default {
 
   data() {
     return {
-        parties: [],
       updateData: {},
       users: [],
-      departmentSyses: [
+      partySyses: [
         {text: 'ไม่มี', value: 'none'},
         {text: 'งานพัสดุ', value: 'Parcel'},
         {text: 'งานวางแผน', value: 'Plan'},
@@ -149,30 +125,19 @@ export default {
   },
 
   async mounted() {
-    if(this.department) {
-        await this.getParties()
+    if(this.party) {
         await this.getUsers()
-      this.updateData = JSON.parse(JSON.stringify(this.department))
+      this.updateData = JSON.parse(JSON.stringify(this.party))
     }
   },
 
   methods: {
-    async getParties() {
-        let result = await this.$axios.$get('party.php', {
-            params: {
-                token: this.$store.state.jwtToken,
-            }
-        })
-        if(result.message == 'Success') {
-            this.parties = JSON.parse(JSON.stringify(result.party))
-        }
-    },
 
     async getUsers() {
         let result = await this.$axios.$get('user.php', {
             params: {
                 token: this.$store.state.jwtToken,
-                departmentID: this.department.departmentID
+                partyID: this.party.partyID
             }
         })
         if(result.message == 'Success') {
@@ -181,12 +146,12 @@ export default {
         }
     },
 
-    async updateDepartment() {
+    async updateParty() {
       await this.$refs.updateForm.validate()
       if(this.updateValidate) {
         this.updateProgress = true
 
-        let result = await this.$axios.$post('department.update.php', this.updateData)
+        let result = await this.$axios.$post('party.update.php', this.updateData)
 
         if(result.message == 'Success') {
           Swal.fire({
@@ -217,11 +182,10 @@ export default {
   },
 
   watch: {
-    async department() {
-      if(this.department) {
-        await this.getParties()
+    async party() {
+      if(this.party) {
         await this.getUsers()
-        this.updateData = JSON.parse(JSON.stringify(this.department))
+        this.updateData = JSON.parse(JSON.stringify(this.party))
       }
     }
   }

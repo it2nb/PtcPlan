@@ -356,8 +356,13 @@ export default {
             text: msg,
             icon: 'success'
           }).then(async ()=> {
-            await this.getUser()
-            this.updateDialog = false
+            // await this.getUser()
+            // this.updateDialog = false
+            sessionStorage.setItem('loginuser', JSON.stringify({
+              type: this.userUpdate.userStatus,
+              user: this.userUpdate
+            }))
+            location.reload();
           })
 
         } else {

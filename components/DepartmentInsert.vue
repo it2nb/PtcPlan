@@ -49,11 +49,28 @@
           </v-col>
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">ชื่อ-สกุล หัวหน้าแผนก/งาน</h3>
-            <v-text-field
+            <!-- <v-text-field
               v-model="insertData.departmentHead"
               label="ชื่อ-สกุล หัวหน้าแผนก/งาน"
               outlined
-            ></v-text-field>
+            ></v-text-field> -->
+            <v-autocomplete
+              v-model="insertData.departmentHeadUserID"
+              :items="users"
+              item-text="userFullname"
+              item-value="userID"
+              outlined
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="6">
+            <h3 class="mb-2 fontBold">รักษาราชการแทนหัวหน้าแผนก/งาน</h3>
+            <v-autocomplete
+              v-model="insertData.departmentReheadUserID"
+              :items="users"
+              item-text="userFullname"
+              item-value="userID"
+              outlined
+            ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">สิทธิ์ของระบบ</h3>
@@ -118,6 +135,7 @@ export default {
     return {
         parties: [],
       insertData: {},
+      users: [],
       departmentSyses: [
         {text: 'ไม่มี', value: 'none'},
         {text: 'งานพัสดุ', value: 'Parcel'},
@@ -133,6 +151,7 @@ export default {
   async mounted() {
     if(this.department) {
         await this.getParties()
+        await this.getUsers()
       this.insertData = JSON.parse(JSON.stringify(this.department))
     }
   },
@@ -148,6 +167,20 @@ export default {
             this.parties = JSON.parse(JSON.stringify(result.party))
         }
     },
+
+    async getUsers() {
+        let result = await this.$axios.$get('user.php', {
+            params: {
+                token: this.$store.state.jwtToken,
+                departmentID: this.department.departmentID
+            }
+        })
+        if(result.message == 'Success') {
+            this.users = JSON.parse(JSON.stringify(result.user))
+            this.users = this.users.filter(user=>user.userEnable=='Enable')
+        }
+    },
+
     async insertDepartment() {
       await this.$refs.insertForm.validate()
       if(this.insertValidate) {
@@ -199,6 +232,7 @@ export default {
     async department() {
       if(this.department) {
         await this.getParties()
+        await this.getUsers()
         this.insertData = JSON.parse(JSON.stringify(this.department))
       }
     }

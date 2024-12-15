@@ -84,6 +84,10 @@
                   <template v-slot:item.disburseFinDate="{ item }">
                     {{ thaiDateBf(item.disburseFinDate) }}
                   </template>
+                  <template v-slot:item.departmentName="{ item }">
+                    {{ item.disburseReqName }}<br>
+                    {{ item.departmentName }}
+                  </template>
                   <template v-slot:item.disburseParcCheck="{ item }">
                     <v-icon small color="success" v-if="item.disburseParcCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
                     <v-icon small color="error"  v-if="item.disburseParcCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
@@ -102,6 +106,9 @@
                   </template>
                   <template v-slot:item.actions="{ item }">
                     <div>
+                      <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-pen</v-icon> เขียนซื้อ
+                      </v-chip>
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
                       </v-chip>
@@ -127,6 +134,9 @@
                     <div  class="text-no-wrap">
                       <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
                         <v-icon small class="mr-1">fas fa-list</v-icon>
+                      </v-btn>
+                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="departmentSys=='Plan'">
+                        <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>
                     </div>
                   </template>
@@ -191,6 +201,10 @@
                   <template v-slot:item.disburseFinDate="{ item }">
                     {{ thaiDateBf(item.disburseFinDate) }}
                   </template>
+                  <template v-slot:item.departmentName="{ item }">
+                    {{ item.disburseReqName }}<br>
+                    {{ item.departmentName }}
+                  </template>
                   <template v-slot:item.disburseParcCheck="{ item }">
                     <v-icon small color="success" v-if="item.disburseParcCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
                     <v-icon small color="error"  v-if="item.disburseParcCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
@@ -210,6 +224,9 @@
                   <template v-slot:item.actions="{ item }">
                     <div>
                       <v-btn text small  @click="departmentSys=='Parcel'? showUpdateStatusDialog(item): ()=>{}">
+                        <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-pen</v-icon> เขียนซื้อ
+                      </v-chip>
                         <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                           <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
                         </v-chip>
@@ -306,6 +323,10 @@
                   <template v-slot:item.disburseFinDate="{ item }">
                     {{ thaiDateBf(item.disburseFinDate) }}
                   </template>
+                  <template v-slot:item.departmentName="{ item }">
+                    {{ item.disburseReqName }}<br>
+                    {{ item.departmentName }}
+                  </template>
                   <template v-slot:item.disburseParcCheck="{ item }">
                     <v-icon small color="success" v-if="item.disburseParcCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
                     <v-icon small color="error"  v-if="item.disburseParcCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
@@ -324,6 +345,9 @@
                   </template>
                   <template v-slot:item.actions="{ item }">
                     <div>
+                      <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-pen</v-icon> เขียนซื้อ
+                      </v-chip>
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
                       </v-chip>
@@ -419,6 +443,10 @@
                   <template v-slot:item.disburseFinDate="{ item }">
                     {{ thaiDateBf(item.disburseFinDate) }}
                   </template>
+                  <template v-slot:item.departmentName="{ item }">
+                    {{ item.disburseReqName }}<br>
+                    {{ item.departmentName }}
+                  </template>
                   <template v-slot:item.disburseParcCheck="{ item }">
                     <v-icon small color="success" v-if="item.disburseParcCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
                     <v-icon small color="error"  v-if="item.disburseParcCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
@@ -437,6 +465,9 @@
                   </template>
                   <template v-slot:item.actions="{ item }">
                     <div>
+                      <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-pen</v-icon> เขียนซื้อ
+                      </v-chip>
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
                       </v-chip>
@@ -529,6 +560,10 @@
                   <template v-slot:item.disburseFinDate="{ item }">
                     {{ thaiDateBf(item.disburseFinDate) }}
                   </template>
+                  <template v-slot:item.departmentName="{ item }">
+                    {{ item.disburseReqName }}<br>
+                    {{ item.departmentName }}
+                  </template>
                   <template v-slot:item.disburseParcCheck="{ item }">
                     <v-icon small color="success" v-if="item.disburseParcCheck=='ถูกต้อง'">fas fa-check-circle</v-icon>
                     <v-icon small color="error"  v-if="item.disburseParcCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
@@ -547,6 +582,9 @@
                   </template>
                   <template v-slot:item.actions="{ item }">
                     <div>
+                      <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
+                        <v-icon x-small class="mr-1">fas fa-pen</v-icon> เขียนซื้อ
+                      </v-chip>
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
                       </v-chip>
@@ -594,6 +632,32 @@
           </v-card-text>
         </v-card>
       </v-col>
+    </v-row>
+
+    <v-row justify="center">
+      <v-dialog
+        v-model="updateDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-10 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="amber lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="updateDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <div v-if="updateDialog">
+                  <DisburseUpdateVue :disburse="disburseData" @getUpdateStatus="updateDisburse"  v-if="departmentSys=='Plan'"/>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
     </v-row>
 
     <v-row justify="center">
@@ -855,7 +919,9 @@ export default {
           disburseYear: this.disburseYear
         }
       }
+     
       let result = await this.$axios.$get('disburse.php', {params})
+       console.log(result)
       if(result.message === 'Success') {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if(this.disburses) {
@@ -941,6 +1007,18 @@ export default {
       this.updateDialog = true
     },
 
+    showUpdateStatusDialog(disburse) {
+      this.disburseData = disburse
+      this.disburseData.token = this.$store.state.jwtToken
+      this.updateStatusDialog = true
+    },
+
+    showDisburselistListDialog(disburse) {
+      this.disburseData = disburse
+      this.disburseData.token = this.$store.state.jwtToken
+      this.disburselistListDialog = true
+    },
+
     async updateDisburse(res) {
       if(res.status) {
         await this.getDisburses()
@@ -969,18 +1047,6 @@ export default {
       } else {
         this.deleteDialog = false
       }
-    },
-
-    showUpdateStatusDialog(disburse) {
-      this.disburseData = disburse
-      this.disburseData.token = this.$store.state.jwtToken
-      this.updateStatusDialog = true
-    },
-
-    showDisburselistListDialog(disburse) {
-      this.disburseData = disburse
-      this.disburseData.token = this.$store.state.jwtToken
-      this.disburselistListDialog = true
     },
 
     moneyFormat(money) {

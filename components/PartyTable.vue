@@ -4,23 +4,23 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>แผนก/งาน</b>
+            <b>ฝ่ายงาน</b>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="departments"
+              :items="parties"
               :search="search"
               :items-per-page="-1"
-              :loading="departmentsLoading"
+              :loading="partiesLoading"
               hide-default-footer
             >
               <template v-slot:top>
                 <v-row>
                   <v-col cols="12" md="6">
                     <v-btn color="success" text @click="showInsertDialog" v-if="userType=='Admin' || userType=='Plan'">
-                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มแผนก/งาน
+                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มฝ่าย
                     </v-btn>
                   </v-col>
                   <v-col cols="12" md="6">
@@ -36,25 +36,11 @@
                 </v-row>
               </template>
 
-              <template v-slot:item.departmentID="{ item }">
-                <div  class="text-no-wrap">DPM-{{ parseInt(item.departmentID) }}</div>
+              <template v-slot:item.partyID="{ item }">
+                <div  class="text-no-wrap">DPM-{{ parseInt(item.partyID) }}</div>
               </template>
-              <template v-slot:item.departmentSys="{ item }">
-                <v-chip color="primary" v-if="item.departmentSys=='Parcel'">
-                    งานพัสดุ
-                </v-chip>
-                <v-chip color="primary" v-else-if="item.departmentSys=='Plan'">
-                    งานวางแผน
-                </v-chip>
-                <v-chip color="primary" v-else-if="item.departmentSys=='Account'">
-                    งานบัญชี
-                </v-chip>
-                <v-chip color="primary" v-else-if="item.departmentSys=='Finance'">
-                    งานการเงิน
-                </v-chip>
-              </template>
-              <template v-slot:item.departmentEnable="{ item }">
-                <v-chip color="success" v-if="item.departmentEnable==1">
+              <template v-slot:item.partyEnable="{ item }">
+                <v-chip color="success" v-if="item.partyEnable==1">
                   <v-icon class="mr-1">fas fa-check-circle</v-icon> ใช้งาน
                 </v-chip>
                 <v-chip color="red" small dark v-else>
@@ -93,7 +79,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DepartmentInsert :department="departmentData" @getInsertStatus="insertDepartment"/>
+                <PartyInsert :party="partyData" @getInsertStatus="insertParty"/>
               </v-card>
             </v-col>
           </v-row>
@@ -117,7 +103,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DepartmentUpdate :department="departmentData" @getUpdateStatus="updateDepartment"/>
+                <PartyUpdate :party="partyData" @getUpdateStatus="updateParty"/>
               </v-card>
             </v-col>
           </v-row>
@@ -141,7 +127,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DepartmentDelete :department="departmentData" @getDeleteStatus="deleteDepartment"/>
+                <PartyDelete :party="partyData" @getDeleteStatus="deleteParty"/>
               </v-card>
             </v-col>
           </v-row>
@@ -164,7 +150,7 @@ export default {
       type: String,
       default: null
     },
-    departmentYear: {
+    partyYear: {
       type: String,
       default: null
     },
@@ -189,95 +175,94 @@ export default {
           text: '#',
           align: 'center',
           sortable: false,
-          value: 'departmentID',
+          value: 'partyID',
         },
-        { text: 'ชื่อแผนก/งาน', value: 'departmentName', align: 'left', class: 'text-center' },
-        { text: 'หัวหน้าแผนก/งาน', value: 'departmentHeadFullname', align: 'left', class: 'text-left' },
-        { text: 'รักษาการหัวหน้าแผนก/งาน', value: 'departmentReheadFullname', align: 'left', class: 'text-left' },
-        { text: 'สิทธิ์ของระบบ', value: 'departmentSys', align: 'center' },
-        { text: 'สถานะ', value: 'departmentEnable', align: 'center' },
+        { text: 'ชื่อฝ่าย', value: 'partyName', align: 'left', class: 'text-center' },
+        { text: 'หัวหน้าฝ่าย', value: 'partyHeadFullname', align: 'left', class: 'text-left' },
+        { text: 'รักษาการหัวหน้าฝ่าย', value: 'partyReheadFullname', align: 'left', class: 'text-left' },
+        { text: 'สถานะ', value: 'partyEnable', align: 'center' },
         { text: '', value: 'actions', align: 'center' },
       ],
       search: '',
-      departmentsLoading: true,
-      departments: [],
-      departmentData: {},
+      partiesLoading: true,
+      parties: [],
+      partyData: {},
       insertDialog: false,
       insertProgress: false,
-      departmentInsertValidate: null,
+      partyInsertValidate: null,
 
       updateDialog: false,
       updateProgress: false,
-      departmentUpdateValidate: null,
+      partyUpdateValidate: null,
 
       deleteDialog: false,
       deleteProgress: false,
-      departmentDeleteValidate: null,
+      partyDeleteValidate: null,
     }
   },
 
   async mounted() {
-    await this.getDepartments()
+    await this.getParties()
   },
 
   methods: {
-    async getDepartments() {
-      this.departmentsLoading = true
-      let result = await this.$axios.$get('department.php', {
+    async getParties() {
+      this.partiesLoading = true
+      let result = await this.$axios.$get('party.php', {
         params: {
           token: this.$store.state.jwtToken
         }
       })
 
       if(result.message === 'Success') {
-        this.departments = JSON.parse(JSON.stringify(result.department))
+        this.parties = JSON.parse(JSON.stringify(result.party))
       }
-      this.departmentsLoading = false
+      this.partiesLoading = false
     },
 
     showInsertDialog() {
-      this.departmentData = {
+      this.partyData = {
         token: this.$store.state.jwtToken,
-        departmentYear: this.departmentYear,
-        departmentEnable: 1
+        partyYear: this.partyYear,
+        partyEnable: 1
       }
       this.insertDialog = true
     },
 
-    async insertDepartment(res) {
+    async insertParty(res) {
       if(res.status) {
-        await this.getDepartments()
-        this.$emit('getdepartmentStatus', {'status': true})
+        await this.getParties()
+        this.$emit('getpartyStatus', {'status': true})
         this.insertDialog = false
       } else {
         this.insertDialog = false
       }
     },
 
-    showUpdateDialog(department) {
-      this.departmentData = department
-      this.departmentData.token = this.$store.state.jwtToken
+    showUpdateDialog(party) {
+      this.partyData = party
+      this.partyData.token = this.$store.state.jwtToken
       this.updateDialog = true
     },
 
-    async updateDepartment(res) {
+    async updateParty(res) {
       if(res.status) {
-        await this.getDepartments()
+        await this.getParties()
         this.updateDialog = false
       } else {
         this.updateDialog = false
       }
     },
 
-    showDeleteDialog(department) {
-      this.departmentData = department
-      this.departmentData.token = this.$store.state.jwtToken
+    showDeleteDialog(party) {
+      this.partyData = party
+      this.partyData.token = this.$store.state.jwtToken
       this.deleteDialog = true
     },
 
-    async deleteDepartment(res) {
+    async deleteParty(res) {
       if(res.status) {
-        await this.getDepartments()
+        await this.getParties()
         this.deleteDialog = false
       } else {
         this.deleteDialog = false
@@ -286,12 +271,12 @@ export default {
   },
 
 watch: {
-  async departmentYear() {
-    await this.getDepartments()
+  async partyYear() {
+    await this.getParties()
   },
 
   async personalIDcard() {
-    await this.getDepartments()
+    await this.getParties()
   }
 }
 }

@@ -209,7 +209,7 @@
           ผู้เสนอโครงการ <img :src="departmentSignature+'?t='+new Date()" style="max-width: 150px; max-height: 40px;" v-if="departmentSignature" />
           <span v-else>................................................</span><br>
           <span class="font16" v-if="project.departmentSignName">({{ project.departmentSignName }})</span>
-          <span class="font16" v-else-if="project.departmentHead">({{ project.departmentHead }})</span>
+          <span class="font16" v-else-if="project.departmentHeadFullname">({{ project.departmentHeadFullname }})</span>
           <span class="font16" v-else>(&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;)</span><br>
           หัวหน้า{{project.departmentName}}
         </div>
@@ -217,7 +217,7 @@
           ผู้เห็นชอบโครงการ <img :src="partySignature+'?t='+new Date()" style="max-width: 150px; max-height: 40px;" v-if="partySignature" />
           <span v-else>................................................</span><br>
           <span class="font16" v-if="project.partySignName">({{ project.partySignName }})</span>
-          <span class="font16" v-else-if="project.partyHead">({{ project.partyHead }})</span>
+          <span class="font16" v-else-if="project.partyHeadFullname">({{ project.partyHeadFullname }})</span>
           <span class="font16" v-else>(&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;)</span><br>
           รองผู้อำนวยการฝ่าย{{project.partyName}}
         </div>
@@ -225,7 +225,7 @@
           ผู้อนุมัติโครงการ <img :src="directorSignature+'?t='+new Date()" style="max-width: 150px; max-height: 40px;" v-if="directorSignature" />
           <span v-else>................................................</span><br>
           <span class="font16" v-if="project.directorSignName">({{ project.directorSignName }})</span>
-          <span class="font16" v-else-if="bossparty.partyHead">({{ bossparty.partyHead }})</span>
+          <span class="font16" v-else-if="bossparty.partyHeadFullname">({{ bossparty.partyHeadFullname }})</span>
           <span class="font16" v-else>(&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;)</span><br>
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </div>

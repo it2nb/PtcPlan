@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>ข้อมูลฝ่ายบริหาร</b>
+            <b>ข้อมูลส่วนตัว</b>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-md-5">
@@ -12,8 +12,11 @@
               <v-col cols="12" md="4" class="py-2">
                 ชื่อผู้ใช้ระบบ <b>{{ user.userName }}</b>
               </v-col>
-              <v-col cols="12" md="8" class="py-2">
-                คำอธิบาย <b>{{ user.userDes }}</b>
+              <v-col cols="12" md="4" class="py-2">
+                ชื่อ-สกุล <b>{{ user.userFullname }}</b>
+              </v-col>
+              <v-col cols="12" md="4" class="py-2">
+                ตำแหน่ง <b>{{ user.userPosition }}</b>
               </v-col>
               <v-col cols="12" md="4" class="py-2">
                 เบอร์โทรศัพท์ <b>{{ user.userPhone }}</b>
@@ -21,7 +24,7 @@
               <v-col cols="12" md="8" class="py-2">
                 Email <b>{{ user.userEmail }}</b>
               </v-col>
-              <v-col cols="12" md="8" class="py-2">
+              <v-col cols="12" md="4" class="py-2">
                 (1-on-1) Line TOKEN
                 <span v-if="user.userLineToken">
                   <v-icon color="success" class="ml-1">fas fa-check-circle</v-icon>
@@ -30,17 +33,21 @@
                   <v-icon small color="grey" class="ml-1">fas fa-minus-circle</v-icon>
                 </span>
               </v-col>
+              <v-col cols="12" md="8" class="py-2">
+                ลายมือชื่อ <v-icon color="success" v-if="signature">fas fa-check-circle</v-icon>
+                <v-icon color="red darken-2" v-else>fas fa-times-circle</v-icon>
+              </v-col>
               <v-col cols="12"><v-divider></v-divider></v-col>
               <v-col cols="12" md="4" class="py-2">
                 ฝ่าย <b>{{ party.partyName }}</b>
               </v-col>
               <v-col cols="12" md="4" class="py-2">
-                {{ user.userStatus=='Director'?'ชื่อ ผอ.':'ชื่อ รองฯฝ่าย' }} <b>{{ party.partyHead }}</b>
+                {{ user.userStatus=='Director'?'ชื่อ ผอ.':'ชื่อ รองฯฝ่าย' }} <b>{{ party.partyHeadFullname }}</b>
               </v-col>
-              <v-col cols="12" md="4" class="py-2">
+              <!-- <v-col cols="12" md="4" class="py-2">
                 ลายมือชื่อ <v-icon color="success" v-if="signature">fas fa-check-circle</v-icon>
                 <v-icon color="red darken-2" v-else>fas fa-times-circle</v-icon>
-              </v-col>
+              </v-col> -->
             </v-row>
           </v-card-text>
           <v-card-actions class="pa-5 justify-end">
@@ -91,17 +98,30 @@
                           label="ชื่อผู้ใช้ระบบ"
                           dense
                           outlined
-                          readonly
+                          :rules="[
+                            (userName)=> !!userName || 'กรุณากรอกข้อมูล'
+                          ]"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="8">
-                        <h3 class="mb-2 fontBold">คำอธิบาย</h3>
+                      <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ชื่อ-สกุล</h3>
                         <v-text-field
-                          v-model="userUpdate.userDes"
-                          label="คำอธิบาย"
+                          v-model="userUpdate.userFullname"
+                          label="ชื่อ-สกุล"
                           dense
                           outlined
-                          readonly
+                          :rules="[
+                            (userFullname)=> !!userFullname || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ตำแหน่งในฝ่าย</h3>
+                        <v-text-field
+                          v-model="userUpdate.userPosition"
+                          label="ตำแหน่งในฝ่าย"
+                          dense
+                          outlined
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="4">
@@ -122,34 +142,11 @@
                           outlined
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="8">
                         <h3 class="mb-2 fontBold">(1-on-1) Line TOKEN</h3>
                         <v-text-field
                           v-model="userUpdate.userLineToken"
                           label="Line TOKEN"
-                          dense
-                          outlined
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-divider></v-divider>
-                      </v-col>
-                      <v-col cols="12" md="4">
-                        <h3 class="mb-2 fontBold">ฝ่าย</h3>
-                        <v-text-field
-                          v-model="userUpdate.partyName"
-                          label="ฝ่าย"
-                          dense
-                          outlined
-                          readonly
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="4">
-                        <h3 class="mb-2 fontBold" v-if="user.userStatus=='Director'">ชื่อ ผอ.</h3>
-                        <h3 class="mb-2 fontBold" v-else>ชื่อ รองฯฝ่าย</h3>
-                        <v-text-field
-                          v-model="userUpdate.partyHead"
-                          :label="user.userStatus=='Director'?'ชื่อ ผอ.':'ชื่อ รองฯฝ่าย'"
                           dense
                           outlined
                         ></v-text-field>
@@ -166,7 +163,6 @@
                           counter
                           accept="image/jpeg"
                           label="ภาพลายมือชื่อ"
-                          @change="userImagesChanged"
                         ></v-file-input>
                         <div class="col-12" v-if="userSignature">
                           <v-img
@@ -197,6 +193,71 @@
                           </v-img>
                         </div>
                       </v-col>
+                      <!-- <v-col cols="12">
+                        <v-divider></v-divider>
+                      </v-col> -->
+                      <!-- <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ฝ่าย</h3>
+                        <v-text-field
+                          v-model="userUpdate.partyName"
+                          label="ฝ่าย"
+                          dense
+                          outlined
+                          readonly
+                        ></v-text-field>
+                      </v-col> -->
+                      <!-- <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold" v-if="user.userStatus=='Director'">ชื่อ ผอ.</h3>
+                        <h3 class="mb-2 fontBold" v-else>ชื่อ รองฯฝ่าย</h3>
+                        <v-text-field
+                          v-model="userUpdate.partyHead"
+                          :label="user.userStatus=='Director'?'ชื่อ ผอ.':'ชื่อ รองฯฝ่าย'"
+                          dense
+                          outlined
+                        ></v-text-field>
+                      </v-col> -->
+                      <!-- <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ลายมือชื่อ</h3>
+                        <v-file-input
+                          v-model="userSignature"
+                          ref="userSignature"
+                          dense
+                          outlined
+                          small-chips
+                          show-size
+                          counter
+                          accept="image/jpeg"
+                          label="ภาพลายมือชื่อ"
+                        ></v-file-input>
+                        <div class="col-12" v-if="userSignature">
+                          <v-img
+                            :src="getImageUrl(userSignature)+'?t='+new Date()"
+                            contain
+                          >
+                            <template v-slot:placeholder>
+                              <v-row
+                                  class="fill-height ma-0 "
+                                  justify="center"
+                              >
+                                <v-icon large>fas fa-images</v-icon>
+                              </v-row>
+                            </template>
+                          </v-img>
+                        </div>
+                        <div class="col-12" v-else-if="userUpdate.userSignature">
+                          <v-img
+                            :src="userUpdate.imagePath+usignature+'?d='+(new Date().getTime())"
+                            contain
+                            class="align-end text-right"
+                            gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
+                            v-for="usignature in userUpdate.userSignature" :key="usignature.key"
+                          >
+                            <v-btn icon small color="red darken-2" @click="showDeleteSignatureDialog(usignature)">
+                              <v-icon small>fas fa-trash</v-icon>
+                            </v-btn>
+                          </v-img>
+                        </div>
+                      </v-col> -->
                     </v-row>
                   </v-card-text>
                   <v-divider class="green lighten-2"></v-divider>
@@ -565,9 +626,14 @@ export default {
             text: msg,
             icon: 'success'
           }).then(async ()=> {
-            await this.getUser()
-            await this.getParty()
-            this.updateDialog = false
+            // await this.getUser()
+            // await this.getParty()
+            // this.updateDialog = false
+            sessionStorage.setItem('loginuser', JSON.stringify({
+              type: this.userUpdate.userStatus,
+              user: this.userUpdate
+            }))
+            location.reload();
           })
         } else {
           let msg = ''

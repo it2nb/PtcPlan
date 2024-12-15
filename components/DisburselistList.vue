@@ -58,7 +58,7 @@
                 lazy-validation
                 @submit.prevent="insertDisburselist"
                 class="mt-4"
-                v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'"
+                v-if="((disburse.disburseStatus=='เขียนซื้อ' && disburse.userID==user.userID) || (disburse.disburseStatus=='เขียนซื้อ' || disburse.disburseStatus == 'ขอซื้อ' && (disburse.departmentHeadUserID==user.userID || disburse.pjdepartmentHeadUserID==user.userID)) || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'"
               >
                 <v-card-text>
                   <v-row dense>
@@ -167,7 +167,7 @@
                 <v-icon small color="error" v-if="item.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                 {{ item.disburselistStatus=='ไม่ถูกต้อง' ? item.disburselistCommment : '' }}
               </template>
-              <template v-slot:item.actions="{ item }" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
+              <template v-slot:item.actions="{ item }" v-if="((disburse.disburseStatus=='เขียนซื้อ' && disburse.userID==user.userID) || (disburse.disburseStatus=='เขียนซื้อ' || disburse.disburseStatus == 'ขอซื้อ' && (disburse.departmentHeadUserID==user.userID || disburse.pjdepartmentHeadUserID==user.userID)) || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
                 <v-btn color="warning" icon  small @click="showUpdateDialog(item)">
                   <v-icon small class="mr-1">fas fa-edit</v-icon>
                 </v-btn>
@@ -225,7 +225,7 @@
                 v-if="updateProgress"
               ></v-progress-circular>
               </v-col>
-            <v-col cols="12" md="10" class="pt-2 font-weight-bold text-right" v-else-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
+            <v-col cols="12" md="10" class="pt-2 font-weight-bold text-right" v-else-if="((disburse.disburseStatus=='เขียนซื้อ' && disburse.userID==user.userID) || (disburse.disburseStatus=='เขียนซื้อ' || disburse.disburseStatus == 'ขอซื้อ' && (disburse.departmentHeadUserID==user.userID || disburse.pjdepartmentHeadUserID==user.userID)) || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
                 <v-btn small color="success" class="mr-1" @click="excludeVatChange(1)">
                   <v-icon x-small class="mr-1">fas fa-plus</v-icon>
                   บวก Vat
@@ -255,7 +255,30 @@
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
         <v-card-actions>
-          <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department'">
+          <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID">
+            <v-progress-circular
+              indeterminate
+              color="success"
+              v-if="updateProgress"
+            ></v-progress-circular>
+            <div v-else-if="disburselists.length > 0">
+              <v-row class="mb-1 justify-center"  >
+                  <v-checkbox
+                  v-model="confirmCheck"
+                  label="เมื่อยืนยันและส่งหัวหน้าฝ่าย/งานแล้วจะไม่สามารถแก้ไขได้"
+                ></v-checkbox>
+              </v-row>
+              <v-btn
+                color="warning darken-1"
+                large
+                @click="confirmList"
+                v-if="confirmCheck"
+              >
+                ยืนยันและส่งหัวหน้าฝ่าย/งาน
+              </v-btn>
+            </div>  
+          </div>
+          <div class="col-12 text-center" v-else-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && (disburse.departmentHeadUserID==user.userID || disburse.pjdepartmentHeadUserID==user.userID)">
             <v-progress-circular
               indeterminate
               color="success"
@@ -333,7 +356,11 @@
                     label="หมายเหตุ"
                     outlined
                   ></v-textarea>
-                </v-col>
+              </v-col>
+              <div class="mb-3 text-center" v-if="disburseParStatus">
+              ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
+              {{ user.userFullname }}
+            </div>
               <v-btn
                 color="success"
                 large
@@ -546,6 +573,7 @@ export default {
   data() {
     return {
       user: {},
+      userSign: null,
       disburseuser: {},
       userType: null,
       disburselists: [],
@@ -582,6 +610,7 @@ export default {
       if(this.disburse.userID>0) {
         await this.getDisburseUser(this.disburse.userID)
       }
+      this.userSign = await this.getPartySignature(this.user.userID)
     }
   },
 
@@ -597,6 +626,23 @@ export default {
       if(result.message == 'Success') {
         this.disburseuser = JSON.parse(JSON.stringify(result.user))
       }
+    },
+
+    async getPartySignature(userID) {
+      let result = await this.$axios.$get('signature.image.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            signatureType: 'Party',
+            signatureID: userID,
+            function: 'signatureImageGet'
+          }
+        })
+
+        if(result.message == 'Success') {
+          return result.signatureImagePath+JSON.parse(JSON.stringify(result.signatureImages))[0]
+        } else {
+          return null
+        }
     },
 
     async getDisburselist(disburseID) {
@@ -701,10 +747,18 @@ export default {
 
     async confirmList() {
       this.updateProgress = true
+      let disburseStatus = 'ตรวจสอบรายการ'
+      let disburseDepReqName = this.user.userFullname
+      let departmentUserID = this.user.userID
+      if(this.disburse.disburseStatus=='เขียนซื้อ') {
+        disburseStatus = 'ขอซื้อ'
+        disburseDepReqName = null
+        departmentUserID = null
+      }
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
         token: this.$store.state.jwtToken,
         disburseID: this.disburse.disburseID,
-        disburseStatus: 'ตรวจสอบรายการ',
+        disburseStatus: disburseStatus,
         disburseParcCheck: '',
         disbursePlanCheck: '',
         disburseAccoCheck: '',
@@ -718,6 +772,8 @@ export default {
         planUserID: 0,
         accoUserID: 0,
         finaUserID: 0,
+        disburseDepReqName: disburseDepReqName,
+        departmentUserID: departmentUserID,
         disburseParReqName: ''
       })
 
@@ -821,7 +877,7 @@ export default {
       let disbursePartyDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
       let partyUserID = 0
       if(this.disburseParStatus=='ตัดแผนแล้ว') {
-        disburseParReqName = this.user.partyHead
+        disburseParReqName = this.user.userFullname
         partyUserID = this.user.userID
       }
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
@@ -956,6 +1012,7 @@ export default {
   watch: {
     async disburse() {
       await this.getDisburselist(this.disburse.disburseID)
+      this.userSign = await this.getPartySignature(this.user.userID)
       this.insertData = {}
       this.vat = 0
     },

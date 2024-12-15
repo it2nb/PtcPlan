@@ -40,24 +40,14 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">สถานะ</h3>
-            <v-autocomplete
-              v-model="insertData.userStatus"
-              label="สถานะ"
-              :items="userStatuses"
-              outlined
-              required
-              :rules="[
-                ()=>!!insertData.userStatus || 'กรุณากรอกข้อมูล'
-              ]"
-            ></v-autocomplete>
-          </v-col>
-          <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">คำอธิบาย</h3>
+            <h3 class="mb-2 fontBold">ชื่อ-สกุล</h3>
             <v-text-field
-              v-model="insertData.userDes"
-              label="คำอธิบาย"
+              v-model="insertData.userFullname"
+              label="ชื่อ-สกุล"
               outlined
+              :rules="[
+                ()=>!!insertData.userFullname || 'กรุณากรอกชื่อ-สกุล'
+              ]"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -71,6 +61,19 @@
                 ()=>!!insertData.personalIDcard || 'กรุณากรอกข้อมูล'
               ]"
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <h3 class="mb-2 fontBold">สถานะ</h3>
+            <v-autocomplete
+              v-model="insertData.userStatus"
+              label="สถานะ"
+              :items="userStatuses"
+              outlined
+              required
+              :rules="[
+                ()=>!!insertData.userStatus || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6" v-if="insertData.userStatus=='Department'">
             <h3 class="mb-2 fontBold">แผนก/งาน</h3>
@@ -101,6 +104,14 @@
                 ()=>!!insertData.partyID || 'กรุณากรอกข้อมูล'
               ]"
             ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="6">
+            <h3 class="mb-2 fontBold">คำอธิบาย</h3>
+            <v-text-field
+              v-model="insertData.userDes"
+              label="คำอธิบาย"
+              outlined
+            ></v-text-field>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-2 fontBold">อนุญาตใช้งาน</h3>

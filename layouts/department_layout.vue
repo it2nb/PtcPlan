@@ -69,7 +69,7 @@
           router
           exact
           color="teal darken-2"
-          v-if="user.departmentSys=='Parcel' || user.departmentSys=='Plan' || user.departmentSys=='Account' || user.departmentSys=='Finance'"
+          v-if="(user.departmentSys=='Parcel' || user.departmentSys=='Plan' || user.departmentSys=='Account' || user.departmentSys=='Finance') && (user.userID==user.departmentHeadUserID || user.userID==user.departmentReheadUserID)"
         >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -83,7 +83,7 @@
           router
           exact
           color="teal darken-2"
-          v-if="user.departmentSys=='Parcel'"
+          v-if="user.departmentSys=='Parcel' && (user.userID==user.departmentHeadUserID || user.userID==user.departmentReheadUserID)"
         >
           <v-list-item-action>
             <v-icon>fas fa-dot-circle</v-icon>

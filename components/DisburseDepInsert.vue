@@ -359,7 +359,7 @@ export default {
       let result = await this.$axios.$get('department.php', {params})
       if(result.message == 'Success') {
         this.department = JSON.parse(JSON.stringify(result.department))
-        this.insertData.disburseReqName = this.department.departmentHead
+        //this.insertData.disburseReqName = this.user.userFullname
         let nowdatetime = new Date().toISOString().slice(0, 19).replace('T', ' ')
         let nowdt = nowdatetime.split(" ")
         this.insertData.disburseDate = nowdt[0]
@@ -458,8 +458,13 @@ export default {
             }
           }
 
+          if(this.insertData.userID==this.department.departmentHeadUserID) {
+            this.insertData.departmentUserID = this.insertData.userID
+            this.insertData.disburseDepReqName = this.insertData.disburseReqName
+          }
+
           let result = await this.$axios.$post('disburse.insert.php', this.insertData)
-console.log(result)
+
           if(result.message == 'Success') {
             if(this.insertData.disburseType==='โครงการ') {
               let updateProject = {

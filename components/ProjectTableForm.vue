@@ -1800,7 +1800,7 @@ export default {
         if(this.projectData.departmentSign==null || this.projectData.departmentSign=='')
           this.projectData.departmentSign = this.userID
         if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='')
-          this.projectData.departmentSignName = this.department.departmentHead
+          this.projectData.departmentSignName = this.department.departmentHeadFullname
       }
       this.insertDialog = true
     },
@@ -1817,7 +1817,7 @@ export default {
           this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           await this.getDepartment()
           this.projectData.departmentSign = this.userID
-          this.projectData.departmentSignName = this.department.departmentHead
+          this.projectData.departmentSignName = this.department.departmentHeadFullname
         }
 
         let result = await this.$axios.$post('project.insert.php', this.projectData)
@@ -1854,7 +1854,7 @@ export default {
         if(this.projectData.departmentSign==null || this.projectData.departmentSign=='')
           this.projectData.departmentSign = this.userID
         if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='')
-          this.projectData.departmentSignName = this.department.departmentHead
+          this.projectData.departmentSignName = this.department.departmentHeadFullname
       }
       this.departments = []
       await this.getDepartments(this.projectData.partyID)
@@ -1980,7 +1980,7 @@ export default {
           if(this.projectData.projectStatus == 'อนุมัติ') {
             await this.getParty()
             this.projectData.directorSign = this.userID
-            this.projectData.directorSignName = this.party.partyHead
+            this.projectData.directorSignName = this.party.partyHeadFullname
           } else {
             this.projectData.directorSign = ''
           }
@@ -1992,7 +1992,7 @@ export default {
           this.projectData.partySignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           if(this.projectData.projectStatus == 'ฝ่ายเห็นชอบ') {
             this.projectData.partySign = this.userID
-            this.projectData.partySignName = this.party.partyHead
+            this.projectData.partySignName = this.party.partyHeadFullname
           } else {
             this.projectData.partySign = ''
           }
@@ -2004,7 +2004,7 @@ export default {
           if(this.projectData.projectStatus == 'แผนก/งานเห็นชอบ') {
             await this.getDepartment()
             this.projectData.departmentSign = this.userID
-            this.projectData.departmentSignName = this.department.departmentHead
+            this.projectData.departmentSignName = this.department.departmentHeadFullname
           } else {
             this.projectData.departmentSign = ''
           }

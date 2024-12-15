@@ -460,6 +460,10 @@
                 </v-col>
               </v-row>
             </div>
+            <div class="mb-3 text-center">
+              ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
+              {{ user.userFullname }}
+            </div>
             <div class="text-center">
               <v-btn small color="success" @click="updateDisburseCheck(disburse)">
                 <v-icon small class="mr-1">fas fa-save</v-icon> บันทึก
@@ -964,6 +968,7 @@ export default {
   data() {
     return {
       user: {},
+      userSign: null,
       parcUsers: [],
       ledgers: [],
       disburseuser: {},
@@ -1009,6 +1014,7 @@ export default {
       if(this.disburse.userID>0) {
         await this.getDisburseUser(this.disburse.userID)
       }
+      this.userSign = await this.getDepartmentSignature(this.user.userID)
     }
   },
 
@@ -1098,6 +1104,23 @@ export default {
       }
     },
 
+    async getDepartmentSignature(userID) {
+      let result = await this.$axios.$get('signature.image.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            signatureType: 'Department',
+            signatureID: userID,
+            function: 'signatureImageGet'
+          }
+        })
+
+        if(result.message == 'Success') {
+          return result.signatureImagePath+JSON.parse(JSON.stringify(result.signatureImages))[0]
+        } else {
+          return null
+        }
+    },
+
     showUpdateDialog(disburselist) {
       this.updateData = JSON.parse(JSON.stringify(disburselist))
       this.updateDialog = true
@@ -1144,7 +1167,7 @@ export default {
           disburse.disburseParcDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
         }
         if(disburse.disburseParcCheck=='ถูกต้อง') {
-          disburse.disburseParcHead = this.user.departmentHead
+          disburse.disburseParcHead = this.user.userFullname
           disburse.parcUserID = this.user.userID
           await this.$axios.$get('party.php', {
             params: {
@@ -1153,7 +1176,7 @@ export default {
             }
           }).then(result=> {
             if(result.message == 'Success') {
-              this.disburse.directorName = result.party.partyHead
+              this.disburse.directorName = result.party.partyHeadFullname
             }
           })
           await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > งานวางแผนฯ > ตรวจสอบความถูกต้อง')
@@ -1165,7 +1188,7 @@ export default {
           disburse.disbursePlanDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
         }
         if(disburse.disbursePlanCheck=='ถูกต้อง') {
-          disburse.disbursePlanHead = this.user.departmentHead
+          disburse.disbursePlanHead = this.user.userFullname
           disburse.planUserID = this.user.userID
           await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > งานบัญชี > ตรวจสอบความถูกต้อง')
           await this.sendLindDepartSys('Account', this.disburse.disburseID)
@@ -1177,7 +1200,7 @@ export default {
           disburse.disburseAccoDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
         }
         if(disburse.disburseAccoCheck=='ถูกต้อง') {
-          disburse.disburseAccoHead = this.user.departmentHead
+          disburse.disburseAccoHead = this.user.userFullname
           disburse.accoUserID = this.user.userID
           await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > งานการเงิน > ตรวจสอบความถูกต้อง')
           await this.sendLindDepartSys('Finance', this.disburse.disburseID)
@@ -1190,7 +1213,7 @@ export default {
         }
         if(disburse.disburseFinaCheck=='ถูกต้อง') {
           disburse.finaUserID = this.user.userID
-          disburse.disburseFinaHead = this.user.departmentHead
+          disburse.disburseFinaHead = this.user.userFullname
         }
       }
 
@@ -1207,7 +1230,7 @@ export default {
           }
         }).then(result=> {
           if(result.message == 'Success') {
-            this.disburse.directorName = result.party.partyHead
+            this.disburse.directorName = result.party.partyHeadFullname
           }
         })
         await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+' > ให้ความเห็นชอบ')
@@ -1557,6 +1580,7 @@ export default {
       if(this.disburse.userID>0) {
         await this.getDisburseUser(this.disburse.userID)
       }
+      this.userSign = await this.getDepartmentSignature(this.user.userID)
       this.insertData = {}
     }
   }

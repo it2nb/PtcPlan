@@ -228,7 +228,7 @@ export default {
         }
       }).then(result=> {
         if(result.message == 'Success') {
-          this.directorName = result.party.partyHead
+          this.directorName = result.party.partyHeadFullname
         }
       })
 
@@ -239,7 +239,7 @@ export default {
         }
       }).then(result=> {
         if(result.message == 'Success') {
-          this.dedirectorName = result.party.partyHead
+          this.dedirectorName = result.party.partyHeadFullname
         }
       })
 
@@ -251,7 +251,7 @@ export default {
       }).then(result=> {
         if(result.message == 'Success') {
           if(result.department.length>0){
-            this.parcelName = result.department[0].departmentHead
+            this.parcelName = result.department[0].departmentHeadFullname
           }
         }
       })
@@ -264,7 +264,7 @@ export default {
       }).then(result=> {
         if(result.message == 'Success') {
           if(result.department.length>0){
-            this.financeName = result.department[0].departmentHead
+            this.financeName = result.department[0].departmentHeadFullname
           }
         }
       })

@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>ข้อมูลแผนก/งาน</b>
+            <b>ข้อมูลส่วนตัว</b>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-md-5">
@@ -12,8 +12,11 @@
               <v-col cols="12" md="4" class="py-2">
                 ชื่อผู้ใช้ระบบ <b>{{ user.userName }}</b>
               </v-col>
-              <v-col cols="12" md="8" class="py-2">
-                คำอธิบาย <b>{{ user.userDes }}</b>
+              <v-col cols="12" md="4" class="py-2">
+                ชื่อ-สกุล <b>{{ user.userFullname }}</b>
+              </v-col>
+              <v-col cols="12" md="4" class="py-2">
+                ตำแหน่ง <b>{{ user.userPosition }}</b>
               </v-col>
               <v-col cols="12" md="4" class="py-2">
                 เบอร์โทรศัพท์ <b>{{ user.userPhone }}</b>
@@ -21,7 +24,7 @@
               <v-col cols="12" md="8" class="py-2">
                 Email <b>{{ user.userEmail }}</b>
               </v-col>
-              <v-col cols="12" md="8" class="py-2">
+              <v-col cols="12" md="4" class="py-2">
                 (1-on-1) Line TOKEN
                 <span v-if="user.userLineToken">
                   <v-icon color="success" class="ml-1">fas fa-check-circle</v-icon>
@@ -30,17 +33,17 @@
                   <v-icon small color="grey" class="ml-1">fas fa-minus-circle</v-icon>
                 </span>
               </v-col>
-              <v-col cols="12"><v-divider></v-divider></v-col>
-              <v-col cols="12" md="4" class="py-2">
-                แผนก/งาน <b>{{ department.departmentName }}</b>
-              </v-col>
-              <v-col cols="12" md="4" class="py-2">
-                ชื่อหัวหน้าแผนก/งาน <b>{{ department.departmentHead }}</b>
-              </v-col>
-              <v-col cols="12" md="4" class="py-2">
+              <v-col cols="12" md="8" class="py-2">
                 ลายมือชื่อ <v-icon color="success" v-if="signature">fas fa-check-circle</v-icon>
                 <v-icon color="red darken-2" v-else>fas fa-times-circle</v-icon>
               </v-col>
+              <!-- <v-col cols="12"><v-divider></v-divider></v-col> -->
+              <!-- <v-col cols="12" md="4" class="py-2">
+                แผนก/งาน <b>{{ department.departmentName }}</b>
+              </v-col>
+              <v-col cols="12" md="4" class="py-2">
+                ชื่อหัวหน้าแผนก/งาน <b>{{ department.departmentHeadFullname }}</b>
+              </v-col> -->
             </v-row>
           </v-card-text>
           <v-card-actions class="pa-5 justify-end">
@@ -53,6 +56,14 @@
           </v-card-actions>
           <v-divider></v-divider>
           <v-card-text class="pa-md-5 blue-grey lighten-5">
+            <v-row class="mb-2">
+              <v-col cols="12" md="4" class="py-2">
+                แผนก/งาน <b class="font-weight-bold">{{ department.departmentName }}</b>
+              </v-col>
+              <v-col cols="12" md="4" class="py-2">
+                ชื่อหัวหน้าแผนก/งาน <b class="font-weight-bold">{{ department.departmentHeadFullname }}</b>
+              </v-col>
+            </v-row>
             <h4 class="mb-2 fontBold">แผนก/งาน{{ department.departmentName }} มีหน้าที่ความรับผิดชอบ ดังนี้</h4>
             <pre class="fontPrompt">{{ department.departmentDetail }}</pre>
           </v-card-text>
@@ -77,7 +88,7 @@
                   </v-btn>
                 </v-card-actions>
                 <v-card-title class="warning lighten-2">
-                  <span class="fontBold">แก้ไขข้อมูลแผนก/งาน</span>
+                  <span class="fontBold">แก้ไขข้อมูลผู้ใช้ของแผนก/งาน</span>
                 </v-card-title>
                 <v-divider class="green"></v-divider>
                 <v-form
@@ -96,16 +107,30 @@
                           label="ชื่อผู้ใช้ระบบ"
                           dense
                           outlined
+                          :rules="[
+                            (userName)=> !!userName || 'กรุณากรอกข้อมูล'
+                          ]"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="8">
-                        <h3 class="mb-2 fontBold">คำอธิบาย</h3>
+                      <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ชื่อ-สกุล</h3>
                         <v-text-field
-                          v-model="userUpdate.userDes"
-                          label="คำอธิบาย"
+                          v-model="userUpdate.userFullname"
+                          label="ชื่อ-สกุล"
                           dense
                           outlined
-                          readonly
+                          :rules="[
+                            (userFullname)=> !!userFullname || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ตำแหน่งในแผนก/งาน</h3>
+                        <v-text-field
+                          v-model="userUpdate.userPosition"
+                          label="ตำแหน่งในแผนก/งาน"
+                          dense
+                          outlined
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="4">
@@ -126,7 +151,7 @@
                           outlined
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="8">
                         <h3 class="mb-2 fontBold">(1-on-1) Line TOKEN</h3>
                         <v-text-field
                           v-model="userUpdate.userLineToken"
@@ -135,10 +160,10 @@
                           outlined
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12">
+                      <!-- <v-col cols="12">
                         <v-divider></v-divider>
-                      </v-col>
-                      <v-col cols="12" md="4">
+                      </v-col> -->
+                      <!-- <v-col cols="12" md="4">
                         <h3 class="mb-2 fontBold">แผนก/งาน</h3>
                         <v-text-field
                           v-model="userUpdate.departmentName"
@@ -156,7 +181,7 @@
                           dense
                           outlined
                         ></v-text-field>
-                      </v-col>
+                      </v-col> -->
                       <v-col cols="12" md="4">
                         <h3 class="mb-2 fontBold">ลายมือชื่อ</h3>
                         <v-file-input

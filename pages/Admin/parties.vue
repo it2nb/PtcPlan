@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="personalIDcard" class="mt-2">
-        <DepartmentTable :personalIDcard="personalIDcard" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" userType="Admin" />
+        <PartyTable :personalIDcard="personalIDcard" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" userType="Admin" />
     </div>
   </div>
 </template>

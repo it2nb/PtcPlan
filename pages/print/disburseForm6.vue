@@ -243,7 +243,7 @@
             8.  การประเมินผลการปฏิบัติงานของผู้ประกอบการ หน่วยงานของรัฐสามารถนำผลการปฏิบัติงานแล้วเสร็จตามสัญญา หรือข้อตกลงของคู่สัญญาเพื่อนำมาประเมินผลการปฏิบัติงานของผู้ประกอบการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งจ้างมีผลตามกฎหมาย<br>
-            2. ใบสั่งจ้างนี้ จ้าง<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งจ้างนี้ <!--span class="font17" v-if="disburse.disburseSubtype=='จ้าง'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span!--> เพื่อ{{ disburse.disburseDes }} <span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งจ้่าง</div>
@@ -372,7 +372,7 @@
             6.   ส่วนราชการสงวนสิทธิ์ที่จะไม่รับมอบถ้าปรากฏว่าสินค้านั้นมีลักษณะไม่ตรงตามรายการที่ระบุไว้ในใบสั่งเช่า กรณีนี้ผู้รับเช่าจะต้องดำเนินการเปลี่ยนใหม่ให้ถูกต้องตามใบสั่งเช่าทุกประการ<br>
             <u class="mt-2 font17">หมายเหตุ :</u><br>
             1. การติดอากรแสตมป์ให้เป็นไปตามประมวลกฎหมายรัษฎากร หากต้องการให้ใบสั่งเช่ามีผลตามกฎหมาย<br>
-            2. ใบสั่งเช่านี้ เช่า<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span><span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+            2. ใบสั่งเช่านี้ <!--span class="font17" v-if="disburse.disburseSubtype=='เช่า'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span--> เพื่อ{{ disburse.disburseDes }}<span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font17 text-center">
           <div class="mt-3 font17">ลงชื่อ........................................ผู้สั่งเช่า</div>
@@ -481,7 +481,7 @@ export default {
       }).then(result=> {
         if(result.message == 'Success') {
           if(result.department.length>0){
-            this.parcelName = result.department[0].departmentHead
+            this.parcelName = result.department[0].departmentHeadFullname
           }
         }
       })
@@ -494,7 +494,7 @@ export default {
       }).then(result=> {
         if(result.message == 'Success') {
           if(result.department.length>0){
-            this.financeName = result.department[0].departmentHead
+            this.financeName = result.department[0].departmentHeadFullname
           }
         }
       })
