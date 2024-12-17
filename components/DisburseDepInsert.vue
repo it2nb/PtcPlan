@@ -330,6 +330,7 @@ export default {
       expensebudgets: [],
       expenseplans: [],
       projects: [],
+      project: {},
       pjbudgets: [],
       department: {},
       insertData: {},
@@ -399,6 +400,7 @@ export default {
     },
 
     async projectIDChange() {
+      this.project = this.projects.filter(project => project.projectID==this.insertData.projectID)
       await this.getPjbudget(this.insertData.projectID)
     },
 
@@ -437,11 +439,23 @@ export default {
 
           if(this.insertData.disburseType=='โครงการ') {
             delete this.insertData.expenseplanID
+            if(this.insertData.departmentID!=this.project[0]?.departmentID) {
+              this.insertData.disburseStatus='เขียนซื้อ'
+              this.insertData.departmentUserID = null
+              this.insertData.disburseDepReqName = null
+            } else if(this.insertData.userID==this.department.departmentHeadUserID) {
+              this.insertData.departmentUserID = this.insertData.userID
+              this.insertData.disburseDepReqName = this.insertData.disburseReqName
+            }
           }
           else if(this.insertData.disburseType=='ค่าใช้จ่าย') {
             delete this.insertData.projectID
             delete this.insertData.expenseID
             delete this.insertData.pjbudgetID
+            if(this.insertData.userID==this.department.departmentHeadUserID) {
+              this.insertData.departmentUserID = this.insertData.userID
+              this.insertData.disburseDepReqName = this.insertData.disburseReqName
+            }
           }
 
           if(this.expensebudgets.length > 0) {
@@ -456,11 +470,6 @@ export default {
               this.insertData.budgetplanID = pjbudget.budgetplanID
               this.insertData.expenseID = pjbudget.expenseID
             }
-          }
-
-          if(this.insertData.userID==this.department.departmentHeadUserID) {
-            this.insertData.departmentUserID = this.insertData.userID
-            this.insertData.disburseDepReqName = this.insertData.disburseReqName
           }
 
           let result = await this.$axios.$post('disburse.insert.php', this.insertData)

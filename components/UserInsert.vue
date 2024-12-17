@@ -73,6 +73,7 @@
               :rules="[
                 ()=>!!insertData.userStatus || 'กรุณากรอกข้อมูล'
               ]"
+              :readonly="userType=='Department' || userType=='Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6" v-if="insertData.userStatus=='Department'">
@@ -88,6 +89,7 @@
               :rules="[
                 ()=>!!insertData.departmentID || 'กรุณากรอกข้อมูล'
               ]"
+              :readonly="userType=='Department' || userType=='Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6" v-if="insertData.userStatus=='Party'">
@@ -103,6 +105,7 @@
               :rules="[
                 ()=>!!insertData.partyID || 'กรุณากรอกข้อมูล'
               ]"
+              :readonly="userType=='Department' || userType=='Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
@@ -155,12 +158,17 @@
 
 <script>
 import Swal from 'sweetalert2'
+import { readonly } from 'vue';
 export default {
   props: {
     user: {
       type: Object,
       default: () => {}
     },
+    userType: {
+      type: String,
+      default: null
+    }
   },
 
   data() {

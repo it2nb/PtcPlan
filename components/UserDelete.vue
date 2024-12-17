@@ -72,6 +72,10 @@ export default {
       type: Object,
       default: () => {}
     },
+    userType: {
+      type: String,
+      default: null
+    }
   },
 
   data() {

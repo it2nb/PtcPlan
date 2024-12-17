@@ -97,13 +97,27 @@
           router
           exact
           color="teal darken-2"
-          v-if="user.departmentSys=='Account'"
+          v-if="user.departmentSys=='Account' && (user.userID==user.departmentHeadUserID || user.userID==user.departmentReheadUserID)"
         >
           <v-list-item-action>
             <v-icon>fas fa-dot-circle</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>รหัสบัญชีแยกประเภท</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          to="/Department/users"
+          router
+          exact
+          color="teal darken-2"
+          v-if="user.userID==user.departmentHeadUserID"
+        >
+          <v-list-item-action>
+            <v-icon>fas fa-dot-circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>ข้อมูลผู้ใช้</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

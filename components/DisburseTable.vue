@@ -139,10 +139,10 @@
                       <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
                         <v-icon small class="mr-1">fas fa-list</v-icon>
                       </v-btn>
-                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='เขียนซื้อ' || item.disburseStatus=='ไม่ถูกต้อง' || item.disburseStatus=='ฝ่ายไม่เห็นชอบ')">
+                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || ((item.disburseStatus=='ขอซื้อ'&&user.userID==item.pjdepartmentHeadUserID) || item.disburseStatus=='เขียนซื้อ' || item.disburseStatus=='ไม่ถูกต้อง' || item.disburseStatus=='ฝ่ายไม่เห็นชอบ')">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>
-                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='เขียนซื้อ' || item.disburseStatus=='ไม่ถูกต้อง' || item.disburseStatus=='ฝ่ายไม่เห็นชอบ')">
+                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || ((item.disburseStatus=='ขอซื้อ'&&user.userID==item.pjdepartmentHeadUserID) || item.disburseStatus=='เขียนซื้อ' || item.disburseStatus=='ไม่ถูกต้อง' || item.disburseStatus=='ฝ่ายไม่เห็นชอบ')">
                         <v-icon small class="mr-1">fas fa-trash</v-icon>
                       </v-btn>
                     </div>
@@ -633,10 +633,10 @@
                       <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
                         <v-icon small class="mr-1">fas fa-list</v-icon>
                       </v-btn>
-                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='แก้ไข')">
+                      <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="((updateBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || ((item.disburseStatus=='ขอซื้อ'&&user.userID==item.pjdepartmentHeadUserID) || item.disburseStatus=='เขียนซื้อ' || item.disburseStatus=='แก้ไข')">
                         <v-icon small class="mr-1">fas fa-edit</v-icon>
                       </v-btn>
-                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || (item.disburseStatus=='ขอซื้อ' || item.disburseStatus=='แก้ไข')">
+                      <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="((deleteBt || userType=='Admin' || userType=='Plan') && item.disburseStatus!='เบิกจ่ายแล้ว') || ((item.disburseStatus=='ขอซื้อ'&&user.userID==item.pjdepartmentHeadUserID) || item.disburseStatus=='เขียนซื้อ' || item.disburseStatus=='แก้ไข')">
                         <v-icon small class="mr-1">fas fa-trash</v-icon>
                       </v-btn>
                     </div>
@@ -1064,7 +1064,7 @@ export default {
         if((this.userType=='Department' && (this.department.departmentHeadUserID!=this.userID && this.department.departmentReheadUserID!=this.userID)) || (this.userType=='Party' && (this.party.partyHeadUserID!=this.userID && this.party.partyReheadUserID!=this.userID))) {
           this.disburses = this.disburses.filter(disburse => disburse.userID==this.userID)
         } else if(this.userType=='Department') {
-          this.disburses = this.disburses.filter(disburse => (disburse.departmentID==disburse.pjdepartmentID&&disburse.disburseType=='โครงการ') || (this.departmentID==disburse.pjdepartmentID&&disburse.disburseType=='โครงการ') || disburse.disburseType=='ค่าใช้จ่าย')
+          this.disburses = this.disburses.filter(disburse => (disburse.departmentID==this.departmentID&&disburse.disburseType=='โครงการ') || (this.departmentID==disburse.pjdepartmentID&&disburse.disburseType=='โครงการ') || disburse.disburseType=='ค่าใช้จ่าย')
         }
         if(this.disburses) {
           if(this.userType=='Admin' || this.userType=='Director' || this.userType=='Plan' || this.userType=='Finance') {

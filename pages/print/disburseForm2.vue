@@ -2,160 +2,160 @@
   <div style="line-height: 1.8">
     <div class="printPage3x2" style="padding-left: 2cm;">
       <v-row no-gutters class="mb-2">
-        <v-col cols="12" align-self="end" class="text-center font19 font-weight-bold">
+        <v-col cols="12" align-self="end" class="text-center font18 font-weight-bold">
             ใบเบิกเงิน{{ disburse.budgettypeName }} ({{ disburse.budgetplanDes }})
         </v-col>
-        <v-col cols="12" class="mt-5 font17 text-center" v-if="state">
+        <v-col cols="12" class="mt-5 font16 text-center" v-if="state">
             ชื่อสถานศึกษา &emsp; {{ state.appSubTitle }} &emsp; สำนักงานคณะกรรมการการอาชีวศึกษา
         </v-col>
-        <v-col cols="12" class="font17 text-center">
+        <v-col cols="12" class="font16 text-center">
             ใบเบิกที่ ……………… / ……………… ลงวันที่ ……………… เดือน…………………พ.ศ………… <br>
 ข้าพเจ้าขอเบิกเงินงบประมาณ  ดังรายการต่อไปนี้ 
         </v-col>
-        <v-col cols="12" class="mt-3 font17">
+        <v-col cols="12" class="mt-3 font16">
           <table width="100%" class="tableNormal">
             <thead>
               <tr>
-                <th class="font17 font-weight-bold">
+                <th class="font16 font-weight-bold">
                     หมวดรายจ่าย<br>ตามงบประมาณ 
                 </th>
-                <th class="font17 font-weight-bold">
+                <th class="font16 font-weight-bold">
                   รายการ
                 </th>
-                <th class="font17 font-weight-bold">
+                <th class="font16 font-weight-bold">
                   ใบสำคัญที่
                 </th>
-                <th class="font17 font-weight-bold">
+                <th class="font16 font-weight-bold">
                   จำนวนเงิน
                 </th>
-                <th class="font17 font-weight-bold">
+                <th class="font16 font-weight-bold">
                   รวมเงิน
                 </th>
-                <th class="font17 font-weight-bold">
+                <th class="font16 font-weight-bold">
                   หมายเหตุ
                 </th>
               </tr>
             </thead>
             <tbody>
               <!-- <tr v-for="disburselist, index in disburselists" :key="disburselist.key">
-                <td class="font17 text-center">{{ index==0 ? disburse.expenseName : '' }}</td>
-                <td class="font17">
+                <td class="font16 text-center">{{ index==0 ? disburse.expenseName : '' }}</td>
+                <td class="font16">
                   {{index+1}}. {{ disburselist.disburselistName }}
                 </td>
-                <td class="font17 ">
+                <td class="font16 ">
 
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   {{ moneyFormat(disburselist.disburselistPrice) }}
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
-                <td class="font17">
+                <td class="font16">
                   <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                   {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
                 </td>
               </tr> -->
 
               <tr>
-                <td class="font17">
+                <td class="font16">
                   {{ disburse.expenseName }}
                 </td>
-                <td class="font17">
+                <td class="font16">
                   {{ disburse.disburseType=='โครงการ'? subDepartment(disburse.pjdepartmentName) : subDepartment(disburse.departmentName) }}
                 </td>
-                <td class="font17 pl-2">
+                <td class="font16 pl-2">
                   
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   
                 </td>
-                <td class="font17">
+                <td class="font16">
                   
                 </td>
               </tr>
               <tr>
                 <td></td>
-                <td class="font17">
+                <td class="font16">
                   จำนวน {{ disburselists.length }} รายการ
                 </td>
-                <td class="font17 pl-2">
+                <td class="font16 pl-2">
                   
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   
                 </td>
-                <td class="font17">
+                <td class="font16">
                   
                 </td>
               </tr>
               <tr>
                 <td></td>
-                <td class="font17">
+                <td class="font16">
                   กับ {{ disburse.companyName }}
                 </td>
-                <td class="font17 pl-2">
+                <td class="font16 pl-2">
                   
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   
                 </td>
-                <td class="font17 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap">
                   
                 </td>
-                <td class="font17">
+                <td class="font16">
                   
                 </td>
               </tr>
               <tr>
                 <td></td>
-                <td colspan="3" class="font17 font-weight-bold">รวมทั้งสิ้น</td>
-                <td class="font17 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
+                <td colspan="3" class="font16 font-weight-bold">รวมทั้งสิ้น</td>
+                <td class="font16 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
                 <td></td>
               </tr>
               <tr>
                 <td></td>
-                <td colspan="5" class="font17 font-weight-bold">รวมทั้งสิ้น(อักษร) ({{ thaiBaht(disburse.disburseMoney) }})</td>
+                <td colspan="5" class="font16 font-weight-bold">รวมทั้งสิ้น(อักษร) ({{ thaiBaht(disburse.disburseMoney) }})</td>
               </tr>
             </tbody>
           </table>
         </v-col>
-        <v-col cols="6" class="mt-3 font17">
+        <v-col cols="6" class="mt-3 font16">
           ได้ตรวจรายการจ่ายและใบสำคัญที่ขอเบิกมานี้<br>
           รวม .................................ฉบับ เห็นถูกต้องแล้ว<br>
-          <div class="mt-2 font17">........................................ เจ้าหน้าที่</div>
+          <div class="mt-2 font16">........................................ เจ้าหน้าที่</div>
           (........................................)<br>
-          <div class="mt-2 font17">........................................รองผู้อำนวยการวิทยาลัย</div>
+          <div class="mt-2 font16">........................................รองผู้อำนวยการวิทยาลัย</div>
           ({{ dedirectorName }})
         </v-col>
-        <v-col cols="6" class="mt-3 font17">
+        <v-col cols="6" class="mt-3 font16">
           ขอรับรองว่า การเบิกเงินตามรายการข้างต้นนี้ ได้ดำเนินการตามระเบียบกระทรวงการคลัง ว่าด้วยการจัดซื้อจัดจ้าง และการบริหารพัสดุภาครัฐ พ.ศ.2560 โดยวิธีเฉพาะเจาะจง เป็นการถูกต้องตามระเบียบแล้ว <br>
-          <div class="mt-2 font17">........................................ผู้เบิก</div>
+          <div class="mt-2 font16">........................................ผู้เบิก</div>
           ({{ disburse.disburseParcHead }})
         </v-col>
-        <v-col cols="6" class="mt-3 font17">
-          <b class="font17 font-weight-bold">อนุมัติจ่ายได้</b><br>
-          <div class="mt-3 font17">........................................ผู้อำนวยการวิทยาลัย</div>
+        <v-col cols="6" class="mt-3 font16">
+          <b class="font16 font-weight-bold">อนุมัติจ่ายได้</b><br>
+          <div class="mt-3 font16">........................................ผู้อำนวยการวิทยาลัย</div>
           ({{ directorName }})<br>
           วันที่……….เดือน………………….พ.ศ…………
         </v-col>
-        <v-col cols="6" class="mt-3 font17">
+        <v-col cols="6" class="mt-3 font16">
           <br>
           ........................................จ่ายเงิน<br>
           ({{ disburse.disburseFinaHead }})<br>
           วันที่……….เดือน………………….พ.ศ…………
         </v-col>
-        <v-col cols="6" class="mt-3 font17">
+        <v-col cols="6" class="mt-3 font16">
           ได้รับเงิน<br>
           (………………………………………)<br>
           ไว้ถูกต้องแล้ว<br>
-          <div class="mt-2 font17">(……………………………………………) ผู้รับเงิน</div>
+          <div class="mt-2 font16">(……………………………………………) ผู้รับเงิน</div>
           (……………………………………………)<br>
           วันที่…………เดือน…………………พ.ศ…………
         </v-col>

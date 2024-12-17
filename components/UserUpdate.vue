@@ -70,6 +70,7 @@
               :rules="[
                 ()=>!!updateData.userStatus || 'กรุณากรอกข้อมูล'
               ]"
+              :readonly="userType=='Department' || userType=='Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6" v-if="updateData.userStatus=='Department'">
@@ -85,6 +86,7 @@
               :rules="[
                 ()=>!!updateData.departmentID || 'กรุณากรอกข้อมูล'
               ]"
+              :readonly="userType=='Department' || userType=='Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6" v-if="updateData.userStatus=='Party'">
@@ -100,6 +102,7 @@
               :rules="[
                 ()=>!!updateData.partyID || 'กรุณากรอกข้อมูล'
               ]"
+              :readonly="userType=='Department' || userType=='Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
@@ -158,6 +161,10 @@ export default {
       type: Object,
       default: () => {}
     },
+    userType: {
+      type: String,
+      default: null
+    }
   },
 
   data() {

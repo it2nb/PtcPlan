@@ -8,39 +8,39 @@
                 class="krut2"
             />
         </v-col>
-        <v-col cols="12" class="text-center font17 font-weight-bold">
+        <v-col cols="12" class="text-center font16 font-weight-bold">
             คำสั่งวิทยาลัยเทคนิคแพร่
         </v-col>
-        <v-col cols="12" class="text-center font17 font-weight-bold">
+        <v-col cols="12" class="text-center font16 font-weight-bold">
             ที่&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
         </v-col>
-        <v-col cols="12" class="text-center font17 font-weight-bold">
-            เรื่อง แต่งตั้ง คณะกรรมการตรวจรับพัสดุ สำหรับจัด{{disburse.disburseSubtype}}<span class="font17 font-weight-bold" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font17 font-weight-bold" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17 font-weight-bold" v-if="disburse.disburseType=='โครงการ'"><br>{{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ 
+        <v-col cols="12" class="text-center font16 font-weight-bold">
+            เรื่อง แต่งตั้ง คณะกรรมการตรวจรับพัสดุ สำหรับจัด{{disburse.disburseSubtype}}<span class="font16 font-weight-bold" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font16 font-weight-bold" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font16 font-weight-bold" v-if="disburse.disburseType=='โครงการ'"><br>{{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ 
 <br>โดยวิธีเฉพาะเจาะจง
         </v-col>
-        <v-col cols="12" class="pt-3 font17">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วยวิทยาลัยเทคนิคแพร่ มีความประสงค์จะ{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง และเพื่อให้เป็นไปตามระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 จึงขอแต่งตั้งรายชื่อต่อไปนี้เป็น คณะกรรมการตรวจรับพัสดุสำหรับ{{disburse.disburseSubtype}}<span class="font17" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font17" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font17" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
+        <v-col cols="12" class="pt-3 font16">
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วยวิทยาลัยเทคนิคแพร่ มีความประสงค์จะ{{disburse.disburseSubtype}}<span class="font16" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font16" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font16" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง และเพื่อให้เป็นไปตามระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 จึงขอแต่งตั้งรายชื่อต่อไปนี้เป็น คณะกรรมการตรวจรับพัสดุสำหรับ{{disburse.disburseSubtype}}<span class="font16" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font16" v-if="disburse.disburseType=='ค่าใช้จ่าย'"> {{ subDepartment(disburse.departmentName) }}</span><span class="font16" v-if="disburse.disburseType=='โครงการ'"> {{ disburse.projectName }} {{ subDepartment(disburse.pjdepartmentName) }}</span> จำนวน {{ disburselists.length }} รายการ โดยวิธีเฉพาะเจาะจง
         </v-col>
-        <v-col cols="12" class="pt-1 font17">
+        <v-col cols="12" class="pt-1 font16">
             &emsp;&emsp;&emsp;&emsp;&emsp;1. {{ disburse.disburseAuditHead }}&emsp;&emsp;&emsp;&emsp;&emsp;ประธานกรรมการฯ<br>
             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ disburse.disburseAuditHeadPos }}
         </v-col>
-        <v-col cols="12" class="pt-1 font17">
+        <v-col cols="12" class="pt-1 font16">
             &emsp;&emsp;&emsp;&emsp;&emsp;2. {{ disburse.disburseAuditComm }}&emsp;&emsp;&emsp;&emsp;&emsp;กรรมการ<br>
             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ disburse.disburseAuditCommPos }}
         </v-col>
-        <v-col cols="12" class="pt-1 font17">
+        <v-col cols="12" class="pt-1 font16">
             &emsp;&emsp;&emsp;&emsp;&emsp;3. {{ disburse.disburseAuditSecr }}&emsp;&emsp;&emsp;&emsp;&emsp;กรรมการและเลขานุการ<br>
             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ disburse.disburseAuditSecrPos }}
         </v-col>
-        <v-col cols="12" class="pt-2 font17">
+        <v-col cols="12" class="pt-2 font16">
           &emsp;&emsp;&emsp;&emsp;&emsp;อำนาจและหน้าที่<br>
           &emsp;&emsp;&emsp;&emsp;&emsp;ทำการตรวจรับพัสดุให้เป็นไปตามเงื่อนไขของสัญญาหรือข้อตกลงนั้น
         </v-col>
-        <v-col cols="6" class="mb-5 pt-5 font17 ml-auto">
+        <v-col cols="6" class="mb-5 pt-5 font16 ml-auto">
             สั่ง ณ วันที่ {{  thaiDate(disburse.recDate) }}
         </v-col>
-        <v-col cols="8"  class="mt-10 ml-auto text-center font17">
+        <v-col cols="8"  class="mt-10 ml-auto text-center font16">
           ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
           {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่
