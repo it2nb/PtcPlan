@@ -253,6 +253,9 @@
     </div>
     <div class="printPage3x2">
       <v-row no-gutters class="mb-2">
+        <v-col cols="12" class="font16 text-right">
+          สผ.1
+        </v-col>
         <v-col cols="12" class="font16 font-weight-bold text-center">
           แบบโครงการและประมาณการค่าใช้จ่าย
         </v-col>
@@ -542,7 +545,7 @@ export default {
                 disburseID: this.disburseID
             }
         })
-console.log(disburseQuery)
+
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
             if(this.disburse.partyUserID) {

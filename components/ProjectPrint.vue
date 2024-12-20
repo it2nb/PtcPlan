@@ -105,7 +105,7 @@
               </tr>
               <tr>
                 <th class="font16 fontBold" style="border: solid 1px black; padding: 3px" v-for="budget in budgets" :key="budget.key">
-                  {{ budget.budgetplanDes }}
+                  {{ budget.budgettypeName}} <br> {{ budget.budgetplanDes }}
                 </th>
               </tr>
             </thead>

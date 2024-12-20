@@ -44,9 +44,17 @@
 
               <template v-slot:item.actions="{ item }" v-if="!readOnly">
                 <div  class="text-no-wrap">
-                  <v-btn color="primary" icon  small @click="showPjbudgetallocDialog(item)">
-                    <v-icon small class="mr-1">fas fa-list</v-icon>
-                  </v-btn>
+                  <v-badge
+                    :content="item.pjbudgetallocQty"
+                    :value="item.pjbudgetallocQty"
+                    color="primary"
+                    bordered
+                    overlap
+                  >
+                    <v-btn color="primary" icon  small @click="showPjbudgetallocDialog(item)">
+                      <v-icon small class="mr-1">fas fa-list</v-icon>
+                    </v-btn>
+                  </v-badge>
                   <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin'">
                     <v-icon small class="mr-1">fas fa-edit</v-icon>
                   </v-btn>

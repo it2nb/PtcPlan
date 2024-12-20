@@ -52,9 +52,9 @@
             <h3 class="mb-2 fontBold">รักษาราชการแทนหัวหน้าฝ่าย</h3>
             <v-autocomplete
               v-model="insertData.partyReheadUserID"
-              :items="users"
-              item-text="userFullname"
-              item-value="userID"
+              :items="userReheads"
+              item-text="departmentHeadFullname"
+              item-value="departmentHeadUserID"
               outlined
             ></v-autocomplete>
           </v-col>
@@ -112,6 +112,7 @@ export default {
     return {
       insertData: {},
       users: [],
+      userReheads: [],
       partySyses: [
         {text: 'ไม่มี', value: 'none'},
         {text: 'งานพัสดุ', value: 'Parcel'},
@@ -141,8 +142,35 @@ export default {
             }
         })
         if(result.message == 'Success') {
-            this.users = JSON.parse(JSON.stringify(result.user))
-            this.users = this.users.filter(user=>user.userEnable=='Enable')
+          this.users = JSON.parse(JSON.stringify(result.user))
+          this.users = this.users.filter(user=>user.userEnable=='Enable')
+          result = await this.$axios.$get('user.php', {
+            params: {
+                token: this.$store.state.jwtToken,
+                userStatus: 'Party'
+            }
+          })
+          if(result.message == 'Success') {
+            this.userReheads = JSON.parse(JSON.stringify(result.user))
+            //this.userReheads = this.userReheads.filter(user=>user.userEnable=='Enable'&&user.userID!=this.party.partyHeadUserID)
+            await Promise.all(this.userReheads.map(user=>{
+              user.departmentHeadUserID = user.userID,
+              user.departmentHeadFullname = user.userFullname
+            }))
+            result = await this.$axios.$get('department.php', {
+              params: {
+                  token: this.$store.state.jwtToken
+              }
+            })
+            if(result.message == 'Success') {
+              this.userReheads = this.userReheads.concat(JSON.parse(JSON.stringify(result.department)))
+              this.userReheads.unshift({
+                departmentHeadFullname: 'ไม่มี',
+                departmentHeadUserID: 0
+              })
+              this.userReheads = this.userReheads.filter(department=>department.departmentHeadUserID!=this.party.partyHeadUserID&&department.departmentHeadFullname!=null)
+            }
+          }
         }
     },
 

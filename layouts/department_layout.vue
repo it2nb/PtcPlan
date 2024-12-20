@@ -120,6 +120,28 @@
             <v-list-item-title>ข้อมูลผู้ใช้</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="user.userID==user.partyReheadUserID">
+          <v-list-item-content>
+            <v-divider></v-divider>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="user.userID==user.partyReheadUserID">
+          <v-list-item-subtitle>รักษาราชการแทนรองฝ่าย</v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item
+          to="/Department/partydisburse"
+          router
+          exact
+          color="teal darken-2"
+          v-if="user.userID==user.partyReheadUserID"
+        >
+          <v-list-item-action>
+            <v-icon>fas fa-dot-circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>การจัดซื้อ/เบิกเงิน</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <Headerapp :drawer="drawer" @getDrawer="drawerChange" />
@@ -183,6 +205,7 @@ export default {
     let loginUser = JSON.parse(sessionStorage.getItem("loginuser")) || {type: ''}
     if(loginUser.type == 'Department') {
       this.user = loginUser.user
+      console.log(this.user)
     } else {
       this.$router.replace('/')
     }

@@ -255,121 +255,146 @@
         </v-card-text>
         <v-divider class="green lighten-2"></v-divider>
         <v-card-actions>
-          <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID">
-            <v-progress-circular
-              indeterminate
-              color="success"
-              v-if="updateProgress"
-            ></v-progress-circular>
-            <div v-else-if="disburselists.length > 0">
-              <v-row class="mb-1 justify-center"  >
-                  <v-checkbox
-                  v-model="confirmCheck"
-                  label="เมื่อยืนยันและส่งหัวหน้าฝ่าย/งานแล้วจะไม่สามารถแก้ไขได้"
-                ></v-checkbox>
-              </v-row>
-              <v-btn
-                color="warning darken-1"
-                large
-                @click="confirmList"
-                v-if="confirmCheck"
-              >
-                ยืนยันและส่งหัวหน้าฝ่าย/งาน
-              </v-btn>
-            </div>  
-          </div>
-          <div class="col-12 text-center" v-else-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && (((disburse.departmentHeadUserID==user.userID || disburse.departmentReheadUserID==user.userID)&&disburse.disburseType=='ค่าใช้จ่าย') || ((disburse.pjdepartmentHeadUserID==user.userID || disburse.pjdepartmentReheadUserID==user.userID)&&disburse.disburseType=='โครงการ'))">
-            <v-progress-circular
-              indeterminate
-              color="success"
-              v-if="updateProgress"
-            ></v-progress-circular>
-            <div v-else-if="disburselists.length > 0">
-              <v-row class="mb-1 justify-center"  >
-                  <v-checkbox
-                  v-model="confirmCheck"
-                  label="เมื่อยืนยันและส่งตรวจสอบรายการแล้วจะไม่สามารถแก้ไขได้"
-                ></v-checkbox>
-              </v-row>
-              <v-btn
-                color="warning darken-1"
-                large
-                @click="confirmList"
-                v-if="confirmCheck"
-              >
-                ยืนยันและส่งตรวจสอบรายการ
-              </v-btn>
-            </div>  
-          </div>
-          <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอยืนยันจัดซื้อ' && userType=='Department'">
-            <v-progress-circular
-              indeterminate
-              color="success"
-              v-if="updateProgress"
-            ></v-progress-circular>
-            <div v-else-if="disburselists.length > 0">
-              <v-row class="mb-1 justify-center"  >
-                <v-checkbox
-                  v-model="confirmCheck"
-                  label="เมื่อยืนยันขอจัดซื้อแล้วจะไม่สามารถแก้ไขได้"
-                ></v-checkbox>
-              </v-row>
-              <v-btn
-                color="warning darken-1"
-                large
-                @click="confirmRequest"
-                v-if="confirmCheck"
-              >
-                ยืนยันขอจัดซื้อ
-              </v-btn>
-            </div>  
-          </div>
-          <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party'">
-            <v-progress-circular
-              indeterminate
-              color="success"
-              v-if="updateProgress"
-            ></v-progress-circular>
-            <div v-else-if="disburselists.length > 0">
-              <v-row class="mb-1 justify-center"  >
-                <v-radio-group
-                  v-model="disburseParStatus"
-                  row
-                >
-                  <v-radio 
-                    label="เห็นชอบ"
-                    value="ตัดแผนแล้ว"
-                    color="success"
-                  > 
-                  </v-radio>
-                  <v-radio 
-                    label="ไม่เห็นชอบ"
-                    value="ฝ่ายไม่เห็นชอบ"
-                    color="error"
-                  > 
-                  </v-radio>
-                </v-radio-group>
-              </v-row>
-              <v-col cols="12" md="10" class="mx-auto">
-                  <v-textarea
-                    v-model="disbursePartyDes"
-                    label="หมายเหตุ"
-                    outlined
-                  ></v-textarea>
-              </v-col>
-              <div class="mb-3 text-center" v-if="disburseParStatus">
-              ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
-              {{ user.userFullname }}
-            </div>
-              <v-btn
+          <div class="col-12 pb-0 mb-0">
+            <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && (( disburse.departmentReheadUserID==user.userID&&disburse.disburseType=='ค่าใช้จ่าย') || (disburse.pjdepartmentReheadUserID==user.userID&&disburse.disburseType=='โครงการ'))">
+              <v-progress-circular
+                indeterminate
                 color="success"
-                large
-                @click="confirmParty"
-                v-if="disburseParStatus"
-              >
-                บันทึก
-              </v-btn>
-            </div>  
+                v-if="updateProgress"
+              ></v-progress-circular>
+              <div v-else-if="disburselists.length > 0">
+                <v-row class="mb-1 justify-center"  >
+                    <v-checkbox
+                    v-model="rehead"
+                    :label="'ข้าพเจ้าได้รับมอบหมายให้รักษาราชการแทนหัวหน้า'+(disburse.disburseType=='ค่าใช้จ่าย'? disburse.departmentName : disburse.pjdepartmentName)"
+                  ></v-checkbox>
+                </v-row>
+              </div>  
+            </div>
+            <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID">
+              <h4 class="font-weight-bold">ส่งหัวหน้าแผนก/งานยืนยันการจัดซื้อจัดจ้าง</h4>
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              <div v-else-if="disburselists.length > 0">
+                <v-row class="mb-1 justify-center"  >
+                    <v-checkbox
+                    v-model="confirmCheck"
+                    label="เมื่อยืนยันและส่งหัวหน้าฝ่าย/งานแล้วจะไม่สามารถแก้ไขได้"
+                  ></v-checkbox>
+                </v-row>
+                <v-btn
+                  color="warning darken-1"
+                  large
+                  @click="confirmList"
+                  v-if="confirmCheck"
+                >
+                  ยืนยันและส่งหัวหน้าฝ่าย/งาน
+                </v-btn>
+              </div>  
+            </div>
+            <div class="col-12 text-center" v-else-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && (((disburse.departmentHeadUserID==user.userID || (disburse.departmentReheadUserID==user.userID&&rehead))&&disburse.disburseType=='ค่าใช้จ่าย') || ((disburse.pjdepartmentHeadUserID==user.userID || (disburse.pjdepartmentReheadUserID==user.userID&&rehead))&&disburse.disburseType=='โครงการ'))">
+              <h4 class="font-weight-bold">ส่งตรวจสอบความถูกต้อง</h4>
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              <div v-else-if="disburselists.length > 0">
+                <v-row class="mb-1 justify-center"  >
+                    <v-checkbox
+                    v-model="confirmCheck"
+                    label="เมื่อยืนยันและส่งตรวจสอบรายการแล้วจะไม่สามารถแก้ไขได้"
+                  ></v-checkbox>
+                </v-row>
+                <div class="mb-3 text-center" v-if="confirmCheck">
+                ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
+                {{ user.userFullname }}
+              </div>
+                <v-btn
+                  color="warning darken-1"
+                  large
+                  @click="confirmList"
+                  v-if="confirmCheck"
+                >
+                  ยืนยันและส่งตรวจสอบรายการ
+                </v-btn>
+              </div>  
+            </div>
+            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอยืนยันจัดซื้อ' && userType=='Department'">
+              <h4 class="font-weight-bold">ยืนยันการจัดซื้อจัดจ้าง</h4>
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              <div v-else-if="disburselists.length > 0">
+                <v-row class="mb-1 justify-center"  >
+                  <v-checkbox
+                    v-model="confirmCheck"
+                    label="เมื่อยืนยันขอจัดซื้อแล้วจะไม่สามารถแก้ไขได้"
+                  ></v-checkbox>
+                </v-row>
+                <v-btn
+                  color="warning darken-1"
+                  large
+                  @click="confirmRequest"
+                  v-if="confirmCheck"
+                >
+                  ยืนยันขอจัดซื้อ
+                </v-btn>
+              </div>  
+            </div>
+            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party'">
+              <h4 class="font-weight-bold">ความเห็นของรองผู้อำนวยการ</h4>
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              <div v-else-if="disburselists.length > 0">
+                <v-row class="mb-1 justify-center"  >
+                  <v-radio-group
+                    v-model="disburseParStatus"
+                    row
+                  >
+                    <v-radio 
+                      label="เห็นชอบ"
+                      value="ตัดแผนแล้ว"
+                      color="success"
+                    > 
+                    </v-radio>
+                    <v-radio 
+                      label="ไม่เห็นชอบ"
+                      value="ฝ่ายไม่เห็นชอบ"
+                      color="error"
+                    > 
+                    </v-radio>
+                  </v-radio-group>
+                </v-row>
+                <v-col cols="12" md="10" class="mx-auto">
+                    <v-textarea
+                      v-model="disbursePartyDes"
+                      label="หมายเหตุ"
+                      outlined
+                    ></v-textarea>
+                </v-col>
+                <div class="mb-3 text-center" v-if="disburseParStatus">
+                ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
+                {{ user.userFullname }}
+              </div>
+                <v-btn
+                  color="success"
+                  large
+                  @click="confirmParty"
+                  v-if="disburseParStatus"
+                >
+                  บันทึก
+                </v-btn>
+              </div>  
+            </div>
           </div>
         </v-card-actions>
     </v-card>
@@ -576,6 +601,7 @@ export default {
       userSign: null,
       disburseuser: {},
       departmentuser: {},
+      rehead: null,
       userType: null,
       disburselists: [],
       disburseSum: 0,
@@ -611,7 +637,11 @@ export default {
       if(this.disburse.userID>0) {
         await this.getDisburseUser(this.disburse.userID)
       }
-      this.userSign = await this.getPartySignature(this.user.userID)
+      if(this.userType=='Department') {
+        this.userSign = await this.getDepartmentSignature(this.user.userID)
+      } else if(this.userType=='Party') {
+        this.userSign = await this.getPartySignature(this.user.userID)
+      }
     }
   },
 
@@ -651,6 +681,23 @@ export default {
           this.departmentuser = JSON.parse(JSON.stringify(result2.user))
         }
       }
+    },
+
+    async getDepartmentSignature(userID) {
+      let result = await this.$axios.$get('signature.image.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            signatureType: 'Department',
+            signatureID: userID,
+            function: 'signatureImageGet'
+          }
+        })
+
+        if(result.message == 'Success') {
+          return result.signatureImagePath+JSON.parse(JSON.stringify(result.signatureImages))[0]
+        } else {
+          return null
+        }
     },
 
     async getPartySignature(userID) {

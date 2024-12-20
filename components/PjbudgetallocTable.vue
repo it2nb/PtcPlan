@@ -323,9 +323,11 @@ export default {
   },
 
   watch: {
-    async pjbudgetID() {
+    async pjbudget() {
+      if(this.pjbudget) {
       await this.getPjsubactivity()
       await this.getPjbudgetalloc()
+    }
     }
   }
 }

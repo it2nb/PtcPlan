@@ -15,8 +15,8 @@
         </div>
       </v-col>
     </v-row>
-    <div v-if="personalIDcard && disburseYear" class="mt-2">
-        <DisburseTableVue :personalIDcard="personalIDcard" :userID="userID" :disburseYear="disburseYear" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" userType="Plan" />
+    <div v-if="userID && disburseYear" class="mt-2">
+        <DisburseTableVue :partyID="partyID" :userID="userID" :disburseYear="disburseYear" userType="Party" />
     </div>
   </div>
 </template>
@@ -24,7 +24,7 @@
 <script>
 import DisburseTableVue from '~/components/DisburseTable.vue';
 export default {
-  layout: 'plan_layout',
+  layout: 'department_layout',
 
   components: {
     DisburseTableVue
@@ -32,9 +32,10 @@ export default {
 
   data() {
     return {
+      departmentID: null,
+      userID: null,
       disburses: [],
       personalIDcard: null,
-      userID: null,
       disburseYear: null,
       insertBt: 1,
       updateBt: 1,
@@ -45,7 +46,7 @@ export default {
 
   async mounted() {
     let loginuser = JSON.parse(sessionStorage.getItem("loginuser"))
-    this.personalIDcard = loginuser.user.personalIDcard
+    this.partyID = loginuser.user.partyID
     this.userID = loginuser.user.userID
     if(this.$route.query.periodYear) {
       this.disburseYear = this.$route.query.periodYear
@@ -64,7 +65,6 @@ export default {
         }
       }
     }
-    // await this.getDisburses()
   },
 
   methods: {

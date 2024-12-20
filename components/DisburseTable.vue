@@ -52,7 +52,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่ขอซื้อ {{ budgetSum.disburseReqQty }} รายการ {{ moneyFormat(budgetSum.disburseReqMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการที่ขอซื้อ {{ ReqDisburses.length }} รายการ {{ moneyFormat(budgetSum.disburseReqMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=plan'" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -172,7 +172,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่ตัดแผนแล้ว {{ budgetSum.disbursePlanQty }} รายการ {{ moneyFormat(budgetSum.disbursePlanMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการที่ตัดแผนแล้ว {{ PlanDisburses.length }} รายการ {{ moneyFormat(budgetSum.disbursePlanMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=plan'" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -268,7 +268,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่เบิกจ่ายแล้ว {{ budgetSum.disburseCompleteQty }} รายการ {{ moneyFormat(budgetSum.disburseCompleteMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการที่เบิกจ่ายแล้ว {{ CompleteDisburses.length }} รายการ {{ moneyFormat(budgetSum.disburseCompleteMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=complete'" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -364,7 +364,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการที่ยกเลิก {{ budgetSum.disburseCancelQty }} รายการ {{ moneyFormat(budgetSum.disburseCancelMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการที่ยกเลิก {{ CancelDisburses.length }} รายการ {{ moneyFormat(budgetSum.disburseCancelMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=cancel'" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -482,7 +482,7 @@
                   <template v-slot:top>
                     <v-row>
                       <v-col cols="12" md="6" class="text-center">
-                        <h3 class="mb-2 fontBold text-center">รายการทั้งหมด {{ budgetSum.disburseQty }} รายการ {{ moneyFormat(budgetSum.disburseMoney) }} บาท</h3>
+                        <h3 class="mb-2 fontBold text-center">รายการทั้งหมด {{ disburses.length }} รายการ {{ moneyFormat(budgetSum.disburseMoney) }} บาท</h3>
                         <v-btn icon color="primary" :to="'/print/disbursetableReport/?year='+disburseYear+'&disp=all'" target="_blank" v-if="userType=='Admin'||userType=='Director'||userType=='Plan'||userType=='Finance'" class="ml-2">
                           <v-icon>fas fa-print</v-icon>
                         </v-btn>
@@ -1058,14 +1058,16 @@ export default {
         }
       }
       let result = await this.$axios.$get('disburse.php', {params})
-
       if(result.message === 'Success') {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if((this.userType=='Department' && (this.department.departmentHeadUserID!=this.userID && this.department.departmentReheadUserID!=this.userID)) || (this.userType=='Party' && (this.party.partyHeadUserID!=this.userID && this.party.partyReheadUserID!=this.userID))) {
           this.disburses = this.disburses.filter(disburse => disburse.userID==this.userID)
         } else if(this.userType=='Department') {
-          this.disburses = this.disburses.filter(disburse => (disburse.departmentID==this.departmentID&&disburse.disburseType=='โครงการ') || (this.departmentID==disburse.pjdepartmentID&&disburse.disburseType=='โครงการ') || disburse.disburseType=='ค่าใช้จ่าย')
+          this.disburses = result.disburse.filter(disburse => (disburse.departmentID==this.departmentID&&disburse.disburseType=='โครงการ') || (this.departmentID==disburse.pjdepartmentID&&disburse.disburseType=='โครงการ') || disburse.disburseType=='ค่าใช้จ่าย')
         }
+
+        this.budgetSum.disburseMoney = this.disburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
+
         if(this.disburses) {
           if(this.userType=='Admin' || this.userType=='Director' || this.userType=='Plan' || this.userType=='Finance') {
             this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
@@ -1075,10 +1077,14 @@ export default {
           } else if(this.userType=='Department') {
             this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'เขียนซื้อ' || disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ' || disburse.disburseStatus=='ฝ่ายไม่เห็นชอบ')
           }
+          this.budgetSum.disburseReqMoney = this.ReqDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
           //this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
           this.PlanDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ตัดแผนแล้ว')
+          this.budgetSum.disbursePlanMoney = this.PlanDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
           this.CompleteDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'เบิกจ่ายแล้ว')
+          this.budgetSum.disburseCompleteMoney = this.CompleteDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
           this.CancelDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ยกเลิก')
+          this.budgetSum.disburseCancelMoney = this.CancelDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
         }
       }
       // params = {
@@ -1086,11 +1092,11 @@ export default {
       //   disburseYear: this.disburseYear,
       //   fn: 'getSummaryByYear'
       // }
-      params.fn = 'getSummaryByYear'
-      let result2 = await this.$axios.$get('disburse.php', {params})
-      if(result2.message === 'Success') {
-        this.budgetSum = JSON.parse(JSON.stringify(result2.disburse))
-      }
+      // params.fn = 'getSummaryByYear'
+      // let result2 = await this.$axios.$get('disburse.php', {params})
+      // if(result2.message === 'Success') {
+      //   this.budgetSum = JSON.parse(JSON.stringify(result2.disburse))
+      // }
       this.disbursesLoading = false
     },
 

@@ -14,8 +14,6 @@
             ทั้งหมดจำนวน {{ projectDatas.length }} โครงการ งบประมาณ
             <span v-if="projectDatas.length>0">
               <span class="fontBold" v-if="projectDatas[0].projectStatus=='เสนอโครงการ'">{{ moneyFormat(projectSum.pjbudgetWaitApproveMoney) }} </span>
-              <!-- <span class="fontBold" v-else-if="status=='ฝ่ายเห็นชอบ'">{{ moneyFormat(projectSum.pjbudgetParApproveMoney) }} </span> -->
-              <!-- <span class="fontBold" v-else-if="status=='อนุมัติ'">{{ moneyFormat(projectSum.pjbudgetApproveMoney) }} </span> -->
               <span class="fontBold" v-else>{{ moneyFormat(projectSum.pjbudgetMoney) }} </span>
             </span>
             <span class="fontBold" v-else>
@@ -72,8 +70,8 @@
           <v-icon small color="brown" v-else-if="item.projectType=='เข้าแผน'">fas fa-user</v-icon>
           <v-icon small color="orange" v-else-if="item.projectType=='เพิ่มเติม'">fas fa-add</v-icon>
           <span class="font-weight-bold">{{ item.projectName }}</span><br>
-          <span class="pl-2 text-no-wrap text--secondary">{{ item.departmentName }}</span><br>
-          <span class="pl-2 text-no-wrap text--secondary">ฝ่าย{{ item.partyName }}</span><br>
+          <span class="pl-2 text--secondary">{{ item.departmentName }}</span><br>
+          <span class="pl-2 text--secondary">ฝ่าย{{ item.partyName }}</span><br>
         </div>
       </template>
 
@@ -84,13 +82,28 @@
       </template>
 
       <template v-slot:item.pjbudgetMoney="{ item }">
-        <div class="text-no-wrap text-right">
-          {{ moneyFormat(parseFloat(item.pjbudgetMoney)) }}
-          <div class="caption" v-if="parseFloat(item.disburseMoney)>0">
-            <span class="px-1 success lighten-4" v-if="parseFloat(item.disburseMoney)<=parseFloat(item.pjbudgetMoney)">{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
-            <span class="px-1 red lighten-4" v-else>{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
+        <div class="my-2 text-no-wrap text-right">
+          <div class="mb-1">
+            <v-btn
+              x-small
+              :color="item.projectStatus=='อนุมัติ'? 'success' : item.projectStatus=='ฝ่ายเห็นชอบ'? 'lime' : (item.projectStatus=='ไม่อนุมัติ' ||  item.projectStatus=='ฝ่ายไม่เห็นชอบ' ||  item.projectStatus=='ไม่ผ่าน')? 'error' : 'info'"
+              rounded
+              @click="showUpdateStatusDialog(item)"
+            >
+                <v-icon small class="mr-1" v-if="item.projectStatus=='อนุมัติ'">fas fa-check-circle</v-icon> 
+                <v-icon small class="mr-1" v-else-if="item.projectStatus=='ฝ่ายเห็นชอบ'">fas fa-clock</v-icon>
+                <v-icon small class="mr-1" v-else-if="item.projectStatus=='ไม่อนุมัติ' ||  item.projectStatus=='ฝ่ายไม่เห็นชอบ' ||  item.projectStatus=='ไม่ผ่าน'">fas fa-exclamation</v-icon>
+                <v-icon small class="mr-1" v-else>fas fa-clock</v-icon>
+                {{ item.projectStatus }}
+            </v-btn>
           </div>
-      </div>
+          <v-divider class="mt-2 mb-1"></v-divider>
+           {{ moneyFormat(parseFloat(item.pjbudgetMoney)) }} บาท
+          <div class="caption" v-if="parseFloat(item.disburseMoney)>0">
+            ใช้แล้ว <span class="px-1 success lighten-4" v-if="parseFloat(item.disburseMoney)<=parseFloat(item.pjbudgetMoney)">{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
+            <span class="px-1 red lighten-4" v-else>{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span> บาท
+          </div>
+        </div>
       </template>
 
       <template v-slot:item.projectStatus="{ item }">
@@ -122,23 +135,41 @@
         </v-btn>
       </template>
       <template v-slot:item.projectProgress="{ item }">
-        <v-btn
-          x-small
-          text
-          rounded
-          @click="showUpdateProgressDialog(item)"
-          v-if="item.projectStatus=='อนุมัติ'"
-        >
-          <v-chip x-small color="success" class="py-3" v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'">
-            <v-icon small class="mr-1">fas fa-check-circle</v-icon> {{ item.projectProgress }}
-          </v-chip>
-          <v-chip color="red" x-small dark class="py-3" v-else-if="item.projectProgress=='ยังไม่ได้ดำเนินการ'">
-            <v-icon small class="mr-1">fas fa-exclamation</v-icon> {{ item.projectProgress }}
-          </v-chip>
-          <v-chip color="yellow" x-small class="py-3" v-else>
-            <v-icon small class="mr-1">fas fa-clock</v-icon> {{ item.projectProgress }}
-          </v-chip>
-        </v-btn>
+        <div class="caption text-no-wrap text-right" v-if="item.projectStatus=='อนุมัติ'">
+          <div>
+            การดำเนินงาน
+            <v-btn
+              x-small
+              :color="item.projectProgress=='ดำเนินการเสร็จสิ้น'? 'success' : item.projectProgress=='ยังไม่ได้ดำเนินการ'? 'error' : 'yellow'"
+              rounded
+              @click="showUpdateProgressDialog(item)"
+            >
+                <v-icon small class="mr-1" v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'">fas fa-check-circle</v-icon> 
+                <v-icon small class="mr-1" v-else-if="item.projectProgress=='ยังไม่ได้ดำเนินการ'">fas fa-exclamation</v-icon>
+                <v-icon small class="mr-1" v-else>fas fa-clock</v-icon>
+                {{ item.projectProgress }}
+            </v-btn>
+          </div>
+          <v-divider class="mt-2 mb-1" v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'"></v-divider>
+          <div class="mt-1"  v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'">
+            การรายงานผล
+            <v-btn 
+              :color="item.projectReport=='ไม่รายงาน'? 'error' : (item.projectReport=='ไม่ครบถ้วน' || item.imageQty<4)? 'warning' : item.projectReport=='ครบถ้วน'? 'success' : ''" 
+              x-small 
+              rounded
+              @click="showSummaryReportDialog(item)">
+              <span v-if="item.projectReport=='ไม่รายงาน'">
+                <v-icon small class="mr-1">fas fa-exclamation</v-icon> ไม่รายงาน
+              </span>
+              <span v-else-if="item.projectReport=='ไม่ครบถ้วน' || item.imageQty<4">
+                <v-icon small class="mr-1">fas fa-clock</v-icon> เข้ารายงาน
+              </span>
+              <span v-else-if="item.projectReport=='ครบถ้วน'">
+                <v-icon small class="mr-1">fas fa-check-circle</v-icon> ครบถ้วน
+              </span>
+            </v-btn>
+          </div>
+        </div>
       </template>
       <template v-slot:item.projectReport="{ item }">
         <v-btn color="success" text small dark @click="showSummaryReportDialog(item)"  v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'">
@@ -1606,10 +1637,10 @@ export default {
         { text: 'ชื่อโครงการ/ผู้รับผิดชอบ', value: 'projectNamePresenter', align: 'left', class: 'text-center' },
         // { text: 'ผู้เสนอโครงการ', value: 'departmentName', align: 'left', class: 'text-center' },
         // { text: 'ผู้รับผิดชอบ', value: '' },
-        { text: 'การอนุมัติ', value: 'projectStatus', align: 'left', class: 'text-center' },
-        { text: 'การดำเนินกิจกรรม', value: 'projectProgress', align: 'left', class: 'text-center' },
-        { text: 'การรายงานผล', value: 'projectReport', align: 'left', class: 'text-center' },
-        { text: 'งบประมาณ (แผน/ผล)', value: 'pjbudgetMoney', align: 'center' },
+        //{ text: 'การอนุมัติ', value: 'projectStatus', align: 'left', class: 'text-center' },
+        { text: 'งบประมาณ', value: 'pjbudgetMoney', align: 'center' },
+        { text: 'สถานะการดำเนินงาน', value: 'projectProgress', align: 'center', class: 'text-center' },
+        //{ text: 'การรายงานผล', value: 'projectReport', align: 'left', class: 'text-center' },
         { text: '', value: 'actions', align: 'center' },
       ],
       projectDatas: [],

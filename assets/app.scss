@@ -13,6 +13,10 @@ pre {
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, .04);
+}
+
 .tableNormal, .tableNormal td, .tableNormal th  {
   border: 1px solid black;
   border-collapse: collapse;

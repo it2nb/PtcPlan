@@ -16,7 +16,7 @@
       </v-col>
     </v-row>
     <div v-if="personalIDcard && disburseYear" class="mt-2">
-        <DisburseTableVue :personalIDcard="personalIDcard" :disburseYear="disburseYear" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" userType="Finance" />
+        <DisburseTableVue :personalIDcard="personalIDcard" :userID="userID" :disburseYear="disburseYear" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" userType="Finance" />
     </div>
   </div>
 </template>
@@ -34,6 +34,7 @@ export default {
     return {
       disburses: [],
       personalIDcard: null,
+      userID: null,
       disburseYear: null,
       insertBt: 1,
       updateBt: 0,
@@ -45,6 +46,7 @@ export default {
   async mounted() {
     let loginuser = JSON.parse(sessionStorage.getItem("loginuser"))
     this.personalIDcard = loginuser.user.personalIDcard
+    this.userID = loginuser.user.userID
     if(this.$route.query.periodYear) {
       this.disburseYear = this.$route.query.periodYear
     } else {

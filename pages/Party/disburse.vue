@@ -16,7 +16,7 @@
       </v-col>
     </v-row>
     <div v-if="disburseYear && user" class="mt-2">
-        <DisburseTableVue :disburseYear="disburseYear" :partyID="user.partyID" userType="Party" />
+        <DisburseTableVue :disburseYear="disburseYear" :partyID="user.partyID" :userID="user.userID" userType="Party" />
     </div>
   </div>
 </template>
