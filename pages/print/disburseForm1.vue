@@ -549,11 +549,26 @@ export default {
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
             if(this.disburse.partyUserID) {
-              if(this.disburse.partyUserExpos=='รักษาราชการแทน') {
-                this.disbursePartySign = await this.getDepartmentSignature(this.disburse.partyUserID)
-              } else {
-                this.disbursePartySign = await this.getPartySignature(this.disburse.partyUserID)
-              }
+              let partyUserQuery = await this.$axios.$get('user.php', {
+                  params: {
+                      token: this.$store.state.jwtToken,
+                      userID: this.disburse.partyUserID
+                  }
+              }).then(async result=>{
+                if(result.message=='Success') {
+                  let partyUser = JSON.parse(JSON.stringify(result.user))
+                  if(partyUser.userStatus=='Party') {
+                    this.disbursePartySign = await this.getPartySignature(this.disburse.partyUserID)
+                  } else {
+                    this.disbursePartySign = await this.getDepartmentSignature(this.disburse.partyUserID)
+                  }
+                }
+              })
+              // if(this.disburse.partyUserExpos=='รักษาราชการแทน') {
+              //   this.disbursePartySign = await this.getDepartmentSignature(this.disburse.partyUserID)
+              // } else {
+              //   this.disbursePartySign = await this.getPartySignature(this.disburse.partyUserID)
+              // }
             }
             if(this.disburse.userID) {
               this.disburseSign = await this.getDepartmentSignature(this.disburse.userID)
