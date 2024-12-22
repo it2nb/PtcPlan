@@ -297,7 +297,7 @@
                 <v-row class="mb-1 justify-center"  >
                     <v-checkbox
                     v-model="confirmCheck"
-                    label="เมื่อยืนยันและส่งหัวหน้าฝ่าย/งานแล้วจะไม่สามารถแก้ไขได้"
+                    label="เมื่อยืนยันและส่งหัวหน้าแผนก/งานแล้วจะไม่สามารถแก้ไขได้"
                   ></v-checkbox>
                 </v-row>
                 <v-btn
@@ -893,9 +893,10 @@ export default {
           if(this.departmentuser.userLineToken) {
             await this.$axios.$post('sendline.php', {
               token: this.departmentuser.userLineToken,
-              message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) ส่งมาให้ > หัวหน้าแผนก/งาน > ยืนยันการจัดซื้อจัดจ้าง'+window.location.origin
+              message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) ส่งมาให้ > หัวหน้าแผนก/งาน > ยืนยันการจัดซื้อจัดจ้าง\n'+window.location.origin
             })
           }
+          this.$emit('getUpdateStatus', {'status': true})
         } else if(disburseStatus == 'ตรวจสอบรายการ') {
           this.disburse.disburseStatus = 'ตรวจสอบรายการ'
           await this.$axios.$post('disburselist.update.php', {
