@@ -38,10 +38,10 @@
                 <v-icon color="red darken-2" v-else>fas fa-times-circle</v-icon>
               </v-col>
               <!-- <v-col cols="12"><v-divider></v-divider></v-col> -->
-              <!-- <v-col cols="12" md="4" class="py-2">
+              <!-- <v-col cols="12" md="6" class="py-2">
                 แผนก/งาน <b>{{ department.departmentName }}</b>
-              </v-col>
-              <v-col cols="12" md="4" class="py-2">
+              </v-col> -->
+              <!-- <v-col cols="12" md="4" class="py-2">
                 ชื่อหัวหน้าแผนก/งาน <b>{{ department.departmentHeadFullname }}</b>
               </v-col> -->
             </v-row>
@@ -61,7 +61,8 @@
                 แผนก/งาน <b class="font-weight-bold">{{ department.departmentName }}</b>
               </v-col>
               <v-col cols="12" md="4" class="py-2">
-                ชื่อหัวหน้าแผนก/งาน <b class="font-weight-bold">{{ department.departmentHeadFullname }}</b>
+                ชื่อหัวหน้าแผนก/งาน <b class="font-weight-bold">{{ department.departmentHeadFullname }}</b><br>
+                ชื่อรักษาราชการแทนหัวหน้าแผนก/งาน <b class="font-weight-bold">{{ department.departmentReheadFullname }}</b>
               </v-col>
             </v-row>
             <h4 class="mb-2 fontBold">แผนก/งาน{{ department.departmentName }} มีหน้าที่ความรับผิดชอบ ดังนี้</h4>
@@ -223,6 +224,30 @@
                             </v-btn>
                           </v-img>
                         </div>
+                      </v-col>
+                      <v-col cols="12" v-if="user.userID==department.departmentHeadUserID">
+                        <v-divider></v-divider>
+                      </v-col>
+                      <v-col cols="12" md="6" v-if="user.userID==department.departmentHeadUserID">
+                        <h3 class="mb-2 fontBold">แผนก/งาน</h3>
+                        <v-text-field
+                          v-model="userUpdate.departmentName"
+                          label="แผนก/งาน"
+                          dense
+                          outlined
+                          readonly
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6" v-if="user.userID==department.departmentHeadUserID">
+                        <h3 class="mb-2 fontBold">รักษาราชการแทนหัวหน้าแผนก/งาน</h3>
+                        <v-autocomplete
+                          v-model="departmentUpdate.departmentReheadUserID"
+                          :items="users"
+                          item-text="userFullname"
+                          item-value="userID"
+                          outlined
+                          dense
+                        ></v-autocomplete>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -458,6 +483,7 @@ export default {
   data() {
     return {
       user: {},
+      users: [],
       signature: false,
       userSignature: null,
       department: {},
@@ -480,6 +506,7 @@ export default {
   async mounted() {
     await this.getUser()
     await this.getDepartment()
+    await this.getUsers()
   },
 
   methods: {
@@ -522,6 +549,23 @@ export default {
       }
     },
 
+    async getUsers() {
+        let result = await this.$axios.$get('user.php', {
+            params: {
+                token: this.$store.state.jwtToken,
+                departmentID: this.department.departmentID
+            }
+        })
+        if(result.message == 'Success') {
+            this.users = JSON.parse(JSON.stringify(result.user))
+            this.users = this.users.filter(user=>user.userEnable=='Enable')
+            this.users.unshift({
+              userID: 0,
+              userFullname: 'ไม่มี'
+            })
+        }
+    },
+
     showUpdateDialog() {
       this.userUpdate = JSON.parse(JSON.stringify(this.user))
       if(this.userUpdate.userPrefix!='นาย' && this.userUpdate.userPrefix!='นาง' && this.userUpdate.userPrefix!='นางสาว'){
@@ -529,6 +573,7 @@ export default {
         this.userUpdate.userPrefix = 'อื่น ๆ'
       }
       delete this.userUpdate.userPassword
+      this.departmentUpdate = JSON.parse(JSON.stringify(this.department))
       this.userSignature = null
       this.updateDialog = true
     },
@@ -555,9 +600,10 @@ export default {
       this.updateUserProgress = true
       if(this.$refs.updateUserForm.validate()) {
         this.userUpdate.token = this.$store.state.jwtToken
+        this.departmentUpdate.token = this.$store.state.jwtToken
 
         let result = await this.$axios.$post('user.update.php', this.userUpdate)
-        let result2 = await this.$axios.$post('department.update.php', this.userUpdate)
+        let result2 = await this.$axios.$post('department.update.php', this.departmentUpdate)
 
         let result3 = {message: null}
 
@@ -712,6 +758,7 @@ export default {
     async userID() {
       await this.getUser()
       await this.getDepartment()
+      await this.getUsers()
     }
   }
 }

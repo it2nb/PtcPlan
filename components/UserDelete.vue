@@ -106,11 +106,11 @@ export default {
             text: result.msg,
             icon: 'success'
           }).then(async ()=> {
-            let params = {
-              token: this.$store.state.jwtToken,
-              userID: this.deleteData.userID
-            }
-            await this.$axios.$post('pjsubactivity.delete.php', params)
+            // let params = {
+            //   token: this.$store.state.jwtToken,
+            //   userID: this.deleteData.userID
+            // }
+            // await this.$axios.$post('pjsubactivity.delete.php', params)
             this.deleteProgress = false
             this.$emit('getDeleteStatus', {'status': true})
           })

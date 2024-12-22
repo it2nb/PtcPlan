@@ -205,7 +205,6 @@ export default {
     let loginUser = JSON.parse(sessionStorage.getItem("loginuser")) || {type: ''}
     if(loginUser.type == 'Department') {
       this.user = loginUser.user
-      console.log(this.user)
     } else {
       this.$router.replace('/')
     }

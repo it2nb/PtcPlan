@@ -178,6 +178,10 @@ export default {
         if(result.message == 'Success') {
             this.users = JSON.parse(JSON.stringify(result.user))
             this.users = this.users.filter(user=>user.userEnable=='Enable')
+            this.users.unshift({
+              userID: 0,
+              userFullname: 'ไม่มี'
+            })
         }
     },
 

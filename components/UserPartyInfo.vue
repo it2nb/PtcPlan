@@ -42,7 +42,8 @@
                 ฝ่าย <b>{{ party.partyName }}</b>
               </v-col>
               <v-col cols="12" md="4" class="py-2">
-                {{ user.userStatus=='Director'?'ชื่อ ผอ.':'ชื่อ รองฯฝ่าย' }} <b>{{ party.partyHeadFullname }}</b>
+                {{ user.userStatus=='Director'?'ชื่อ ผอ.':'ชื่อ รองฯฝ่าย' }} <b>{{ party.partyHeadFullname }}</b><br>
+                {{ user.userStatus=='Director'?'ชื่อรักษาราชการแทน ผอ.':'ชื่อรักษาราชการแทน รองฯฝ่าย' }} <b>{{ party.partyReheadFullname }}</b>
               </v-col>
               <!-- <v-col cols="12" md="4" class="py-2">
                 ลายมือชื่อ <v-icon color="success" v-if="signature">fas fa-check-circle</v-icon>
@@ -193,19 +194,30 @@
                           </v-img>
                         </div>
                       </v-col>
-                      <!-- <v-col cols="12">
+                      <v-col cols="12" v-if="user.userID==party.partyHeadUserID">
                         <v-divider></v-divider>
-                      </v-col> -->
-                      <!-- <v-col cols="12" md="4">
+                      </v-col>
+                      <v-col cols="12" md="6" v-if="user.userID==party.partyHeadUserID">
                         <h3 class="mb-2 fontBold">ฝ่าย</h3>
                         <v-text-field
-                          v-model="userUpdate.partyName"
+                          v-model="partyUpdate.partyName"
                           label="ฝ่าย"
                           dense
                           outlined
                           readonly
                         ></v-text-field>
-                      </v-col> -->
+                      </v-col>
+                      <v-col cols="12" md="6" v-if="user.userID==party.partyHeadUserID">
+                        <h3 class="mb-2 fontBold">รักษาราชการแทนหัวหน้าฝ่าย</h3>
+                        <v-autocomplete
+                          v-model="partyUpdate.partyReheadUserID"
+                          :items="userReheads"
+                          item-text="departmentHeadFullname"
+                          item-value="departmentHeadUserID"
+                          outlined
+                          dense
+                        ></v-autocomplete>
+                      </v-col>
                       <!-- <v-col cols="12" md="4">
                         <h3 class="mb-2 fontBold" v-if="user.userStatus=='Director'">ชื่อ ผอ.</h3>
                         <h3 class="mb-2 fontBold" v-else>ชื่อ รองฯฝ่าย</h3>
@@ -492,6 +504,7 @@ export default {
   data() {
     return {
       user: {},
+      userReheads: [],
       signature: false,
       userSignature: null,
       party: {},
@@ -514,6 +527,7 @@ export default {
   async mounted() {
     await this.getUser()
     await this.getParty()
+    await this.getRehead()
   },
 
   methods: {
@@ -556,6 +570,36 @@ export default {
       }
     },
 
+    async getRehead() {
+      let result = await this.$axios.$get('user.php', {
+          params: {
+              token: this.$store.state.jwtToken,
+              userStatus: 'Party'
+          }
+        })
+        if(result.message == 'Success') {
+          this.userReheads = JSON.parse(JSON.stringify(result.user))
+          await Promise.all(this.userReheads.map(user=>{
+            user.departmentHeadUserID = user.userID,
+            user.departmentHeadFullname = user.userFullname
+          }))
+          result = await this.$axios.$get('department.php', {
+            params: {
+                token: this.$store.state.jwtToken,
+                partyID: this.user.partyID
+            }
+          })
+          if(result.message == 'Success') {
+            this.userReheads = this.userReheads.concat(JSON.parse(JSON.stringify(result.department)))
+            this.userReheads.unshift({
+              departmentHeadFullname: 'ไม่มี',
+              departmentHeadUserID: 0
+            })
+            this.userReheads = this.userReheads.filter(department=>department.departmentHeadUserID!=this.party.partyHeadUserID&&department.departmentHeadFullname!=null)
+          }
+        }
+    },
+
     showUpdateDialog() {
       this.userUpdate = JSON.parse(JSON.stringify(this.user))
       if(this.userUpdate.userPrefix!='นาย' && this.userUpdate.userPrefix!='นาง' && this.userUpdate.userPrefix!='นางสาว'){
@@ -564,6 +608,7 @@ export default {
       }
       delete this.userUpdate.userPassword
       this.userSignature = null
+      this.partyUpdate = JSON.parse(JSON.stringify(this.party))
       this.updateDialog = true
     },
 
@@ -589,9 +634,10 @@ export default {
       this.updateUserProgress = true
       if(this.$refs.updateUserForm.validate()) {
         this.userUpdate.token = this.$store.state.jwtToken
+        this.partyUpdate.token = this.$store.state.jwtToken
 
         let result = await this.$axios.$post('user.update.php', this.userUpdate)
-        let result2 = await this.$axios.$post('party.update.php', this.userUpdate)
+        let result2 = await this.$axios.$post('party.update.php', this.partyUpdate)
 
         let result3 = {message: null}
 
@@ -741,6 +787,7 @@ export default {
     async userID() {
       await this.getUser()
       await this.getParty()
+      await this.getRehead()
     }
   }
 }

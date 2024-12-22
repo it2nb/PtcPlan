@@ -271,8 +271,23 @@
                 </v-row>
               </div>  
             </div>
+            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party' && (disburse.partyReheadUserID==user.userID || disburse.pjpartyReheadUserID==user.userID)">
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              <div v-else-if="disburselists.length > 0">
+                <v-row class="mb-1 justify-center"  >
+                    <v-checkbox
+                    v-model="rehead"
+                    :label="'ข้าพเจ้าได้รับมอบหมายให้รักษาราชการแทนฝ่าย'+(disburse.disburseType=='ค่าใช้จ่าย'? disburse.partyName : disburse.pjpartyName)"
+                  ></v-checkbox>
+                </v-row>
+              </div>  
+            </div>
             <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID">
-              <h4 class="font-weight-bold">ส่งหัวหน้าแผนก/งานยืนยันการจัดซื้อจัดจ้าง</h4>
+              <h4 class="font-weight-bold" v-if="disburselists.length > 0">ส่งหัวหน้าแผนก/งานยืนยันการจัดซื้อจัดจ้าง</h4>
               <v-progress-circular
                 indeterminate
                 color="success"
@@ -296,7 +311,7 @@
               </div>  
             </div>
             <div class="col-12 text-center" v-else-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ขอซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && (((disburse.departmentHeadUserID==user.userID || (disburse.departmentReheadUserID==user.userID&&rehead))&&disburse.disburseType=='ค่าใช้จ่าย') || ((disburse.pjdepartmentHeadUserID==user.userID || (disburse.pjdepartmentReheadUserID==user.userID&&rehead))&&disburse.disburseType=='โครงการ'))">
-              <h4 class="font-weight-bold">ส่งตรวจสอบความถูกต้อง</h4>
+              <h4 class="font-weight-bold" v-if="disburselists.length > 0">ส่งตรวจสอบความถูกต้อง</h4>
               <v-progress-circular
                 indeterminate
                 color="success"
@@ -324,7 +339,7 @@
               </div>  
             </div>
             <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอยืนยันจัดซื้อ' && userType=='Department'">
-              <h4 class="font-weight-bold">ยืนยันการจัดซื้อจัดจ้าง</h4>
+              <h4 class="font-weight-bold" v-if="disburselists.length > 0">ยืนยันการจัดซื้อจัดจ้าง</h4>
               <v-progress-circular
                 indeterminate
                 color="success"
@@ -347,8 +362,8 @@
                 </v-btn>
               </div>  
             </div>
-            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party'">
-              <h4 class="font-weight-bold">ความเห็นของรองผู้อำนวยการ</h4>
+            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party' && (user.userID==disburse.partyHeadUserID || (user.userID==disburse.partyReheadUserID && rehead) || user.userID==disburse.pjpartyHeadUserID || (user.userID==disburse.pjpartyReheadUserID && rehead))">
+              <h4 class="font-weight-bold" v-if="disburselists.length > 0">ความเห็นของรองผู้อำนวยการ</h4>
               <v-progress-circular
                 indeterminate
                 color="success"
@@ -593,6 +608,10 @@ export default {
       type: Object,
       default: () => {}
     },
+    userType: {
+      type: String,
+      default: null
+    }
   },
 
   data() {
@@ -602,7 +621,7 @@ export default {
       disburseuser: {},
       departmentuser: {},
       rehead: null,
-      userType: null,
+      //userType: null,
       disburselists: [],
       disburseSum: 0,
       disburseParStatus: null,
@@ -630,14 +649,14 @@ export default {
 
   async mounted() {
     let userlogin = JSON.parse(sessionStorage.getItem('loginuser'))
-    this.userType = userlogin.type
+    //this.userType = userlogin.type
     this.user = JSON.parse(JSON.stringify(userlogin.user))
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
       if(this.disburse.userID>0) {
         await this.getDisburseUser(this.disburse.userID)
       }
-      if(this.userType=='Department') {
+      if(this.userType=='Department' || (this.userType=='Party' && this.user.userID==this.disburse.partyReheadUserID)) {
         this.userSign = await this.getDepartmentSignature(this.user.userID)
       } else if(this.userType=='Party') {
         this.userSign = await this.getPartySignature(this.user.userID)
@@ -972,9 +991,13 @@ export default {
       let disburseParReqName = ''
       let disbursePartyDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
       let partyUserID = 0
+      let partyUserExpos = null
       if(this.disburseParStatus=='ตัดแผนแล้ว') {
         disburseParReqName = this.user.userFullname
         partyUserID = this.user.userID
+        if(this.user.userID!=this.disburse.partyHeadUserID&&this.user.userID!=this.disburse.pjpartyHeadUserID) {
+          partyUserExpos = 'รักษาราชการแทน'
+        }
       }
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
         token: this.$store.state.jwtToken,
@@ -983,7 +1006,8 @@ export default {
         disburseParReqName: disburseParReqName,
         disbursePartyDes: this.disbursePartyDes,
         disbursePartyDate: disbursePartyDate,
-        partyUserID: partyUserID
+        partyUserID: partyUserID,
+        partyUserExpos: partyUserExpos
       })
 
       if(disburseUpdate.message == 'Success') {

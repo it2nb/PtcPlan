@@ -549,7 +549,11 @@ export default {
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
             if(this.disburse.partyUserID) {
-              this.disbursePartySign = await this.getPartySignature(this.disburse.partyUserID)
+              if(this.disburse.partyUserExpos=='รักษาราชการแทน') {
+                this.disbursePartySign = await this.getDepartmentSignature(this.disburse.partyUserID)
+              } else {
+                this.disbursePartySign = await this.getPartySignature(this.disburse.partyUserID)
+              }
             }
             if(this.disburse.userID) {
               this.disburseSign = await this.getDepartmentSignature(this.disburse.userID)
