@@ -3,7 +3,7 @@
       <div class="printPage">
         <div class="mb-2 font16 text-right">{{ project.projectCode }}</div>
         <div class="font18 text-center"><span class="font18 fontBold">ชื่อโครงการ: </span>{{ project.projectName }}</div>
-        <div class="font16 text-center"><span class="font16 fontBold">ผู้รับผิดชอบโครงการ: </span> {{ project.departmentName }} ({{project.departmentSignName}})</div>
+        <div class="font16 text-center"><span class="font16 fontBold">ผู้รับผิดชอบโครงการ: </span> {{ project.departmentName }} ({{project.projectOwn}})</div>
         <div class="font16 text-center"><span class="font16 fontBold">ระยะเวลาดำเนินการ: </span>ปีงบประมาณ พ.ศ. {{ parseInt(project.projectYear)+543 }} ({{ thaiDate(projectPeriod.pjsubactivityStart) }} - {{ thaiDate(projectPeriod.pjsubactivityEnd) }})</div>
         <div class="mt-5 font16 fontBold">1. ความสอดคล้องกับนโยบาย</div>
         <div>

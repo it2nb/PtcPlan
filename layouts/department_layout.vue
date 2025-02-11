@@ -93,6 +93,34 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
+          to="/Department/budgetplan"
+          router
+          exact
+          color="teal darken-2"
+          v-if="user.departmentSys=='Plan' && (user.userID==user.departmentHeadUserID || user.userID==user.departmentReheadUserID)"
+        >
+          <v-list-item-action>
+            <v-icon>fas fa-dot-circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>แผนงบประมาณ</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          to="/Department/projectall"
+          router
+          exact
+          color="teal darken-2"
+          v-if="user.departmentSys=='Plan' && (user.userID==user.departmentHeadUserID || user.userID==user.departmentReheadUserID)"
+        >
+          <v-list-item-action>
+            <v-icon>fas fa-dot-circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>โครงการ</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
           to="/Department/ledger"
           router
           exact
@@ -120,12 +148,12 @@
             <v-list-item-title>ข้อมูลผู้ใช้</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="user.userID==user.partyReheadUserID">
+        <v-list-item v-if="user.userID===user.partyReheadUserID">
           <v-list-item-content>
             <v-divider></v-divider>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="user.userID==user.partyReheadUserID">
+        <v-list-item v-if="user.userID===user.partyReheadUserID">
           <v-list-item-subtitle>รักษาราชการแทนรองฝ่าย</v-list-item-subtitle>
         </v-list-item>
         <v-list-item
@@ -208,6 +236,7 @@ export default {
     } else {
       this.$router.replace('/')
     }
+    console.log(this.user)
   },
 
   methods: {

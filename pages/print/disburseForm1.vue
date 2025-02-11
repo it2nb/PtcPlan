@@ -68,7 +68,7 @@
               หัวหน้า{{ disburse.departmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font16">
-              <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign" /><br>
+              <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign && disburse.partyUserID>0" /><br>
               ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.partyHeadFullname }})<br>
               {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">
               รองผู้อำนวยการฝ่าย{{ disburse.partyName }}
@@ -96,7 +96,7 @@
               หัวหน้า{{ disburse.pjdepartmentName }}
             </v-col>
             <v-col align-self="start" class="text-center font16">
-              <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign" /><br>
+              <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign && disburse.partyUserID>0" /><br>
               ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.pjpartyHead }})<br>
               {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">
               รองผู้อำนวยการฝ่าย{{ disburse.pjpartyName }}
@@ -345,7 +345,7 @@
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="4" class="font16 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย' && disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID">
-          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign" />
+          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign && disburse.partyUserID>0" />
           <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.partyHeadFullname }}) <br>
           {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">
@@ -353,7 +353,7 @@
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font16 text-center mt-5" v-else-if="disburse.disburseType=='ค่าใช้จ่าย'">
-          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign" />
+          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign && disburse.partyUserID>0" />
           <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.partyHeadFullname }}) <br>
           {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">
@@ -385,7 +385,7 @@
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="4" class="font16 text-center mt-5" v-if="disburse.disburseType=='โครงการ' && (disburse.departmentID!=disburse.pjdepartmentID || (disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID))">
-          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign" />
+          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign && disburse.partyUserID>0" />
           <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.pjpartyHead }}) <br>
           {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">
@@ -393,7 +393,7 @@
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font16 text-center mt-5" v-else-if="disburse.disburseType=='โครงการ'">
-          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign" />
+          <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disbursePartySign && disburse.partyUserID>0" />
           <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.pjpartyHead }}) <br>
           {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">

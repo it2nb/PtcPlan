@@ -222,6 +222,13 @@
                     <v-icon small color="error"  v-if="item.disburseFinaCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
                   </template>
                   <template v-slot:item.actions="{ item }">
+                    <div class="text-left text-caption">
+                      <ol class="ml-0 pl-0">
+                        <li v-if="item.reportRecNo">รายงานขอซื้อฯ {{ item.reportRecNo }}</li>
+                        <li v-if="item.resultRecNo">รายงานผลการพิจารณาฯ {{ item.resultRecNo }}</li>
+                        <li v-if="item.orderNo">ใบสั่งฯ {{ item.orderNo }}</li>
+                      </ol>
+                    </div>
                     <div>
                       <v-btn text small  @click="departmentSys=='Parcel'? showUpdateStatusDialog(item): ()=>{}">
                         <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
@@ -344,6 +351,13 @@
                     <v-icon small color="error"  v-if="item.disburseFinaCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
                   </template>
                   <template v-slot:item.actions="{ item }">
+                    <div class="text-left text-caption">
+                      <ol class="ml-0 pl-0">
+                        <li v-if="item.reportRecNo">รายงานขอซื้อฯ {{ item.reportRecNo }}</li>
+                        <li v-if="item.resultRecNo">รายงานผลการพิจารณาฯ {{ item.resultRecNo }}</li>
+                        <li v-if="item.orderNo">ใบสั่งฯ {{ item.orderNo }}</li>
+                      </ol>
+                    </div>
                     <div>
                       <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> เขียนซื้อ
@@ -581,6 +595,13 @@
                     <v-icon small color="error"  v-if="item.disburseFinaCheck=='ไม่ถูกต้อง'">fas fa-times-circle</v-icon>
                   </template>
                   <template v-slot:item.actions="{ item }">
+                    <div class="text-left text-caption">
+                      <ol class="ml-0 pl-0">
+                        <li v-if="item.reportRecNo">รายงานขอซื้อฯ {{ item.reportRecNo }}</li>
+                        <li v-if="item.resultRecNo">รายงานผลการพิจารณาฯ {{ item.resultRecNo }}</li>
+                        <li v-if="item.orderNo">ใบสั่งฯ {{ item.orderNo }}</li>
+                      </ol>
+                    </div>
                     <div>
                       <v-chip color="grey" outlined x-small v-if="item.disburseStatus=='เขียนซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> เขียนซื้อ

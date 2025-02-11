@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>งบประมาณที่ได้รับจัดสรร ประจำปีงบประมาณ พ.ศ.{{ parseInt(this.budgetslipYear)+543 }}</b>
+            <b>ใบโอนจัดสรรงบประมาณ ประจำปีงบประมาณ พ.ศ.{{ parseInt(this.budgetslipYear)+543 }}</b>
           </v-card-title>
           <v-card-subtitle class="ptcBg white--text" v-if="budgetplanID">
             <b>หมวดงบประมาณรายรับ : {{ budgetplan.budgetFullname }}</b>
@@ -274,6 +274,7 @@ export default {
 
       if(result.message === 'Success') {
         this.budgetslip = JSON.parse(JSON.stringify(result.budgetslip))
+        this.budgetslip = this.budgetslip.filter(budgetslip => budgetslip.budgettypePublic == 1)
       }
       this.budgetslipLoading = false
     },

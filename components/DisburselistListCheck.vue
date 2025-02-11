@@ -789,9 +789,20 @@
                           persistent-hint
                         />
                       </v-col>
-                      <v-col cols="12" md="4">
+                      <!-- <v-col cols="12" md="4">
                         <v-text-field
                           v-model="updateData.reparcHead"
+                          label="ชื่อรักษาการแทนหัวหน้าเจ้าหน้าที่พัสดุ"
+                          outlined
+                          dense
+                        />
+                      </v-col> -->
+                      <v-col cols="12" md="4">
+                        <v-autocomplete
+                          v-model="updateData.reparcUserID"
+                          :items="parcUsers"
+                          item-text="userFullname"
+                          item-value="userID"
                           label="ชื่อรักษาการแทนหัวหน้าเจ้าหน้าที่พัสดุ"
                           outlined
                           dense
@@ -1101,6 +1112,7 @@ export default {
       if(result.message == 'Success') {
         this.parcUsers = JSON.parse(JSON.stringify(result.user))
         this.parcUsers = this.parcUsers.filter(user => user.userEnable=="Enable")
+        this.parcUsers.unshift({'userID': null, 'userFullname': 'ไม่ระบุ'})
       }
     },
 
@@ -1369,6 +1381,12 @@ export default {
 
     async updateDisburseCompany() {
       this.updateProgress = true
+      if(this.updateData.reparcUserID) {
+        this.updateData.reparcHead = this.parcUsers.filter(user => user.userID==this.updateData.reparcUserID)[0].userFullname
+      } else if(this.updateData.reparcUserID == null) {
+        this.updateData.reparcHead = ''
+        this.updateData.reparcUserID = 0
+      }
       let disburseUpdate = await this.$axios.$post('disburse.update.php', {
         token: this.$store.state.jwtToken,
         disburseID: this.updateData.disburseID,
@@ -1387,7 +1405,8 @@ export default {
         orderSendDay: this.updateData.orderSendDay,
         orderSendDate: this.updateData.orderSendDate,
         redirectorName: this.updateData.redirectorName,
-        reparcHead: this.updateData.reparcHead
+        reparcHead: this.updateData.reparcHead,
+        reparcUserID: this.updateData.reparcUserID
       })
 
       if(disburseUpdate.message == 'Success') {
@@ -1413,7 +1432,8 @@ export default {
           this.disburse.orderSendDay = this.updateData.orderSendDay
           this.disburse.orderSendDate = this.updateData.orderSendDate
           this.disburse.redirectorName = this.updateData.redirectorName
-          this.disburse.reparcHead = this.updateData.reparcHead
+          this.disburse.reparcHead = this.updateData.reparcHead,
+          this.disburse.reparcUserID = this.updateData.reparcUserID
           this.updateProgress = false
           this.updateCompanyDialog = false
         })

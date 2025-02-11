@@ -239,7 +239,7 @@
                 >
                   <v-card-text>
                     <v-row dense>
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="4">
                         <h3 class="mb-2 fontBold">ฝ่าย</h3>
                         <v-autocomplete
                           v-model="projectData.partyID"
@@ -255,7 +255,7 @@
                           @change="partyChange"
                         ></v-autocomplete>
                       </v-col>
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="4">
                         <h3 class="mb-2 fontBold">แผนก/งาน</h3>
                         <v-autocomplete
                           v-model="projectData.departmentID"
@@ -269,6 +269,17 @@
                             () => !!projectData.departmentID || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-autocomplete>
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <h3 class="mb-2 fontBold">ผู้รับผิดชอบโครงการ</h3>
+                        <v-text-field
+                          v-model="projectData.projectOwn"
+                          label="ผู้รับผิดชอบโครงการ"
+                          outlined
+                          :rules="[
+                            () => (!!projectData.projectOwn || userType=='Admin' || userType=='Plan') || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ยุทธศาสตร์สถานศึกษา</h3>
@@ -555,13 +566,13 @@
                         ></v-autocomplete>
                       </v-col>
                       <v-col cols="12" md="4">
-                        <h3 class="mb-2 fontBold">ชื่อหัวหน้างานผู้เสนอโครงการ</h3>
+                        <h3 class="mb-2 fontBold">ผู้รับผิดชอบโครงการ</h3>
                         <v-text-field
-                          v-model="projectData.departmentSignName"
-                          label="ชื่อหัวหน้างานผู้เสนอโครงการ"
+                          v-model="projectData.projectOwn"
+                          label="ผู้รับผิดชอบโครงการ"
                           outlined
                           :rules="[
-                            () => (!!projectData.departmentSignName || userType=='Admin' || userType=='Plan') || 'กรุณากรอกข้อมูล'
+                            () => (!!projectData.projectOwn || userType=='Admin' || userType=='Plan') || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-text-field>
                       </v-col>
@@ -1822,16 +1833,21 @@ export default {
       }
 
       if(this.userType=='Department') {
-        if(this.projectData.departmentSignDate==null || this.projectData.departmentSignDate=='')
+        if(this.projectData.departmentSignDate==null || this.projectData.departmentSignDate=='') {
           this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
         await this.getDepartment()
         this.projectData.partyID = this.department.partyID
         await this.getDepartments(this.projectData.partyID)
         this.projectData.departmentID = this.department.departmentID
-        if(this.projectData.departmentSign==null || this.projectData.departmentSign=='')
-          this.projectData.departmentSign = this.userID
-        if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='')
+        if(this.projectData.departmentSign==null || this.projectData.departmentSign=='') {
+          if(this.department.departmentHeadUserID==this.userID) {
+            this.projectData.departmentSign = this.userID
+          }
+        }
+        if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='') {
           this.projectData.departmentSignName = this.department.departmentHeadFullname
+        }
       }
       this.insertDialog = true
     },
@@ -1847,8 +1863,10 @@ export default {
         if(this.userType=='Department') {
           this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           await this.getDepartment()
-          this.projectData.departmentSign = this.userID
-          this.projectData.departmentSignName = this.department.departmentHeadFullname
+          if(this.department.departmentHeadUserID==this.userID) {
+            this.projectData.departmentSign = this.department.departmentHeadUserID
+            this.projectData.departmentSignName = this.department.departmentHeadFullname
+          }
         }
 
         let result = await this.$axios.$post('project.insert.php', this.projectData)
@@ -1879,13 +1897,18 @@ export default {
       this.projectData = JSON.parse(JSON.stringify(project))
       this.projectStatus = project.projectStatus
       if(this.userType=='Department') {
-        if(this.projectData.departmentSignDate==null || this.projectData.departmentSignDate=='')
+        if(this.projectData.departmentSignDate==null || this.projectData.departmentSignDate=='') {
           this.projectData.departmentSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
         await this.getDepartment()
-        if(this.projectData.departmentSign==null || this.projectData.departmentSign=='')
-          this.projectData.departmentSign = this.userID
-        if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='')
+        if(this.projectData.departmentSign==null || this.projectData.departmentSign=='') {
+          if(this.department.departmentHeadUserID==this.userID) {
+            this.projectData.departmentSign = this.userID
+          }
+        }
+        if(this.projectData.departmentSignName==null || this.projectData.departmentSignName=='') {
           this.projectData.departmentSignName = this.department.departmentHeadFullname
+        }
       }
       this.departments = []
       await this.getDepartments(this.projectData.partyID)

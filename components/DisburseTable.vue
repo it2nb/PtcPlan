@@ -231,6 +231,13 @@
                     </div>
                   </template>
                   <template v-slot:item.actions="{ item }">
+                    <div class="text-left text-caption">
+                      <ol class="ml-0 pl-0">
+                        <li v-if="item.reportRecNo">รายงานขอซื้อฯ {{ item.reportRecNo }}</li>
+                        <li v-if="item.resultRecNo">รายงานผลการพิจารณาฯ {{ item.resultRecNo }}</li>
+                        <li v-if="item.orderNo">ใบสั่งฯ {{ item.orderNo }}</li>
+                      </ol>
+                    </div>
                     <div  class="text-no-wrap">
                       <v-btn color="green darken-2" icon  small @click="showDisburselistListDialog(item)">
                         <v-icon small class="mr-1">fas fa-list</v-icon>
@@ -324,6 +331,13 @@
                       <v-chip color="red darken-2" x-small dark v-else-if="item.disburseStatus=='ยกเลิก'">
                         <v-icon x-small class="mr-1">fas fa-times-circle</v-icon> {{ item.disburseStatus }}
                       </v-chip>
+                    </div>
+                    <div class="text-left text-caption">
+                      <ol class="ml-0 pl-0">
+                        <li v-if="item.reportRecNo">รายงานขอซื้อฯ {{ item.reportRecNo }}</li>
+                        <li v-if="item.resultRecNo">รายงานผลการพิจารณาฯ {{ item.resultRecNo }}</li>
+                        <li v-if="item.orderNo">ใบสั่งฯ {{ item.orderNo }}</li>
+                      </ol>
                     </div>
                   </template>
                   <template v-slot:item.actions="{ item }">
@@ -565,6 +579,13 @@
                     </div>
                   </template>
                   <template v-slot:item.actions="{ item }">
+                    <div class="text-left text-caption">
+                      <ol class="ml-0 pl-0">
+                        <li v-if="item.reportRecNo">รายงานขอซื้อฯ {{ item.reportRecNo }}</li>
+                        <li v-if="item.resultRecNo">รายงานผลการพิจารณาฯ {{ item.resultRecNo }}</li>
+                        <li v-if="item.orderNo">ใบสั่งฯ {{ item.orderNo }}</li>
+                      </ol>
+                    </div>
                     <v-btn text small  @click="showUpdateStatusDialog(item)" v-if="userType=='Finance' || (userType=='Plan' && item.disburseStatus!='เบิกจ่ายแล้ว' && item.disburseStatus!='เบิกจ่ายแล้ว')">
                       <v-chip color="grey darken-3" outlined x-small v-if="item.disburseStatus=='ขอซื้อ'">
                         <v-icon x-small class="mr-1">fas fa-pen</v-icon> ขอซื้อ
