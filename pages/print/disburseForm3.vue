@@ -175,7 +175,7 @@ export default {
             this.parcelName = result.department[0].departmentHeadFullname
             if(this.disburse.reparcUserID) {
               this.parcSign = await this.getDepartmentSignature(this.disburse.reparcUserID)
-            } else if(result.department[0].departmentHeadUserID) {
+            } else if(result.department[0].departmentHeadUserID && !this.disburse.reparcHead) {
               this.parcSign = await this.getDepartmentSignature(result.department[0].departmentHeadUserID)
             }
           } 

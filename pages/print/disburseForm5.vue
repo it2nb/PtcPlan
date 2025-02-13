@@ -65,8 +65,8 @@
             &emsp;&emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรดพิจารณา หากเห็นชอบขอได้โปรดอนุมัติให้สั่ง<span class="font16" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font16" v-else>ซื้อ</span>จากผู้เสนอราคาดังกล่าว
         </v-col>
         <v-col cols="5" class="mt-10 pt-5 ml-auto text-center font16">
-          <span v-if="disburse.reparcHead">&nbsp;</span>
-          <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" />
+          <!-- <span v-if="disburse.reparcHead">&nbsp;</span> -->
+          <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" />
           <span v-else>&nbsp;</span><br>
           ({{ disburse.reparcHead? disburse.reparcHead : this.parcelName }})<br>
           {{ disburse.reparcHead? 'รักษาราชการแทน' : ''}}หัวหน้าเจ้าหน้าที่พัสดุ
@@ -170,7 +170,12 @@ export default {
         if(result.message == 'Success') {
           if(result.department.length>0){
             this.parcelName = result.department[0].departmentHeadFullname
-            if(result.department[0].departmentHeadUserID) {
+            // if(result.department[0].departmentHeadUserID) {
+            //   this.parcSign = await this.getDepartmentSignature(result.department[0].departmentHeadUserID)
+            // }
+            if(this.disburse.reparcUserID) {
+              this.parcSign = await this.getDepartmentSignature(this.disburse.reparcUserID)
+            } else if(result.department[0].departmentHeadUserID && !this.disburse.reparcHead) {
               this.parcSign = await this.getDepartmentSignature(result.department[0].departmentHeadUserID)
             }
           }
@@ -200,7 +205,6 @@ export default {
             function: 'signatureImageGet'
           }
         })
-
         if(result.message == 'Success') {
           return result.signatureImagePath+JSON.parse(JSON.stringify(result.signatureImages))[0]
         } else {

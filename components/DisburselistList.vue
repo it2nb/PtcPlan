@@ -4,13 +4,76 @@
       <v-card-title class="amber lighten-2">
         <span class="fontBold">รายการ{{ disburse.expenseName }}</span>
         <v-spacer></v-spacer>
-        <v-btn 
-          color="white"
-          :to="'/print/disburseForm1/?id='+disburse.disburseID" 
-          target="_blank"
-        >
-          <v-icon class="mr-1" color="primary">fas fa-print</v-icon> พิมพ์
-        </v-btn>
+        <span v-if="user.userStatus=='Admin' || user.userStatus=='Plan'">
+          <v-btn 
+            color="white"
+            :to="'/print/disburseForm1/?id='+disburse.disburseID" 
+            target="_blank"
+            small
+            class="mx-1"
+          >
+            <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> ขออนุมัติ (สผ.1)
+          </v-btn>
+          <v-btn 
+            color="white"
+            :to="'/print/disburseForm2/?id='+disburse.disburseID" 
+            target="_blank"
+            small
+            class="mx-1"
+            v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง'"
+          >
+            <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> ใบเบิก
+          </v-btn>
+          <v-btn 
+            color="white"
+            :to="'/print/disburseForm3/?id='+disburse.disburseID" 
+            target="_blank"
+            small
+            class="mx-1"
+            v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง'"
+          >
+            <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> รายงานขอซื้อขอจ้าง
+          </v-btn>
+          <v-btn 
+            color="white"
+            :to="'/print/disburseForm4/?id='+disburse.disburseID" 
+            target="_blank"
+            small
+            class="mx-1"
+            v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง'"
+          >
+            <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> คำสั่งตรวจรับ
+          </v-btn>
+          <v-btn 
+            color="white"
+            :to="'/print/disburseForm5/?id='+disburse.disburseID" 
+            target="_blank"
+            small
+            class="mx-1"
+            v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง'"
+          >
+            <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> รายงานผล
+          </v-btn>
+          <v-btn 
+            color="white"
+            :to="'/print/disburseForm6/?id='+disburse.disburseID" 
+            target="_blank"
+            small
+            class="mx-1"
+            v-if="disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง'"
+          >
+            <v-icon class="mr-1" color="primary" small>fas fa-print</v-icon> ใบสั่ง
+          </v-btn>
+        </span>
+        <span v-else>
+          <v-btn 
+            color="white"
+            :to="'/print/disburseForm1/?id='+disburse.disburseID" 
+            target="_blank"
+          >
+            <v-icon class="mr-1" color="primary">fas fa-print</v-icon> พิมพ์
+          </v-btn>
+        </span>
       </v-card-title>
       <v-divider class="green"></v-divider>
         <v-card-text>
