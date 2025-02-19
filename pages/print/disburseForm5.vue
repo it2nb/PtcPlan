@@ -173,7 +173,7 @@ export default {
             // if(result.department[0].departmentHeadUserID) {
             //   this.parcSign = await this.getDepartmentSignature(result.department[0].departmentHeadUserID)
             // }
-            if(this.disburse.reparcUserID) {
+            if(this.disburse.reparcUserID && this.disburse.reparcUserID>0) {
               this.parcSign = await this.getDepartmentSignature(this.disburse.reparcUserID)
             } else if(result.department[0].departmentHeadUserID && !this.disburse.reparcHead) {
               this.parcSign = await this.getDepartmentSignature(result.department[0].departmentHeadUserID)
