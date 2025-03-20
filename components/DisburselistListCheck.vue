@@ -81,7 +81,7 @@
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">คำขอ</h3>
-              ขอจัด{{disburse.disburseSubtype}}<span v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }}
+              ขอจัด{{disburse.disburseSubtype}}<span v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName+'  กิจกรรมที่ '+disburse.pjactivityNum+'.'+disburse.pjsubactivityNum+' '+disburse.pjsubactivityName : '' }}
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>

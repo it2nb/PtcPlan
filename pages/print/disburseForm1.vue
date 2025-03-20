@@ -41,7 +41,7 @@
           </table>
         </v-col>
         <v-col cols="12" class="pt-1 font16">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ subDepartment(disburse.departmentName) }} มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font16" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }} จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ subDepartment(disburse.departmentName) }} มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font16" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName+'  กิจกรรมที่ '+disburse.pjactivityNum+'.'+disburse.pjsubactivityNum+' '+disburse.pjsubactivityName : '' }} จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
         </v-col>
         <v-col cols="12" class="pt-1 font16">
           &emsp;&emsp;&emsp;&emsp;&emsp;ดังนั้น เพื่อให้การดำเนินงานเป็นไปด้วยความเรียบร้อย จึงขออนุญาตดำเนินการและขออนุมัติงบประมาณเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }}) เพื่อใช้จ่ายตามแบบโครงการและประมาณการค่าใช้จ่ายที่แนบท้าย
@@ -434,8 +434,8 @@
             </thead>
             <tbody>
               <tr>
-                <td class="font16 text-center">1</td>
-                <td class="font16">{{ disburse.expenseName }}</td>
+                <td class="font16 text-center" valign="top">1</td>
+                <td class="font16" valign="top">{{ disburse.expenseName }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -444,22 +444,23 @@
               </tr>
               <tr v-for="disburselist, index in disburselists" :key="disburselist.key">
                 <td></td>
-                <td class="font16">
+                <td class="font16" valign="top">
                   1.{{index+1}} {{ disburselist.disburselistName }}
+                  <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
                 </td>
-                <td class="font16 text-right text-no-wrap">
+                <td class="font16 text-right text-no-wrap" valign="top">
                   {{ qtyFormat(disburselist.disburselistQty) }}
                 </td>
-                <td class="font16 pl-2">
+                <td class="font16 pl-2" valign="top">
                   {{ disburselist.disburselistUnit }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistPrice) }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
-                <td class="font16">
+                <td class="font16" valign="top">
                   {{ disburselist.disburselistDes }}
                   <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                   {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
@@ -467,34 +468,35 @@
               </tr>
               <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
                 <td></td>
-                <td class="font16">
+                <td class="font16" valign="top">
                   {{ disburselist.disburselistName }}
+                  <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
                 </td>
-                <td class="font16 text-right text-no-wrap">
+                <td class="font16 text-right text-no-wrap" valign="top">
                   {{ qtyFormat(disburselist.disburselistQty) }}
                 </td>
-                <td class="font16 pl-2">
+                <td class="font16 pl-2" valign="top">
                   {{ disburselist.disburselistUnit }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistPrice) }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
-                <td class="font16">
+                <td class="font16" valign="top">
                   {{ disburselist.disburselistDes }}
                   <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
                   {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
                 </td>
               </tr>
               <tr v-if="disburse.disburseExcludeVat==1">
-                <td colspan="5" class="font16 text-right">ภาษีมูลค่าเพิ่ม 7%</td>
-                <td class="font16 text-right">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) }}</td>
+                <td colspan="5" class="font16 text-right" valign="top">ภาษีมูลค่าเพิ่ม 7%</td>
+                <td class="font16 text-right" valign="top">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) }}</td>
               </tr>
               <tr>
-                <td colspan="5" class="font16 text-right font-weight-bold">รวมเงิน</td>
-                <td class="font16 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
+                <td colspan="5" class="font16 text-right font-weight-bold" valign="top">รวมเงิน</td>
+                <td class="font16 text-right font-weight-bold" valign="top">{{ moneyFormat(disburse.disburseMoney) }}</td>
                 <td></td>
               </tr>
             </tbody>

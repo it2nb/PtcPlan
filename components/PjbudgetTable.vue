@@ -26,11 +26,9 @@
                 </v-row>
               </template>
 
-              <!-- <template v-slot:item.pjbudgetMoney="{ item }">
-                <div class="text-no-wrap text-right">
-                  {{ moneyFormat(parseFloat(item.pjbudgetMoney)) }}
-                </div>
-              </template> -->
+              <template v-slot:item.pjsubactivityName="{ item }">
+                {{ item.pjactivityNum+'.'+item.pjsubactivityNum+' '+item.pjsubactivityName }}
+              </template>
 
               <template v-slot:item.pjbudgetMoney="{ item }">
                 <div class="text-no-wrap text-right">

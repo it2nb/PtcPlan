@@ -50,53 +50,55 @@
             </thead>
             <tbody>
               <tr v-for="disburselist, index in disburselists" :key="disburselist.key">
-                <td class="font16 text-center">{{index+1}}</td>
-                <td class="font16">
+                <td class="font16 text-center" valign="top">{{index+1}}</td>
+                <td class="font16" valign="top">
                   {{ disburselist.disburselistName }}
+                  <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
                 </td>
-                <td class="font16 text-center">
+                <td class="font16 text-center" valign="top">
                     {{ disburselist.disburselistQty }}
                 </td>
-                <td class="font16 text-center">
+                <td class="font16 text-center" valign="top">
                     {{ disburselist.disburselistUnit }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistPrice) }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
               </tr>
               <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
                 <td class="font16 text-center"></td>
-                <td class="font16">
+                <td class="font16" valign="top">
                   {{ disburselist.disburselistName }}
+                  <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
                 </td>
-                <td class="font16 text-center">
+                <td class="font16 text-center" valign="top">
                     {{ disburselist.disburselistQty }}
                 </td>
-                <td class="font16 text-center">
+                <td class="font16 text-center" valign="top">
                     {{ disburselist.disburselistUnit }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistPrice) }}
                 </td>
-                <td class="font16 text-right  text-no-wrap">
+                <td class="font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
               </tr>
               <tr>
-                <td colspan="3" rowspan="3" class="font16 font-weight-bold text-center">{{ thaiBaht(disburse.disburseMoney) }}</td>
-                <td colspan="2" class="font16 font-weight-bold">รวมเป็นเงิน</td>
-                <td class="font16 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney*100/107) : moneyFormat(disburse.disburseMoney) }}</td>
+                <td colspan="3" rowspan="3" class="font16 font-weight-bold text-center" valign="top">{{ thaiBaht(disburse.disburseMoney) }}</td>
+                <td colspan="2" class="font16 font-weight-bold" valign="top">รวมเป็นเงิน</td>
+                <td class="font16 text-right font-weight-bold" valign="top">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney*100/107) : moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
               <tr>
-                <td colspan="2" class="font16 font-weight-bold">ภาษีมูลค่าเพิ่ม</td>
-                <td class="font16 text-right font-weight-bold">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) : '-' }}</td>
+                <td colspan="2" class="font16 font-weight-bold" valign="top">ภาษีมูลค่าเพิ่ม</td>
+                <td class="font16 text-right font-weight-bold" valign="top">{{ disburse.disburseExcludeVat==1||disburse.disburseIncludeVat==1? moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) : '-' }}</td>
               </tr>
               <tr>
-                <td colspan="2" class="font16 font-weight-bold">รวมเป็นเงินทั้งสิ้น</td>
-                <td class="font16 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
+                <td colspan="2" class="font16 font-weight-bold" valign="top">รวมเป็นเงินทั้งสิ้น</td>
+                <td class="font16 text-right font-weight-bold" valign="top">{{ moneyFormat(disburse.disburseMoney) }}</td>
               </tr>
             </tbody>
           </table>

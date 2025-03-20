@@ -92,7 +92,7 @@
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">คำขอ</h3>
-              ขอจัด{{disburse.disburseSubtype}}<span v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : '' }}
+              ขอจัด{{disburse.disburseSubtype}}<span v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} {{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName+'  กิจกรรมที่ '+disburse.pjactivityNum+'.'+disburse.pjsubactivityNum+' '+disburse.pjsubactivityName : '' }}
             </v-col>
             <v-col cols="12" md="6">
               <h3 class="mb-2 fontBold">หมวดงบประมาณ</h3>
@@ -144,6 +144,13 @@
                           ()=>!!insertData.disburselistName || 'กรุณากรอกข้อมูล'
                         ]"
                       />
+                      <v-textarea
+                        v-model="insertData.disburselistDetail"
+                        label="รายละเอียด(ถ้ามี)"
+                        outlined
+                        dense
+                        rows="2"
+                      ></v-textarea>
                     </v-col>
                     <v-col cols="6" md="1">
                       <v-text-field
@@ -216,6 +223,12 @@
               :items-per-page="-1"
               hide-default-footer
             >
+              <template v-slot:item.disburselistName="{ item }">
+                <div class="py-1">
+                  {{ item.disburselistName }}
+                  <pre class="fontPrompt ml-2" v-if="item.disburselistDetail">{{ item.disburselistDetail }}</pre>
+                </div>
+              </template>
               <template v-slot:item.disburselistQty="{ item }">
                 {{ qtyFormat(item.disburselistQty) }}
               </template>
@@ -516,6 +529,13 @@
                             ()=>!!updateData.disburselistName || 'กรุณากรอกข้อมูล'
                           ]"
                         />
+                        <v-textarea
+                        v-model="updateData.disburselistDetail"
+                        label="รายละเอียด(ถ้ามี)"
+                        outlined
+                        dense
+                        rows="2"
+                      ></v-textarea>
                       </v-col>
                       <v-col cols="6" md="1">
                         <v-text-field
@@ -725,6 +745,7 @@ export default {
         this.userSign = await this.getPartySignature(this.user.userID)
       }
     }
+    console.log(this.disburse)
   },
 
   methods: {
@@ -850,6 +871,7 @@ export default {
         this.updateProgress = true
         this.updateData.token = this.$store.state.jwtToken
         this.updateData.disburselistStatus = ''
+        console.log(this.updateData)
         let result = await this.$axios.$post('disburselist.update.php', this.updateData)
         if(result.message == 'Success') {
           await this.getDisburselist(this.disburse.disburseID).then(async ()=>{

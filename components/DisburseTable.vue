@@ -1086,7 +1086,7 @@ export default {
         } else if(this.userType=='Department') {
           this.disburses = result.disburse.filter(disburse => (disburse.departmentID==this.departmentID&&disburse.disburseType=='โครงการ') || (this.departmentID==disburse.pjdepartmentID&&disburse.disburseType=='โครงการ') || disburse.disburseType=='ค่าใช้จ่าย')
         }
-console.log(this.disburses, this.partyID, this.userID)
+
         this.budgetSum.disburseMoney = this.disburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
 
         if(this.disburses) {
