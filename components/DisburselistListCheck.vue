@@ -1382,7 +1382,7 @@ export default {
     async updateDisburseCompany() {
       this.updateProgress = true
       if(this.updateData.reparcUserID) {
-        this.updateData.reparcHead = this.parcUsers.filter(user => user.userID==this.updateData.reparcUserID)[0].userFullname
+        this.updateData.reparcHead = this.parcUsers.filter(user => user.userID==this.updateData.reparcUserID)[0]?.userFullname
       } else if(this.updateData.reparcUserID == null) {
         this.updateData.reparcHead = ''
         this.updateData.reparcUserID = 0
