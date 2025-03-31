@@ -8,22 +8,31 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
-            <div>
+            <div v-if="userType=='Admin' || userType=='Plan'">
               <v-btn text color="success" @click="showInsertPolicyDialog">
                 <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มนโยบาย
               </v-btn>
             </div>
             <div>
               <v-list>
-                <template v-for="policy in policies">
+                <template v-for="policy, pindex in policies">
                   <v-list-item :key="policy.key">
                     <v-list-item-content>
                       <v-list-item-title class="pa-3 blue-grey lighten-5">
                         <v-row no-gutters>
-                          <v-col>
-                            {{ policy.policyName }}
+                          <v-col cols="12" class="text-wrap">
+                            <span class="font-weight-bold">{{ pindex + 1 }}. {{ policy.policyName }} </span>
+                            <v-btn
+                              outlined
+                              x-small
+                              color="primary"
+                              class="mb-2"
+                            >
+                              <span class="font-weight-bold">{{ policy.projectQty }} โครงการ</span>
+                            </v-btn>
                           </v-col>
-                          <v-col class="text-right" v-if="userType=='Admin' || userType=='Plan'">
+                          <v-col cols="12" class="text-right text-wrap" v-if="userType=='Admin' || userType=='Plan'">
+                            
                             <v-btn icon small color="warning" class="mr-1" @click="showUpdatePolicyDialog(policy)">
                               <v-icon small>fas fa-edit</v-icon>
                             </v-btn>
@@ -36,12 +45,20 @@
                           </v-col>
                         </v-row>
                       </v-list-item-title>
-                      <v-list-item-subtitle class="ml-5 px-3" v-for="strategic in policy.strategic" :key="strategic.key">
-                        <v-row no-gutters class="mx-5 grey lighten-5">
-                          <v-col class="pa-3">
-                            {{ strategic.strategicName }}
+                      <v-list-item-subtitle class="ml-2 ml-md-5 px-md-1" v-for="strategic, sindex in policy.strategic" :key="strategic.key">
+                        <v-row no-gutters class="mx-md-5 grey lighten-5">
+                          <v-col cols="12" class="pt-3 pl-3 text-wrap">
+                            <span class="font-weight-medium">{{ pindex + 1 }}.{{ sindex + 1 }} {{ strategic.strategicName }}</span>
+                            <v-btn
+                              outlined
+                              x-small
+                              color="primary"
+                              class="mb-2"
+                            >
+                            <span class="font-weight-bold">{{ strategic.projectQty }} โครงการ</span>
+                            </v-btn>
                           </v-col>
-                          <v-col class="py-3 text-right" v-if="userType=='Admin' || userType=='Plan'">
+                          <v-col cols="12" class="pb-3 text-right text-wrap" v-if="userType=='Admin' || userType=='Plan'">
                             <v-btn icon x-small color="warning" class="mr-1" @click="showUpdateStrategicDialog(policy, strategic)">
                               <v-icon x-small>fas fa-edit</v-icon>
                             </v-btn>
@@ -56,11 +73,19 @@
                             <v-divider></v-divider>
                           </v-col>
                         </v-row>
-                        <v-row no-gutters class="mx-10" v-for="strategy in strategic.strategy" :key="strategy.key">
-                          <v-col class="pa-3">
-                            {{ strategy.strategyName }}
+                        <v-row no-gutters class="mx-3 mx-md-10" v-for="strategy, index in strategic.strategy" :key="strategy.key">
+                          <v-col cols="12" class="pt-3 pl-3">
+                            {{ index + 1 }}) {{ strategy.strategyName }}
+                            <v-btn
+                              outlined
+                              x-small
+                              color="primary"
+                              class="mb-2"
+                            >
+                            <span class="font-weight-bold">{{ strategy.projectQty }} โครงการ</span>
+                            </v-btn>
                           </v-col>
-                          <v-col class="py-3 text-right" v-if="userType=='Admin' || userType=='Plan'">
+                          <v-col cols="12" class="pb-3 text-right text-wrap" v-if="userType=='Admin' || userType=='Plan'">
                             <v-btn icon x-small color="warning" class="mr-1" @click="showUpdateStrategyDialog(policy, strategic, strategy)">
                               <v-icon x-small>fas fa-edit</v-icon>
                             </v-btn>

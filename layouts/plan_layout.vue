@@ -105,6 +105,11 @@ export default {
           to: '/Plan/orgstrategic',
         },
         {
+          icon: 'fas fa-dot-circle ',
+          title: 'นโยบายที่เกี่ยวข้อง',
+          to: '/Plan/policy',
+        },
+        {
           icon: 'fas fa-dot-circle',
           title: 'แผนงบประมาณ',
           to: '/Plan/budgetplan'

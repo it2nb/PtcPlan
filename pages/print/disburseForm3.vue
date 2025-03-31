@@ -48,7 +48,7 @@
         </v-col>
         <v-col cols="12" class="font16">
             &emsp;&emsp;&emsp;&emsp;&emsp;5. กำหนดเวลาที่ต้องการใช้พัสดุนั้น หรือให้งานนั้นแล้วเสร็จ<br>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;กำหนดเวลาการส่งมอบพัสดุ หรืองานให้แล้วเสร็จภายใน 5 วัน นับถัดจากวันลงนามในสัญญา
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;กำหนดเวลาการส่งมอบพัสดุ หรืองานให้แล้วเสร็จภายใน {{ disburse.orderSendDay }} วัน นับถัดจากวันลงนามในสัญญา
         </v-col>
         <v-col cols="12" class="font16">
             &emsp;&emsp;&emsp;&emsp;&emsp;6. วิธีที่จะ<span class="font16" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font16" v-else>ซื้อ</span> และเหตุผลที่ต้อง<span class="font16" v-if="disburse.expenseName=='ค่าใช้สอย'">จ้าง</span><span class="font16" v-else>ซื้อ</span><br>
