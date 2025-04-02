@@ -100,6 +100,11 @@ export default {
           to: '/Director/me',
         },
         {
+          icon: 'fas fa-dot-circle ',
+          title: 'นโยบายที่เกี่ยวข้อง',
+          to: '/Director/policy',
+        },
+        {
           icon: 'fas fa-dot-circle',
           title: 'แผนงบประมาณ',
           to: '/Director/budgetplan'

@@ -100,6 +100,11 @@ export default {
           to: '/Party/me',
         },
         {
+          icon: 'fas fa-dot-circle ',
+          title: 'นโยบายที่เกี่ยวข้อง',
+          to: '/Party/policy',
+        },
+        {
           icon: 'fas fa-dot-circle',
           title: 'แผนงบประมาณ',
           to: '/Party/budgetplan'

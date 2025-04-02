@@ -98,10 +98,14 @@
             </v-btn>
           </div>
           <v-divider class="mt-2 mb-1"></v-divider>
-           {{ moneyFormat(parseFloat(item.pjbudgetMoney)) }} บาท
-          <div class="caption" v-if="parseFloat(item.disburseMoney)>0">
+           <span v-if="userType=='Public'">{{ parseFloat(item.disburseMoney)<=parseFloat(item.pjbudgetMoney)? moneyFormat(parseFloat(item.pjbudgetMoney)) : moneyFormat(parseFloat(item.disburseMoney)) }} บาท</span>
+           <span v-else>{{ moneyFormat(parseFloat(item.pjbudgetMoney)) }} บาท</span>
+          <div class="caption" v-if="parseFloat(item.disburseMoney)>0 && userType!='Public'">
             ใช้แล้ว <span class="px-1 success lighten-4" v-if="parseFloat(item.disburseMoney)<=parseFloat(item.pjbudgetMoney)">{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
             <span class="px-1 red lighten-4" v-else>{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span> บาท
+          </div>
+          <div class="caption" v-if="parseFloat(item.disburseMoney)>0 && userType=='Public'">
+            เบิกจ่าย <span class="px-1 success lighten-4">{{ moneyFormat(parseFloat(item.disburseMoney)) }}</span>
           </div>
         </div>
       </template>
@@ -187,10 +191,10 @@
       <template v-slot:item.actions="{ item }">
         <div  class="text-no-wrap">
           <!-- <v-btn icon @click="showActivityBudgetDialog(item)" v-if="((userType=='Personal' && item.projectStatus!='แผนก/งานเห็นชอบ' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && updateBt) || (userType=='Department' && item.projectStatus!='ฝ่ายเห็นชอบ' && item.projectStatus!='อนุมัติ' && updateBt) || (userType=='Party' && item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin' || userType=='Plan') && item.projectProgress!='ดำเนินการเสร็จสิ้น'"> -->
-          <v-btn icon @click="showActivityBudgetDialog(item)">
+          <v-btn icon @click="showActivityBudgetDialog(item)" v-if="userType!='Public'">
             <v-icon color="success">fas fa-clipboard-list</v-icon>
           </v-btn>
-          <v-btn color="info darken-2" icon small :href="'/print/project/?pid='+item.projectID" target="_blank">
+          <v-btn color="info darken-2" icon small :href="'/print/project/?pid='+item.projectID" target="_blank" v-if="userType!='Public'">
             <v-icon small class="mr-1">fas fa-print</v-icon>
           </v-btn>
           <br>

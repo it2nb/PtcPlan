@@ -49,7 +49,7 @@
               <template v-slot:item.expenseplanMoney="{ item }">
                 <div class="text-no-wrap">
                   {{ moneyFormat(item.expenseplanMoney) }}
-                  <v-btn icon @click="showExpenseBudgetDialog(item)" v-if="userType=='Admin' || userType=='Plan'">
+                  <v-btn icon @click="showExpenseBudgetDialog(item)" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance'">
                     <v-icon color="success">fas fa-money-check</v-icon>
                   </v-btn>
                 </div>

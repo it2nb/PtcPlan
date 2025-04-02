@@ -76,6 +76,10 @@
                 label="ขอเช่า"
                 value="เช่า"
               ></v-radio>
+              <v-radio
+                label="ขอเบิกจ่ายอื่นๆ"
+                value="เบิกจ่าย"
+              ></v-radio>
             </v-radio-group>
           </v-col>
           <v-col cols="12" md="4">

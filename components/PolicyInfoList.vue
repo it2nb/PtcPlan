@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>นโยบายที่เกี่ยวข้อง</b>
+            <b>การดำเนินการตามนโยบายที่เกี่ยวข้อง</b>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
@@ -354,6 +354,7 @@
                   :projectsLoading="projectsLoading"
                   :projectSum="projectSum"
                   :projectYear="policyYear"
+                  :userType="userType"
                   class="mt-2 mx-3 mx-md-5"
                 />
               </v-card>

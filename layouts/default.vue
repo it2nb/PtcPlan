@@ -30,6 +30,9 @@
           <v-tab to="/budget">
             งบประมาณ
           </v-tab>
+          <v-tab to="/policy">
+            นโยบายที่เกี่ยวข้อง
+          </v-tab>
           <v-tab to="/document">
             เอกสารเผยแพร่
           </v-tab>
