@@ -1144,9 +1144,9 @@
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ภาพการดำเนินโครงการ</h3>
-                        <v-row v-if="imageNames.length > 0">
+                        <v-row dense v-if="imageNames.length > 0">
                           <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
-                            <v-img
+                            <!-- <v-img
                               :src="imagePath+imageName+'?t='+new Date()"
                               class="align-end text-right"
                               gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
@@ -1154,7 +1154,16 @@
                               <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
                                 <v-icon small>fas fa-trash</v-icon>
                               </v-btn>
-                            </v-img>
+                            </v-img> -->
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imagePath+imageName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-sheet>
                           </v-col>
                         </v-row>
                       </v-col>

@@ -463,6 +463,10 @@ export default {
         fn: 'All'
       }
 
+      if(this.userType == 'Public') {
+        params.fn = 'AllApprovedProject'
+      }
+
       let result = await this.$axios.$get('policy.php', {
         params: params
       })
@@ -660,6 +664,9 @@ export default {
       }).then((res) => {
         if(res.message == 'Success') {
           this.projects = JSON.parse(JSON.stringify(res.project))
+          if(this.userType == 'Public') {
+            this.projects = this.projects.filter(p => p.projectStatus == 'อนุมัติ')
+          }
           this.getOrgstrategics(this.policyYear)
           if(policyID) {
             this.projectPolicyNames.policyName = this.policies.find(p => p.policyID == policyID).policyName
