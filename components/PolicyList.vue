@@ -27,6 +27,7 @@
                               x-small
                               color="primary"
                               class="mb-2"
+                              @click="showProjectTableDialog(policy.policyID, null, null)"
                             >
                               <span class="font-weight-bold">{{ policy.projectQty }} โครงการ</span>
                             </v-btn>
@@ -54,6 +55,7 @@
                               x-small
                               color="primary"
                               class="mb-2"
+                              @click="showProjectTableDialog(policy.policyID, strategic.strategicID, null)"
                             >
                             <span class="font-weight-bold">{{ strategic.projectQty }} โครงการ</span>
                             </v-btn>
@@ -81,6 +83,7 @@
                               x-small
                               color="primary"
                               class="mb-2"
+                              @click="showProjectTableDialog(policy.policyID, strategic.strategicID, strategy.strategyID)"
                             >
                             <span class="font-weight-bold">{{ strategy.projectQty }} โครงการ</span>
                             </v-btn>
@@ -325,6 +328,34 @@
       </v-dialog>
     </v-row>
 
+    <v-row justify="center">
+      <v-dialog
+        v-model="projectTableDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-10 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="primary lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="projectTableDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <ProjectTableForm 
+                  :projects="projects" 
+                  :projectsLoading="projectsLoading"
+                  :projectSum="projectSum"
+                />
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
   </div>
 </template>
 
@@ -387,6 +418,7 @@ export default {
       deleteStrategicValidate: null,
 
       strategicData: {},
+      strategyData: {},
 
       insertStrategyDialog: false,
       insertStrategyProgress: false,
@@ -399,6 +431,11 @@ export default {
       deleteStrategyDialog: false,
       deleteStrategyProgress: false,
       deleteStrategyValidate: null,
+
+      projectTableDialog: false,
+      projects: [],
+      projectSum: {},
+      projectsLoading: true,
     }
   },
 
@@ -576,6 +613,30 @@ export default {
       } else {
         this.deleteStrategyDialog = false
       }
+    },
+
+    async showProjectTableDialog(policyID, strategicID, strategyID) {
+      this.projectsLoading = true
+      await this.$axios.$get('project.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.policyYear,
+          policyID: policyID,
+          strategicID: strategicID,
+          strategyID: strategyID
+        }
+      }).then((res) => {
+        if(res.message == 'Success') {
+          this.projects = JSON.parse(JSON.stringify(res.project))
+        } else {
+          this.projects = []
+        }
+        console.log(this.projects)
+        this.projectsLoading = false
+        this.projectTableDialog = true
+      }).catch((err) => {
+        console.log(err)
+      })
     },
 
     thaiDate(inDate) {
