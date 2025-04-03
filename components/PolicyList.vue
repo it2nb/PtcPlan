@@ -76,7 +76,7 @@
                           </v-col>
                         </v-row>
                         <v-row no-gutters class="mx-3 mx-md-10" v-for="strategy, index in strategic.strategy" :key="strategy.key">
-                          <v-col cols="12" class="pt-3 pl-3">
+                          <v-col cols="12" class="pt-3 pl-3 text-wrap">
                             {{ index + 1 }}) {{ strategy.strategyName }}
                             <v-btn
                               outlined
