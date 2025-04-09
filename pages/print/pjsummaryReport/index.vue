@@ -59,7 +59,7 @@
     <div class="printPage">
       <v-row no-gutters>
         <v-col cols="12">
-          <div class="mb-2 fontBold font18">7. ภาพการดำเนินโครงการ</div>
+          <div class="mb-2 fontBold font18">8. ภาพการดำเนินโครงการ</div>
           <v-row class="mt-5" v-if="imageNames.length > 0">
             <v-col cols="6" class="text-center" v-for="imageName in imageNames" :key="imageName.key">
               <img :src="imagePath+imageName" width="100%">

@@ -59,7 +59,7 @@
                       </v-col>
                       <v-col cols="12" md="6">
                         <v-text-field
-                          v-model="Plansearch"
+                          v-model="Reqsearch"
                           append-icon="mdi-magnify"
                           label="ค้นหา"
                           hide-details

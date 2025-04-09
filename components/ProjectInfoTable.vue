@@ -1030,16 +1030,19 @@ export default {
       } else {
         this.subperiod = 1
       }
+      await this.getOrgstrategic()
       await this.getProjects()
       await this.filterProjects()
     },
 
     async subperiod() {
+      await this.getOrgstrategic()
       await this.getProjects()
       await this.filterProjects()
     },
 
     async personalIDcard() {
+      await this.getOrgstrategic()
       await this.getProjects()
       await this.filterProjects()
     }
