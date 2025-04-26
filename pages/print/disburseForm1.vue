@@ -278,7 +278,13 @@
           {{ subDepartment(disburse.pjdepartmentName) }}
         </v-col>
         <v-col cols="12" class="font16 mb-2">
-          ภาคเรียนที่ {{ (parseInt(String(disburse.disburseDate).split('-')[1])>=5&&parseInt(String(disburse.disburseDate).split('-')[1])<=10)? '1':'2'}} &emsp;ปีการศึกษา {{ (parseInt(String(disburse.disburseDate).split('-')[1])>=5&&parseInt(String(disburse.disburseDate).split('-')[1])<=10)? parseInt(disburse.disburseYear)+543:parseInt(disburse.disburseYear)+542}}&emsp;ชื่อโครงการ {{ disburse.disburseType=='โครงการ'? disburse.projectName : disburse.expenseplanDes }} <!--จำนวน {{ disburselists.length }} รายการ -->
+          ภาคเรียนที่ 
+          <span v-if="disburse.disburseEduTerm">{{ disburse.disburseEduTerm }}</span>
+          <span v-else>{{ (parseInt(String(disburse.disburseDate).split('-')[1])>=5&&parseInt(String(disburse.disburseDate).split('-')[1])<=10)? '1':'2'}} </span>
+          &emsp;ปีการศึกษา 
+          <span v-if="disburse.disburseEduYear">{{ disburse.disburseEduYear }}</span>
+          <span v-else>{{ (parseInt(String(disburse.disburseDate).split('-')[1])>=5&&parseInt(String(disburse.disburseDate).split('-')[1])<=10)? parseInt(disburse.disburseYear)+543:parseInt(disburse.disburseYear)+542}}</span>
+          &emsp;ชื่อโครงการ {{ disburse.disburseType=='โครงการ'? disburse.projectName : disburse.expenseplanDes }} <!--จำนวน {{ disburselists.length }} รายการ -->
         </v-col>
         <v-col cols="4" class="font16">
           &emsp;&emsp;&emsp;&emsp;&emsp;ลักษณะโครงการ

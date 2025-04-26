@@ -65,12 +65,13 @@ export default {
     // baseURL: 'http://localhost/ptcplan-api/',
     // baseURL: 'http://113.53.238.204/PlanApi/',
     baseURL: '/Api/',
-    prefix: '/Local/',
+    prefix: '/Api/',
     proxy: true,
   },
   proxy: {
-    '/Local/': { target: 'http://localhost/ptcplan-api/', pathRewrite: {'^/Local/': ''} },
-    '/Api/': { target: 'https://plan.technicphrae.ac.th/', pathRewrite: {'^/Api/': '/ptcplanSite/Api/'} }
+    // '/Local/': { target: 'http://localhost/ptcplan-api/', pathRewrite: {'^/Local/': ''} },
+    // '/Api/': { target: 'https://plan.technicphrae.ac.th/', pathRewrite: {'^/Api/': '/ptcplanSite/Api/'} } 
+    '/Api/': { target: process.env.AXIOS_PROXY_TARGET||'', pathRewrite: {'^/Api/': process.env.AXIOS_PROXY_PATH_REWRITE||''}}
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -105,5 +106,5 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
 }

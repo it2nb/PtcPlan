@@ -40,7 +40,7 @@
               ]"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="2">
             <h3 class="mb-2 fontBold">วันที่ขอจัดซื้อ/เบิกเงิน</h3>
             <v-text-field
               v-model="updateData.disburseDate"
@@ -53,6 +53,23 @@
               :rules="[
                 ()=>!!updateData.disburseDate || 'กรุณากรอกข้อมูล'
               ]"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="4" md="1">
+            <h3 class="mb-2 fontBold">ภาคเรียนที่</h3>
+            <v-text-field
+              v-model="updateData.disburseEduTerm"
+              label="ภาคเรียนที่"
+              outlined
+            ></v-text-field>
+          </v-col>
+          <v-col cols="8" md="2">
+            <h3 class="mb-2 fontBold">ปีการศึกษา</h3>
+            <v-text-field
+              v-model="updateData.disburseEduYear"
+              label="ปีการศึกษา"
+              type="number"
+              outlined
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
@@ -78,7 +95,7 @@
               ></v-radio>
             </v-radio-group>
           </v-col>
-          <v-col cols="12" md="">
+          <v-col cols="12" md="3">
             <h3 class="mb-2 fontBold">ประเภทกิจกรรม</h3>
             <v-radio-group
               v-model="updateData.disburseType"
