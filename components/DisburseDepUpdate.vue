@@ -205,7 +205,7 @@
                   <div>
                     {{ item.expenseplanDes }}
                     (คงเหลือ
-                    <span class="success--text text--darken-2" v-if="item.departmentQty > 0">{{ moneyFormat(item.expenseallocMoney) }}</span>
+                    <span class="success--text text--darken-2" v-if="item.departmentQty > 0">{{ moneyFormat(parseFloat(item.expenseallocMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span class="success--text text--darken-2" v-else-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) > 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span class="red--text text--darken-2" v-else-if="(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) < 0">{{ moneyFormat(parseFloat(item.expenseplanMoney)-parseFloat(item.disburseMoney)) }}</span>
                     <span v-else>0</span>)
