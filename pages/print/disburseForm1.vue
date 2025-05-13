@@ -53,41 +53,41 @@
           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;3. อนุมัติค่าใช้จ่ายตามโครงการ 
         </v-col>
         <v-col cols="12" class="mt-10">
-          <v-row no-gutters v-if="disburse.disburseType=='ค่าใช้จ่าย'">
-            <v-col align-self="start" class="text-center font16" v-if="disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID">
+          <v-row v-if="disburse.disburseType=='ค่าใช้จ่าย'">
+            <v-col cols="8" align-self="start" class="ml-auto text-center font16" v-if="disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID">
               <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
               <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseSign" /><br>
               ({{ disburse.disburseReqName }})<br>
               ผู้ขอจัดซื้อ
             </v-col>
-            <v-col align-self="start" class="text-center font16">
+            <v-col cols="8" align-self="start" class="ml-auto text-center font16">
               <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
               <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseDepartmentSign" /><br>
               ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : (disburse.userID==disburse.departmentHeadUserID? disburse.disburseReqName : disburse.departmentHeadFullname) }})<br>
               {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
               หัวหน้า{{ disburse.departmentName }}
             </v-col>
-            <v-col align-self="start" class="text-center font16">
+            <v-col cols="8" align-self="start" class="ml-auto text-center font16">
               <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign && disburse.partyUserID>0" /><br>
               ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.partyHeadFullname }})<br>
               {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">
               รองผู้อำนวยการฝ่าย{{ disburse.partyName }}
             </v-col>
           </v-row>
-          <v-row no-gutters v-if="disburse.disburseType=='โครงการ'">
-            <v-col align-self="start" class="text-center font16" v-if="disburse.departmentID!=disburse.pjdepartmentID || (disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID)">
+          <v-row v-if="disburse.disburseType=='โครงการ'">
+            <v-col cols="8" align-self="start" class="ml-auto text-center font16" v-if="disburse.departmentID!=disburse.pjdepartmentID || (disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID)">
               <!-- <img :src="departmentSignature" width="100" v-if="departmentSignature && (project.departmentSignName==disburse.departmentHead)" /><br> -->
               <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseSign" /><br>
               ({{ disburse.disburseReqName }})<br>
               ผู้ขอจัดซื้อ
             </v-col>
-            <v-col align-self="start" class="text-center font16" v-if="disburse.departmentID!=disburse.pjdepartmentID">
+            <v-col cols="8" align-self="start" class="ml-auto text-center font16" v-if="disburse.departmentID!=disburse.pjdepartmentID">
               <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseDepartmentSign" /><br>
               ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.pjdepartmentHead }})<br>
               {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
               หัวหน้า{{ disburse.pjdepartmentName }}<br>ผู้รับผิดชอบโครงการ
             </v-col>
-            <v-col align-self="start" class="text-center font16" v-else>
+            <v-col cols="8" align-self="start" class="ml-auto text-center font16" v-else>
               <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disburseDepartmentSign" />
               <!-- <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-else-if="disburseSign" /> -->
               <br>
@@ -95,7 +95,7 @@
               {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
               หัวหน้า{{ disburse.pjdepartmentName }}
             </v-col>
-            <v-col align-self="start" class="text-center font16">
+            <v-col cols="8" align-self="start" class="ml-auto text-center font16">
               <img :src="disbursePartySign+'?t='+new Date()" style="max-width: 100px; max-height: 30px;" v-if="disbursePartySign && disburse.partyUserID>0" /><br>
               ({{ disburse.disburseParReqName? disburse.disburseParReqName : disburse.pjpartyHead }})<br>
               {{ disburse.partyUserExpos }}<br v-if="disburse.partyUserExpos">
