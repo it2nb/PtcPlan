@@ -254,6 +254,156 @@
     <div class="printPage3x2">
       <v-row no-gutters class="mb-2">
         <v-col cols="12" class="font16 text-right">
+          เอกสารจัดซื้อจัดจ้าง เลขที่ ...............................
+        </v-col>
+        <v-col cols="12" class="mt-3 font16 font-weight-bold text-center" v-if="state">
+          {{ state.appSubTitle }}
+        </v-col>
+        <v-col cols="12" class="mb-2 font16 font-weight-bold text-center">
+          บัญชีประมาณการของอนุญาตจัดซื้อ/จัดจ้าง ปี {{ parseInt(disburse.disburseYear)+543 }}
+        </v-col>
+        <v-col cols="12" class="font16 text-center">
+          ด้วยเงิน (&nbsp;&nbsp;) อุดหนุน &emsp; (&nbsp;&nbsp;) งบประมาณ &emsp; (&nbsp;&nbsp;) รายได้ &emsp; (&nbsp;&nbsp;) อื่นๆ................................
+        </v-col>
+        <v-col cols="12" class="mt-5 font16 text-center">
+          หมวด........................................................................................................
+        </v-col>
+        <v-col cols="12" class="font16">
+          <div class="text-right font16">รหัสคำขอจัดซื้อ DB-{{ parseInt(disburseID) }}</div>
+          <table width="100%" class="tableNormal">
+            <thead>
+              <tr>
+                <th class="font16 font-weight-bold">
+                  ที่
+                </th>
+                <th class="font16 font-weight-bold">
+                  รายการ
+                </th>
+                <th colspan="2" class="font16 font-weight-bold">
+                  จำนวน
+                </th>
+                <th class="font16 font-weight-bold">
+                  ราคาต่อหน่วย
+                </th>
+                <th class="font16 font-weight-bold">
+                  จำนวนเงิน
+                </th>
+                <th class="font16 font-weight-bold">
+                  หมายเหตุ
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="disburselist, index in disburselists" :key="disburselist.key">
+                <td class="px-1 text-center" valign="top">{{index+1}}</td>
+                <td class="font16" valign="top">
+                  {{ disburselist.disburselistName }}
+                  <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
+                </td>
+                <td class="pl-2 font16 text-right text-no-wrap" valign="top">
+                  {{ qtyFormat(disburselist.disburselistQty) }}
+                </td>
+                <td class="font16 pl-2" valign="top">
+                  {{ disburselist.disburselistUnit }}
+                </td>
+                <td class="font16 text-right  text-no-wrap" valign="top">
+                  {{ moneyFormat(disburselist.disburselistPrice) }}
+                </td>
+                <td class="font16 text-right  text-no-wrap" valign="top">
+                  {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
+                </td>
+                <td class="font16" valign="top">
+                  {{ disburselist.disburselistDes }}
+                  <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
+                  {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
+                </td>
+              </tr>
+              <tr v-for="disburselist, index in disburselistdis" :key="disburselist.key">
+                <td></td>
+                <td class="font16" valign="top">
+                  {{ disburselist.disburselistName }}
+                  <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
+                </td>
+                <td class="font16 text-right text-no-wrap" valign="top">
+                  {{ qtyFormat(disburselist.disburselistQty) }}
+                </td>
+                <td class="font16 pl-2" valign="top">
+                  {{ disburselist.disburselistUnit }}
+                </td>
+                <td class="pl-2 font16 text-right  text-no-wrap" valign="top">
+                  {{ moneyFormat(disburselist.disburselistPrice) }}
+                </td>
+                <td class="pl-2 font16 text-right  text-no-wrap" valign="top">
+                  {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
+                </td>
+                <td class="font16" valign="top">
+                  {{ disburselist.disburselistDes }}
+                  <v-icon small color="error" v-if="disburselist.disburselistStatus=='ไม่ถูกต้อง'">fas fa-times</v-icon>
+                  {{ disburselist.disburselistStatus=='ไม่ถูกต้อง' ? disburselist.disburselistCommment : '' }}
+                </td>
+              </tr>
+              <tr v-if="disburse.disburseExcludeVat==1">
+                <td colspan="5" class="font16 text-right" valign="top">ภาษีมูลค่าเพิ่ม 7%</td>
+                <td class="font16 text-right" valign="top">{{ moneyFormat(disburse.disburseMoney-(disburse.disburseMoney*100/107)) }}</td>
+              </tr>
+              <tr>
+                <td colspan="5" class="font16 text-center font-weight-bold" valign="top">รวมเป็นเงินทั้งสิ้น</td>
+                <td class="font16 text-right font-weight-bold" valign="top">{{ moneyFormat(disburse.disburseMoney) }}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </v-col>
+        <v-col cols="6" class="mt-2 font16 ml-auto">
+          ตัวอักษร {{ thaiBaht(disburse.disburseMoney) }}
+        </v-col>
+        <v-col cols="12"></v-col>
+        <v-col cols="6" class="font16 text-center mt-10 ml-auto" v-if="disburse.disburseType=='ค่าใช้จ่าย' && disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID">
+          <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign" />
+          <span class="font16" v-else>........................................</span><br>
+          ({{ disburse.disburseReqName }}) <br>
+          ผู้ประมาณราคา
+        </v-col>
+        <v-col cols="6" class="font16 text-center mt-10 ml-auto" v-else-if="disburse.disburseType=='ค่าใช้จ่าย' && disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID">
+          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
+          <span class="font16" v-else>........................................</span><br>
+          ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
+          {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
+          ผู้ประมาณราคา
+        </v-col>
+        <v-col cols="6" class="font16 text-center mt-10 ml-auto" v-else-if="disburse.disburseType=='ค่าใช้จ่าย'">
+          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
+          <span class="font16" v-else>........................................</span><br>
+          ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
+          {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
+          ผู้ประมาณราคา
+        </v-col>
+        <v-col cols="4" class="font16 text-center mt-10 ml-auto" v-if="disburse.disburseType=='โครงการ' && (disburse.departmentID!=disburse.pjdepartmentID || (disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID))">
+          <img :src="disburseSign+'?t='+new Date()"style="max-width: 100px; max-height: 25px;" v-if="disburseSign" />
+          <span class="font16" v-else>........................................</span><br>
+          ({{ disburse.disburseReqName }}) <br>
+          ผู้ประมาณราคา
+        </v-col>
+        <v-col cols="4" class="font16 text-center mt-10 ml-auto" v-else-if="disburse.disburseType=='โครงการ' && (disburse.departmentID!=disburse.pjdepartmentID || (disburse.userID!=disburse.departmentHeadUserID && disburse.userID!=disburse.departmentUserID))">
+          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
+          <span class="font16" v-else>........................................</span><br>
+          ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.pjdepartmentHead }}) <br>
+          {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
+         ผู้ประมาณราคา
+        </v-col>
+        <v-col cols="6" class="font16 text-center mt-10 ml-auto" v-else-if="disburse.disburseType=='โครงการ'">
+          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" />
+          <!-- <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-else-if="disburseSign" /> -->
+          <span class="font16" v-else>........................................</span><br>
+         ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
+         {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
+          ผู้ประมาณราคา
+        </v-col>
+      </v-row>
+    </div>
+    <div class="printPage3x2">
+      <v-row no-gutters class="mb-2">
+        <v-col cols="12" class="font16 text-right">
           สผ.1
         </v-col>
         <v-col cols="12" class="font16 font-weight-bold text-center">
@@ -410,8 +560,6 @@
           <table width="100%" class="tableNormal">
             <thead>
               <tr>
-              </tr>
-              <tr>
                 <th colspan="7" class="font16 text-center font-weight-bold">
                   <div class="text-right font16">รหัสคำขอจัดซื้อ DB-{{ parseInt(disburseID) }}</div>
                   ประมาณการค่าใช้จ่าย  (ค่าใช้สอย / ค่าตอบแทน / ค่าวัสดุ)
@@ -454,16 +602,16 @@
                   1.{{index+1}} {{ disburselist.disburselistName }}
                   <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
                 </td>
-                <td class="font16 text-right text-no-wrap" valign="top">
+                <td class="pl-2 font16 text-right text-no-wrap" valign="top">
                   {{ qtyFormat(disburselist.disburselistQty) }}
                 </td>
                 <td class="font16 pl-2" valign="top">
                   {{ disburselist.disburselistUnit }}
                 </td>
-                <td class="font16 text-right  text-no-wrap" valign="top">
+                <td class="pl-2 font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistPrice) }}
                 </td>
-                <td class="font16 text-right  text-no-wrap" valign="top">
+                <td class="pl-2 font16 text-right  text-no-wrap" valign="top">
                   {{ moneyFormat(disburselist.disburselistQty*disburselist.disburselistPrice) }}
                 </td>
                 <td class="font16" valign="top">

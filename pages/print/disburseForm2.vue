@@ -142,7 +142,7 @@
         <v-col cols="6" class="mt-3 font16">
           <b class="font16 font-weight-bold">อนุมัติจ่ายได้</b><br>
           <div class="mt-3 font16">........................................ผู้อำนวยการวิทยาลัย</div>
-          ({{ directorName }})<br>
+          ({{ directorName ? directorName : '........................................' }})<br>
           วันที่……….เดือน………………….พ.ศ…………
         </v-col>
         <v-col cols="6" class="mt-3 font16">
