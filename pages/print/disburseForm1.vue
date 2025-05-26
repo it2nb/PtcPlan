@@ -295,7 +295,7 @@
             </thead>
             <tbody>
               <tr v-for="disburselist, index in disburselists" :key="disburselist.key">
-                <td class="px-1 text-center" valign="top">{{index+1}}</td>
+                <td class="px-1 text-center" valign="toptop">{{index+1}}</td>
                 <td class="font16" valign="top">
                   {{ disburselist.disburselistName }}
                   <pre class="ml-2 font16">{{ disburselist.disburselistDetail }}</pre>
