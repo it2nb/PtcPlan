@@ -227,7 +227,7 @@
           <span class="font16" v-if="project.directorSignName">({{ project.directorSignName }})</span>
           <span class="font16" v-else-if="bossparty.partyHeadFullname">({{ bossparty.partyHeadFullname }})</span>
           <span class="font16" v-else>(&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;)</span><br>
-          ผู้อำนวยการวิทยาลัยเทคนิคแพร่
+          {{ bossparty.partyReheadUserID==project.directorSign? 'รักษาราชการแทน' : ''}}ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </div>
       </div>
     </div>
@@ -284,6 +284,7 @@
         let result = await this.$axios.$get('party.php', {params})
         if(result.message == 'Success') {
           this.bossparty = JSON.parse(JSON.stringify(result.party))
+          console.log(this.bossparty)
         }
       },
   

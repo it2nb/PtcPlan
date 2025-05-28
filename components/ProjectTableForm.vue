@@ -1725,6 +1725,7 @@ export default {
     await this.getProjects()
     await this.getParties()
     //console.log(this.partyID)
+    console.log(JSON.parse(sessionStorage.getItem('loginuser')))
   },
 
   methods: {
@@ -2046,8 +2047,9 @@ export default {
           this.projectData.directorSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           if(this.projectData.projectStatus == 'อนุมัติ') {
             await this.getParty()
+            console.log(this.party)
             this.projectData.directorSign = this.userID
-            this.projectData.directorSignName = this.party.partyHeadFullname
+            this.projectData.directorSignName = this.userID==this.party.partyReheadUserID ? this.party.partyReheadFullname : this.party.partyHeadFullname
           } else {
             this.projectData.directorSign = ''
           }
