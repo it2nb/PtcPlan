@@ -811,7 +811,15 @@
                       <v-col cols="12" md="4">
                         <v-text-field
                           v-model="updateData.redirectorName"
-                          label="ชื่อรักษาการแทนผู้อำนวยการ"
+                          label="ชื่อรักษาราชการแทนผู้อำนวยการ"
+                          outlined
+                          dense
+                        />
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <v-text-field
+                          v-model="updateData.acdirectorName"
+                          label="ชื่อรักษาการในตำแหน่งผู้อำนวยการ"
                           outlined
                           dense
                         />
@@ -1405,6 +1413,7 @@ export default {
         orderSendDay: this.updateData.orderSendDay,
         orderSendDate: this.updateData.orderSendDate,
         redirectorName: this.updateData.redirectorName,
+        acdirectorName: this.updateData.acdirectorName,
         reparcHead: this.updateData.reparcHead,
         reparcUserID: this.updateData.reparcUserID
       })
@@ -1432,6 +1441,7 @@ export default {
           this.disburse.orderSendDay = this.updateData.orderSendDay
           this.disburse.orderSendDate = this.updateData.orderSendDate
           this.disburse.redirectorName = this.updateData.redirectorName
+          this.disburse.acdirectorName = this.updateData.acdirectorName
           this.disburse.reparcHead = this.updateData.reparcHead,
           this.disburse.reparcUserID = this.updateData.reparcUserID
           this.updateProgress = false
