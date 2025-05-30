@@ -41,8 +41,8 @@
             สั่ง ณ วันที่ {{  thaiDate(disburse.recDate) }}
         </v-col>
         <v-col cols="8"  class="mt-10 ml-auto text-center font16">
-          ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
-          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
+          ({{ disburse.redirectorName? disburse.redirectorName : disburse.acdirectorName? disburse.acdirectorName : disburse.directorName }})<br>
+          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : disburse.acdirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาการในตำแหน่ง' : '' }}<br v-if="disburse.redirectorName || disburse.acdirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </v-col>
       </v-row>
