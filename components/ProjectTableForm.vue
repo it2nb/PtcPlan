@@ -2333,12 +2333,22 @@ export default {
     },
 
     async sendLineGroup(msg){
-      if(this.$store.state.lineGroupToken) {
-        await this.$axios.$post('sendline.php', {
-          token: this.$store.state.lineGroupToken,
-          message: msg+'\n'+window.location.origin
-        })
-      }
+      // if(this.$store.state.lineGroupToken) {
+      //   await this.$axios.$post('sendline.php', {
+      //     token: this.$store.state.lineGroupToken,
+      //     message: msg+'\n'+window.location.origin
+      //   })
+      // }
+      await this.$axios.$post('sendline.php', {
+        token: this.$store.state.lineGroupChannelAccessToken,
+        message: {
+          to: this.$store.state.lineGroupID,
+          messages: [{
+            type: 'text',
+            text: msg+'\n'+window.location.origin
+          }]
+        }
+      })
     },
 
     async sendLindDepartment(departmentID, msg) {

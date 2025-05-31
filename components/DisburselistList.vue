@@ -1172,7 +1172,7 @@ export default {
       //   })
       // }
       if(this.$store.state.lineGroupChannelAccessToken && this.$store.state.lineGroupID) {
-        let result = await this.$axios.$post('sendline.php', {
+        await this.$axios.$post('sendline.php', {
           token: this.$store.state.lineGroupChannelAccessToken,
           message: {
             to: this.$store.state.lineGroupID,
@@ -1182,7 +1182,6 @@ export default {
             }]
           }
         })
-        console.log(result)
       }
     },
 
