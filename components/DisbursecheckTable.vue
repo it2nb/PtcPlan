@@ -942,7 +942,6 @@ export default {
       }
      
       let result = await this.$axios.$get('disburse.php', {params})
-       console.log(result)
       if(result.message === 'Success') {
         this.disburses = JSON.parse(JSON.stringify(result.disburse))
         if(this.disburses) {

@@ -526,7 +526,6 @@ export default {
                 disburseID: this.disburseID
             }
         })
-        console.log(disburseQuery)
         if(disburseQuery.message == 'Success') {
             this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
             if(this.disburse.partyUserID) {

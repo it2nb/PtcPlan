@@ -639,18 +639,11 @@ export default {
             text: msg,
             icon: 'success'
           }).then(async ()=> {
-            //console.log(this.user.userName, this.userUpdate.userName)
-            // if(this.user.userName==this.userUpdate.userName) {
-            //   await this.getUser()
-            //   await this.getDepartment()
-            //   this.updateDialog = false
-            // } else {
               sessionStorage.setItem('loginuser', JSON.stringify({
                 type: this.userUpdate.userStatus,
                 user: this.userUpdate
               }))
               location.reload();
-            // }
           })
         } else {
           let msg = ''

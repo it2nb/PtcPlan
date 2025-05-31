@@ -249,8 +249,8 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font16 text-center">
           <div class="mt-3 font16">ลงชื่อ........................................ผู้สั่งจ้่าง</div>
-          ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
-          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
+          ({{ disburse.redirectorName? disburse.redirectorName : disburse.acdirectorName? disburse.acdirectorName : disburse.directorName }})<br>
+          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : disburse.acdirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาการในตำแหน่ง' : '' }}<br v-if="disburse.redirectorName || disburse.acdirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>
@@ -378,8 +378,8 @@
         </v-col>
         <v-col cols="8" class="mt-10 ml-auto font16 text-center">
           <div class="mt-3 font16">ลงชื่อ........................................ผู้สั่งเช่า</div>
-          ({{ disburse.redirectorName? disburse.redirectorName : disburse.directorName }})<br>
-          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : "" }}<br v-if="disburse.redirectorName">
+          ({{ disburse.redirectorName? disburse.redirectorName : disburse.acdirectorName? disburse.acdirectorName : disburse.directorName }})<br>
+          {{ disburse.redirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน' : disburse.acdirectorName? 'รองผู้อำนวยการวิทยาลัย รักษาการในตำแหน่ง' : '' }}<br v-if="disburse.redirectorName || disburse.acdirectorName">
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่<br>
           วันที่ {{ disburse.recDate? thaiDate(disburse.recDate) : '.........../.........................../................' }}
         </v-col>

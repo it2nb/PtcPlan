@@ -285,7 +285,6 @@
         let result = await this.$axios.$get('party.php', {params})
         if(result.message == 'Success') {
           this.bossparty = JSON.parse(JSON.stringify(result.party))
-          console.log(this.bossparty)
         }
       },
   
@@ -332,7 +331,6 @@
         if(result.message == 'Success') {
           this.orgstrategics = JSON.parse(JSON.stringify(result.orgstrategic))
         }
-        //console.log(this.orgstrategics)
       },
   
       async getPjpolicy() {

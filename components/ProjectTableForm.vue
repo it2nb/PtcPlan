@@ -1724,8 +1724,6 @@ export default {
   async mounted() {
     await this.getProjects()
     await this.getParties()
-    //console.log(this.partyID)
-    console.log(JSON.parse(sessionStorage.getItem('loginuser')))
   },
 
   methods: {
@@ -1756,7 +1754,6 @@ export default {
     },
 
     async getParty() {
-      //console.log(this.partyID)
       let result = await this.$axios.$get('party.php', {
         params: {
           token: this.$store.state.jwtToken,
@@ -2038,7 +2035,6 @@ export default {
           partyName: 'อำนวยการ'
         }
         let partry = await this.$axios.$get('party.php', {params})
-        //console.log(partry)
         if(partry.message == 'Success') {
           bossparty = JSON.parse(JSON.stringify(partry.party))
         }
@@ -2047,7 +2043,6 @@ export default {
           this.projectData.directorSignDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
           if(this.projectData.projectStatus == 'อนุมัติ') {
             await this.getParty()
-            console.log(this.party)
             this.projectData.directorSign = this.userID
             this.projectData.directorSignName = this.userID==this.party.partyReheadUserID ? this.party.partyReheadFullname : this.party.partyHeadFullname
           } else {

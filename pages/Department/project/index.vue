@@ -72,11 +72,6 @@ export default {
       this.projectYear = this.$route.query.periodYear
     } else {
       await this.getPeriod()
-      // if(this.periodYears.length > 0) {
-      //   this.periodYears.reverse()
-      //   this.projectYear = this.periodYears[0].periodYear
-      // }
-      //console.log(this.periodYears)
     }
   },
 

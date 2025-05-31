@@ -411,7 +411,6 @@ export default {
       }
 
       let result = await this.$axios.$get('project.php', {params})
-      //console.log(result)
       if(result.message == 'Success') {
         this.projects = JSON.parse(JSON.stringify(result.project))
       }

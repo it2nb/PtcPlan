@@ -236,7 +236,6 @@ export default {
     } else {
       this.$router.replace('/')
     }
-    console.log(this.user)
   },
 
   methods: {

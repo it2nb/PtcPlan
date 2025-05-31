@@ -289,7 +289,6 @@ export default {
     async pjbudget() {
       if(this.pjbudget) {
         this.updateData = JSON.parse(JSON.stringify(this.pjbudget))
-        //console.log(this.updateData)
         await this.getSubactivity()
         await this.getExpenses()
         await this.getBudgetplan()

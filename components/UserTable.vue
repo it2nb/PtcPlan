@@ -305,7 +305,6 @@ export default {
     },
 
     async deleteUser(res) {
-      console.log(res)
       if(res.status) {
         await this.getUsers()
         this.deleteDialog = false

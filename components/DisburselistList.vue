@@ -745,7 +745,6 @@ export default {
         this.userSign = await this.getPartySignature(this.user.userID)
       }
     }
-    console.log(this.disburse)
   },
 
   methods: {
@@ -871,7 +870,6 @@ export default {
         this.updateProgress = true
         this.updateData.token = this.$store.state.jwtToken
         this.updateData.disburselistStatus = ''
-        console.log(this.updateData)
         let result = await this.$axios.$post('disburselist.update.php', this.updateData)
         if(result.message == 'Success') {
           await this.getDisburselist(this.disburse.disburseID).then(async ()=>{
@@ -1167,11 +1165,24 @@ export default {
     },
 
     async sendLineGroup(msg){
-      if(this.$store.state.lineGroupToken) {
-        await this.$axios.$post('sendline.php', {
-          token: this.$store.state.lineGroupToken,
-          message: msg+'\n'+window.location.origin
+      // if(this.$store.state.lineGroupToken) {
+      //   await this.$axios.$post('sendline.php', {
+      //     token: this.$store.state.lineGroupToken,
+      //     message: msg+'\n'+window.location.origin
+      //   })
+      // }
+      if(this.$store.state.lineGroupChannelAccessToken && this.$store.state.lineGroupID) {
+        let result = await this.$axios.$post('sendline.php', {
+          token: this.$store.state.lineGroupChannelAccessToken,
+          message: {
+            to: this.$store.state.lineGroupID,
+            messages: [{
+              type: 'text',
+              text: msg+'\n'+window.location.origin
+            }]
+          }
         })
+        console.log(result)
       }
     },
 

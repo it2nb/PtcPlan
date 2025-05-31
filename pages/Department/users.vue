@@ -28,7 +28,6 @@ export default {
   async mounted() {
     let loginuser = JSON.parse(sessionStorage.getItem("loginuser"))
     this.user = loginuser.user
-    console.log(this.user)
     this.personalIDcard = loginuser.user.personalIDcard
   },
 

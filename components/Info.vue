@@ -117,7 +117,6 @@ export default {
         fn: 'getSlipDisburse'
       }
       let result = await this.$axios.$get('budgettype.php', {params})
-//console.log(result)
       if(result.message == 'Success') {
         this.budgettypes = JSON.parse(JSON.stringify(result.budgettype))
       }

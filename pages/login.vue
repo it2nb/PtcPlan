@@ -496,7 +496,6 @@ export default {
       if(this.$refs.loginuserForm.validate()) {
         this.user.token = this.$store.state.jwtToken
         let result = await this.$axios.$post('user.login.php', this.user)
-        //console.log(result)
         if(result.message === 'Success') {
           let user = result.user
 
