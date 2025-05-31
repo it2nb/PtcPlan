@@ -1573,16 +1573,13 @@ export default {
       //     message: msg+'\n'+window.location.origin
       //   })
       // }
-      await this.$axios.$post('sendline.php', {
-        token: this.$store.state.lineGroupChannelAccessToken,
-        message: {
+      if(this.$store.state.lineGroupChannelAccessToken && this.$store.state.lineGroupID) {
+        await this.$axios.$post('sendline.php', {
+          token: this.$store.state.lineGroupChannelAccessToken,
           to: this.$store.state.lineGroupID,
-          messages: [{
-            type: 'text',
-            text: msg+'\n'+window.location.origin
-          }]
-        }
-      })
+          message: msg+'\n'+window.location.origin
+        })
+      }
     },
 
     thaiDate(inDate) {

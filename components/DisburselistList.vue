@@ -362,7 +362,7 @@
                 </v-row>
               </div>  
             </div>
-            <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID">
+            <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID && disburse.departmentHeadUserID!=user.userID">
               <h4 class="font-weight-bold" v-if="disburselists.length > 0">ส่งหัวหน้าแผนก/งานยืนยันการจัดซื้อจัดจ้าง</h4>
               <v-progress-circular
                 indeterminate
@@ -376,6 +376,10 @@
                     label="เมื่อยืนยันและส่งหัวหน้าแผนก/งานแล้วจะไม่สามารถแก้ไขได้"
                   ></v-checkbox>
                 </v-row>
+                <div class="mb-3 text-center" v-if="confirmCheck">
+                  ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
+                  {{ user.userFullname }}
+                </div>
                 <v-btn
                   color="warning darken-1"
                   large
@@ -401,9 +405,9 @@
                   ></v-checkbox>
                 </v-row>
                 <div class="mb-3 text-center" v-if="confirmCheck">
-                ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
-                {{ user.userFullname }}
-              </div>
+                  ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
+                  {{ user.userFullname }}
+                </div>
                 <v-btn
                   color="warning darken-1"
                   large
@@ -1174,13 +1178,8 @@ export default {
       if(this.$store.state.lineGroupChannelAccessToken && this.$store.state.lineGroupID) {
         await this.$axios.$post('sendline.php', {
           token: this.$store.state.lineGroupChannelAccessToken,
-          message: {
-            to: this.$store.state.lineGroupID,
-            messages: [{
-              type: 'text',
-              text: msg+'\n'+window.location.origin
-            }]
-          }
+          to: this.$store.state.lineGroupID,
+          message: msg+'\n'+window.location.origin
         })
       }
     },
