@@ -248,6 +248,38 @@
               </template>
             </v-autocomplete>
           </v-col>
+          <!-- <v-col cols="12" md="2" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && insertData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">รหัสวิชา</h3>
+            <v-text-field
+              v-model="insertData.subjectCode"
+              label="รหัสวิชา"
+              outlined
+              required
+              :rules="[
+                ()=>!!insertData.subjectCode || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col> -->
+          <v-col cols="12" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && insertData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">ชื่อวิชา</h3>
+            <v-text-field
+              v-model="insertData.disburseSubjectName"
+              label="ชื่อวิชา"
+              outlined
+              required
+              :rules="[
+                ()=>!!insertData.disburseSubjectName || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col>
+          <!-- <v-col cols="12" md="5" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && insertData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">เรื่อง</h3>
+            <v-text-field
+              v-model="insertData.subjectJob"
+              label="เรื่อง"
+              outlined
+            ></v-text-field>
+          </v-col> -->
           <v-col cols="12">
             <h3 class="mb-2 fontBold">วัตถุประสงค์เพื่อ</h3>
             <v-text-field
@@ -347,6 +379,7 @@ export default {
     return {
       expensebudgets: [],
       expenseplans: [],
+      expenseplanDes: null,
       projects: [],
       project: {},
       pjbudgets: [],
@@ -473,6 +506,11 @@ export default {
               this.insertData.departmentUserID = this.insertData.userID
               this.insertData.disburseDepReqName = this.insertData.disburseReqName
             }
+            if(this.expenseplanDes!='วัสดุการศึกษา' && this.expenseplanDes!='วัสดุฝึก') {
+              // delete this.insertData.subjectCode
+              delete this.insertData.disburseSubjectName
+              // delete this.insertData.subjectJob
+            }
           }
 
           if(this.expensebudgets.length > 0) {
@@ -554,6 +592,12 @@ export default {
 
   },
 
+  computed: {
+    insertExpenseplanID(){
+      return this.insertData.expenseplanID
+    }
+  },
+
   watch: {
     async disburse() {
       if(this.disburse) {
@@ -562,6 +606,10 @@ export default {
         await this.getExpaeseplan()
         await this.getProject()
       }
+    },
+    insertExpenseplanID() {
+      let expenseplan = this.expenseplans.filter(expenseplan => expenseplan.expenseplanID==this.insertData.expenseplanID)
+      this.expenseplanDes = expenseplan[0]?.expenseplanDes
     }
   }
 }

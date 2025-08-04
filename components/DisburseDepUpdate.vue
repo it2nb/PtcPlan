@@ -244,6 +244,38 @@
               </template>
             </v-autocomplete>
           </v-col>
+          <!-- <v-col cols="12" md="2" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && updateData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">รหัสวิชา</h3>
+            <v-text-field
+              v-model="updateData.subjectCode"
+              label="รหัสวิชา"
+              outlined
+              required
+              :rules="[
+                ()=>!!updateData.subjectCode || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col> -->
+          <v-col cols="12" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && updateData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">ชื่อวิชา</h3>
+            <v-text-field
+              v-model="updateData.disburseSubjectName"
+              label="ชื่อวิชา"
+              outlined
+              required
+              :rules="[
+                ()=>!!updateData.disburseSubjectName || 'กรุณากรอกข้อมูล'
+              ]"
+            ></v-text-field>
+          </v-col>
+          <!-- <v-col cols="12" md="5" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && updateData.disburseType=='ค่าใช้จ่าย'">
+            <h3 class="mb-2 fontBold">เรื่อง</h3>
+            <v-text-field
+              v-model="updateData.subjectJob"
+              label="เรื่อง"
+              outlined
+            ></v-text-field>
+          </v-col> -->
           <v-col cols="12" v-if="updateData.disburseType=='โครงการ'||updateData.disburseType=='ค่าใช้จ่าย'">
             <h3 class="mb-2 fontBold">วัตถุประสงค์เพื่อ</h3>
             <v-text-field
@@ -343,6 +375,7 @@ export default {
     return {
       expensebudgets: [],
       expenseplans: [],
+      expenseplanDes: null,
       projects: [],
       pjbudgets: [],
       departments: [],
@@ -387,7 +420,13 @@ export default {
       let result = await this.$axios.$get('expenseplan.php', {params})
       if(result.message == 'Success') {
         this.expenseplans = JSON.parse(JSON.stringify(result.expenseplan))
+        this.getExpenseplanDes()
       }
+    },
+
+    getExpenseplanDes() {
+      let expenseplan = this.expenseplans.filter(expenseplan => expenseplan.expenseplanID==this.updateData.expenseplanID)
+      this.expenseplanDes = expenseplan[0]?.expenseplanDes
     },
 
     async expenseplanIDChange() {
@@ -530,7 +569,12 @@ export default {
     moneyFormat(money) {
       return numeral(money).format('0,0.00')
     },
+  },
 
+  computed: {
+    updateExpenseplanID(){
+      return this.updateData.expenseplanID
+    }
   },
 
   watch: {
@@ -547,6 +591,13 @@ export default {
           await this.getPjbudget(this.updateData.projectID)
         }
       }
+    },
+    // expenseplans() {
+    //   let expenseplan = this.expenseplans.filter(expenseplan => expenseplan.expenseplanID==this.updateData.expenseplanID)
+    //   this.expenseplanDes = expenseplan[0]?.expenseplanDes
+    // },
+    updateExpenseplanID() {
+      this.getExpenseplanDes()
     }
   }
 }

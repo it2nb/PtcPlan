@@ -285,14 +285,19 @@
           &emsp;ปีการศึกษา 
           <span v-if="disburse.disburseEduYear">{{ disburse.disburseEduYear }}</span>
           <span v-else>{{ (parseInt(String(disburse.disburseDate).split('-')[1])>=5&&parseInt(String(disburse.disburseDate).split('-')[1])<=10)? parseInt(disburse.disburseYear)+543:parseInt(disburse.disburseYear)+542}}</span>
-          &emsp;ชื่อโครงการ {{ disburse.disburseType=='โครงการ'? disburse.projectName : disburse.expenseplanDes }} <!--จำนวน {{ disburselists.length }} รายการ -->
+          &emsp;ชื่อโครงการ 
+          {{ disburse.disburseType=='โครงการ'? disburse.projectName : disburse.expenseplanDes }} 
+          <!--จำนวน {{ disburselists.length }} รายการ -->
+          &emsp; {{ 'รายวิชา'+disburse.disburseSubjectName }}
         </v-col>
         <v-col cols="4" class="font16">
           &emsp;&emsp;&emsp;&emsp;&emsp;ลักษณะโครงการ
         </v-col>
         <v-col cols="8" class="font16">
+          <v-icon small>far fa-square</v-icon> ตามใบงาน/แผนการสอน<br>
           <v-icon small>far fa-square</v-icon> ตามโครงการพัฒนาสถานศึกษา<br>
-          <v-icon small>far fa-square</v-icon> อื่นๆ
+          <v-icon small>far fa-square</v-icon> ตามโครงการผลิตเพื่อจำหน่าย<br>
+          <v-icon small>far fa-square</v-icon> อื่นๆ.............................
         </v-col>
         <v-col cols="12" class="mb-3 font16 text-center">
           วันที่เริ่มต้น {{ thaiDate(disburse.disburseStart) }}&emsp;&emsp;วันที่สิ้นสุด {{ thaiDate(disburse.disburseEnd) }}
@@ -332,7 +337,7 @@
           <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign" />
           <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseReqName }}) <br> 
-          {{ disburse.expenseplanDes=='วัสดุการศึกษา'|| disburse.expenseplanDes=='วัสดุฝึก' ? 'ครูผู้สอน' : 'ผู้ขอจัดซื้อ' }}<br>
+          {{ disburse.expenseplanDes.search('วัสดุการศึกษา') >= 0 || disburse.expenseplanDes.search('วัสดุฝึก') >= 0 ? 'ครูผู้สอน' : 'ผู้ขอจัดซื้อ' }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font16 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
