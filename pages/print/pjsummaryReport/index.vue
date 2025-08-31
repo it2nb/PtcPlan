@@ -41,6 +41,10 @@
             <div class="mb-2 fontBold font18">4.3 ผลกระทบ</div>
             <pre class="font18 ml-5">{{ project.pjsummaryImpact }}</pre>
           </div>
+          <div class="ml-5">
+            <div class="mb-2 fontBold font18">4.4 ผลการประเมินความประสิทธิภาพหรือความพึงพอใจ</div>
+            <pre class="font18 ml-5">{{ project.pjsummarySatisfaction }}</pre>
+          </div>
         </v-col>
         <v-col cols="12" class="mt-3 px-5">
           <div class="mb-2 fontBold font18">5. ประโยชน์ที่คาดว่าจะได้รับ</div>
@@ -60,7 +64,36 @@
       <v-row no-gutters>
         <v-col cols="12">
           <div class="mb-2 fontBold font18">8. ภาพการดำเนินโครงการ</div>
-          <v-row class="mt-5" v-if="imageNames.length > 0">
+          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการวางแผน (P)</div>
+          <v-row  class="pl-5" v-if="imagePNames.length > 0">
+            <v-col cols="6" class="text-center" v-for="imageName in imagePNames" :key="imageName.key">
+              <img :src="imagePPath+imageName" width="100%">
+            </v-col>
+          </v-row>
+          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryPlan }}</pre>
+          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการปฏิบัติ (D)</div>
+          <v-row  class="pl-5" v-if="imageDNames.length > 0">
+            <v-col cols="6" class="text-center" v-for="imageName in imageDNames" :key="imageName.key">
+              <img :src="imageDPath+imageName" width="100%">
+            </v-col>
+          </v-row>
+          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryDo }}</pre>
+          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการตรวจสอบ (C)</div>
+          <v-row  class="pl-5" v-if="imageCNames.length > 0">
+            <v-col cols="6" class="text-center" v-for="imageName in imageCNames" :key="imageName.key">
+              <img :src="imageCPath+imageName" width="100%">
+            </v-col>
+          </v-row>
+          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryCheck }}</pre>
+          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการปรับปรุง (A)</div>
+          <v-row  class="pl-5" v-if="imageANames.length > 0">
+            <v-col cols="6" class="text-center" v-for="imageName in imageANames" :key="imageName.key">
+              <img :src="imageAPath+imageName" width="100%">
+            </v-col>
+          </v-row>
+          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryCheck }}</pre>
+          <div class="ml-5 mb-2 fontBold font18">ภาพบรรยากาศการดำเนินโครงการ</div>
+          <v-row class="pl-5" v-if="imageNames.length > 0">
             <v-col cols="6" class="text-center" v-for="imageName in imageNames" :key="imageName.key">
               <img :src="imagePath+imageName" width="100%">
             </v-col>
@@ -78,7 +111,15 @@ export default {
     return {
       project: {},
       imageNames: [],
+      imagePNames: [],
+      imageDNames: [],
+      imageCNames: [],
+      imageANames: [],
       imagePath: '',
+      imagePPath: '',
+      imageDPath: '',
+      imageCPath: '',
+      imageAPath: ''
     }
   },
 
@@ -111,6 +152,58 @@ export default {
           if(result2.message == 'Success') {
             this.imageNames = JSON.parse(JSON.stringify(result2.projectImages))
             this.imagePath = result2.projectImagePath
+          }
+
+          let result3 = await this.$axios.$get('project.image.php', {
+            params: {
+              token: this.project.token,
+              projectYear: this.project.projectYear,
+              projectID: this.project.projectID,
+              function: 'projectPImageGet'
+            }
+          })
+          if(result3.message == 'Success') {
+            this.imagePNames = JSON.parse(JSON.stringify(result3.projectImages))
+            this.imagePPath = result3.projectImagePath
+          }
+
+          let result4 = await this.$axios.$get('project.image.php', {
+            params: {
+              token: this.project.token,
+              projectYear: this.project.projectYear,
+              projectID: this.project.projectID,
+              function: 'projectDImageGet'
+            }
+          })
+          if(result4.message == 'Success') {
+            this.imageDNames = JSON.parse(JSON.stringify(result4.projectImages))
+            this.imageDPath = result4.projectImagePath
+          }
+
+          let result5 = await this.$axios.$get('project.image.php', {
+            params: {
+              token: this.project.token,
+              projectYear: this.project.projectYear,
+              projectID: this.project.projectID,
+              function: 'projectCImageGet'
+            }
+          })
+          if(result5.message == 'Success') {
+            this.imageCNames = JSON.parse(JSON.stringify(result5.projectImages))
+            this.imageCPath = result5.projectImagePath
+          }
+
+          let result6 = await this.$axios.$get('project.image.php', {
+            params: {
+              token: this.project.token,
+              projectYear: this.project.projectYear,
+              projectID: this.project.projectID,
+              function: 'projectAImageGet'
+            }
+          })
+          if(result6.message == 'Success') {
+            this.imageANames = JSON.parse(JSON.stringify(result6.projectImages))
+            this.imageAPath = result6.projectImagePath
           }
         }
       }

@@ -95,6 +95,7 @@
                 <v-icon small class="mr-1" v-else-if="item.projectStatus=='ไม่อนุมัติ' ||  item.projectStatus=='ฝ่ายไม่เห็นชอบ' ||  item.projectStatus=='ไม่ผ่าน'">fas fa-exclamation</v-icon>
                 <v-icon small class="mr-1" v-else>fas fa-clock</v-icon>
                 {{ item.projectStatus }}
+                <v-icon x-small class="ml-1">fas fa-search</v-icon>
             </v-btn>
           </div>
           <v-divider class="mt-2 mb-1"></v-divider>
@@ -136,6 +137,7 @@
             <v-icon small class="mr-1">fas fa-clock</v-icon> {{ item.projectStatus }}
             <!-- <v-icon x-small class="ml-1" v-if="item.projectPlanStatus=='อนุมัติหลักการ'">fas fa-check-circle</v-icon> -->
           </v-chip>
+          <v-icon x-small class="ml-1">fas fa-search</v-icon>
         </v-btn>
       </template>
       <template v-slot:item.projectProgress="{ item }">
@@ -152,6 +154,7 @@
                 <v-icon small class="mr-1" v-else-if="item.projectProgress=='ยังไม่ได้ดำเนินการ'">fas fa-exclamation</v-icon>
                 <v-icon small class="mr-1" v-else>fas fa-clock</v-icon>
                 {{ item.projectProgress }}
+                <v-icon x-small class="ml-1">fas fa-search</v-icon>
             </v-btn>
           </div>
           <v-divider class="mt-2 mb-1" v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'"></v-divider>
@@ -171,6 +174,7 @@
               <span v-else-if="item.projectReport=='ครบถ้วน'">
                 <v-icon small class="mr-1">fas fa-check-circle</v-icon> ครบถ้วน
               </span>
+              <v-icon x-small class="ml-1">fas fa-search</v-icon>
             </v-btn>
           </div>
         </div>
@@ -186,6 +190,7 @@
           <v-chip x-small color="success" class="py-3" v-else-if="item.projectReport=='ครบถ้วน'">
             <v-icon small class="mr-1">fas fa-check-circle</v-icon> ครบถ้วน
           </v-chip>
+          <v-icon x-small class="ml-1">fas fa-search</v-icon>
         </v-btn>
       </template>
       <template v-slot:item.actions="{ item }">
@@ -1133,6 +1138,8 @@
                         <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryQlyResult }}</pre>
                         <b  class="ml-3 fontBold">ผลกระทบ</b>
                         <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryImpact }}</pre>
+                        <b  class="ml-3 fontBold">ผลการประเมินประสิทธิภาพหรือความพึงพอใจ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummarySatisfaction }}</pre>
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ปัญหาอุปสรรค</h3>
@@ -1144,17 +1151,73 @@
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ภาพการดำเนินโครงการ</h3>
-                        <v-row dense v-if="imageNames.length > 0">
-                          <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
-                            <!-- <v-img
-                              :src="imagePath+imageName+'?t='+new Date()"
-                              class="align-end text-right"
-                              gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
-                            >
-                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการวางแผน (P)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imagePNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imagePName in imagePNames" :key="imagePName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imagePPath+imagePName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imagePName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
                                 <v-icon small>fas fa-trash</v-icon>
                               </v-btn>
-                            </v-img> -->
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryPlan }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการปฏิบัติ (D)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageDNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageDName in imageDNames" :key="imageDName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imageDPath+imageDName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageDName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryDo }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการตรวจสอบ (C)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageCNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageCName in imageCNames" :key="imageCName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imageCPath+imageCName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageCName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryCheck }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการปรับปรุง (A)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageANames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageAName in imageANames" :key="imageAName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imageAPath+imageAName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageAName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryAct }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพบรรยากาศการดำเนินโครงการ</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
                             <v-sheet elevation="3" class="pa-3 rounded text-right" >
                               <img
                                 :src="imagePath+imageName+'?t='+new Date()"
@@ -1260,6 +1323,14 @@
                             () => !!projectSummaryData.pjsummaryImpact || 'กรุณากรอกข้อมูล'
                           ]"
                         ></v-textarea>
+                        <v-textarea
+                          v-model="projectSummaryData.pjsummarySatisfaction"
+                          label="ผลการประเมินความประสิทธิภาพหรือความพึงพอใจ"
+                          outlined
+                          :rules="[
+                            () => !!projectSummaryData.pjsummarySatisfaction || 'กรุณากรอกข้อมูล'
+                          ]"
+                        ></v-textarea>
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ปัญหาอุปสรรค</h3>
@@ -1278,22 +1349,114 @@
                         ></v-textarea>
                       </v-col>
                       <v-col cols="12">
-                        <h3 class="mb-2 fontBold">ภาพการดำเนินโครงการ (4 - 8 ภาพ)</h3>
-                        <v-file-input
-                          v-model="imageInsertNames"
-                          ref="projectImages"
-                          small-chips
-                          show-size
-                          counter
-                          multiple
-                          accept="image/jpeg"
-                          label="ไฟล์รูปภาพ"
-                          :rules="[
-                            ()=> (parseInt(imageInsertNames.length) + parseInt(imageNames.length))<=8 || 'เพิ่มรูปภาพได้ 4 - 8 ภาพ'
-                          ]"
-                          @change="productImagesChanged"
-                        ></v-file-input>
-                        <v-row v-if="imageInsertNames.length > 0">
+                        <h3 class="mb-2 fontBold">ภาพการดำเนินโครงการ</h3>
+                        <div class="pl-5">
+                          <h3 class="mb-2 fontBold">ภาพขั้นตอนการวางแผน (P)</h3>
+                          <v-file-input
+                            v-model="imageInsertPNames"
+                            ref="projectPImages"
+                            small-chips
+                            show-size
+                            counter
+                            multiple
+                            accept="image/jpeg"
+                            label="ไฟล์รูปภาพการวางแผน"
+                            :rules="[
+                              ()=> (parseInt(imageInsertPNames.length) + parseInt(imagePNames.length))<=4 || 'เพิ่มรูปภาพได้ 4 ภาพ'
+                            ]"
+                            @change="productPImagesChanged"
+                          ></v-file-input>
+                          <v-textarea
+                            v-model="projectSummaryData.pjsummaryPlan"
+                            label="อธิบายขั้นตอนการวางแผน (P)"
+                            outlined
+                          ></v-textarea>          
+                        </div>
+                        <div class="pl-5">
+                          <h3 class="mb-2 fontBold">ภาพขั้นตอนการปฏิบัติ (D)</h3>
+                          <v-file-input
+                            v-model="imageInsertDNames"
+                            ref="projectDImages"
+                            small-chips
+                            show-size
+                            counter
+                            multiple
+                            accept="image/jpeg"
+                            label="ไฟล์รูปภาพการปฏิบัติ"
+                            :rules="[
+                              ()=> (parseInt(imageInsertDNames.length) + parseInt(imageDNames.length))<=4 || 'เพิ่มรูปภาพได้ 4 ภาพ'
+                            ]"
+                            @change="productDImagesChanged"
+                          ></v-file-input>
+                          <v-textarea
+                            v-model="projectSummaryData.pjsummaryDo"
+                            label="อธิบายขั้นตอนการปฏิบัติ (D)"
+                            outlined
+                          ></v-textarea>          
+                        </div>
+                        <div class="pl-5">
+                          <h3 class="mb-2 fontBold">ภาพขั้นตอนการตรวจสอบ (C)</h3>
+                          <v-file-input
+                            v-model="imageInsertCNames"
+                            ref="projectCImages"
+                            small-chips
+                            show-size
+                            counter
+                            multiple
+                            accept="image/jpeg"
+                            label="ไฟล์รูปภาพการตรวจสอบ"
+                            :rules="[
+                              ()=> (parseInt(imageInsertCNames.length) + parseInt(imageCNames.length))<=4 || 'เพิ่มรูปภาพได้ 4 ภาพ'
+                            ]"
+                            @change="productCImagesChanged"
+                          ></v-file-input>
+                          <v-textarea
+                            v-model="projectSummaryData.pjsummaryCheck"
+                            label="อธิบายขั้นตอนการตรวจสอบ (C)"
+                            outlined
+                          ></v-textarea>          
+                        </div>
+                        <div class="pl-5">
+                          <h3 class="mb-2 fontBold">ภาพขั้นตอนการปรับปรุง (A)</h3>
+                          <v-file-input
+                            v-model="imageInsertANames"
+                            ref="projectAImages"
+                            small-chips
+                            show-size
+                            counter
+                            multiple
+                            accept="image/jpeg"
+                            label="ไฟล์รูปภาพการปรับปรุง"
+                            :rules="[
+                              ()=> (parseInt(imageInsertANames.length) + parseInt(imageANames.length))<=4 || 'เพิ่มรูปภาพได้ 4 ภาพ'
+                            ]"
+                            @change="productAImagesChanged"
+                          ></v-file-input>
+                          <v-textarea
+                            v-model="projectSummaryData.pjsummaryAct"
+                            label="อธิบายขั้นตอนการปรับปรุง (A)"
+                            outlined
+                          ></v-textarea>          
+                        </div>
+                        <div class="pl-5">
+                          <h3 class="mb-2 fontBold">ภาพบรรยากาศการดำเนินโครงการ</h3>
+                          <v-file-input
+                            v-model="imageInsertNames"
+                            ref="projectImages"
+                            small-chips
+                            show-size
+                            counter
+                            multiple
+                            accept="image/jpeg"
+                            label="ไฟล์รูปภาพ"
+                            :rules="[
+                              ()=> (parseInt(imageInsertNames.length) + parseInt(imageNames.length))<=4 || 'เพิ่มรูปภาพได้ 4 ภาพ'
+                            ]"
+                            @change="productImagesChanged"
+                          ></v-file-input>        
+                        </div>
+                        
+                        <!-- <v-row v-if="imageInsertNames.length > 0">
                           <v-col class="col-3 col-md-1" v-for="imageName in imageInsertNames" :key="imageName.key">
                             <v-img
                               :src="getImageUrl(imageName)+'?t='+new Date()"
@@ -1308,7 +1471,7 @@
                               </template>
                             </v-img>
                           </v-col>
-                        </v-row>
+                        </v-row> -->
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -1677,8 +1840,20 @@ export default {
       orgstrategics: [],
       orgstrategies: [],
       imageNames: [],
+      imagePNames: [],
+      imageDNames: [],
+      imageCNames: [],
+      imageANames: [],
       imagePath: null,
+      imagePPath: null,
+      imageDpath: null,
+      imageCPath: null,
+      imageAPath: null,
       imageInsertNames: [],
+      imageInsertPNames: [],
+      imageInsertDNames: [],
+      imageInsertCNames: [],
+      imageInsertANames: [],
       imageDeleteName: null,
       search: '',
       projectData: {},
@@ -1957,7 +2132,16 @@ export default {
     async showSummaryReportDialog(project) {
       this.projectData = JSON.parse(JSON.stringify(project))
       this.imageNames = []
+      this.imagePNames = []
+      this.imageDNames = []
+      this.imageCNames = []
+      this.imageANames = []
       this.imagePath = ''
+      this.imagePPath = ''
+      this.imageDPath = ''
+      this.imageCPath = ''
+      this.imageAPath = ''
+
       let result = await this.$axios.$get('project.image.php', {
         params: {
           token: this.$store.state.jwtToken,
@@ -1970,6 +2154,59 @@ export default {
         this.imageNames = JSON.parse(JSON.stringify(result.projectImages))
         this.imagePath = result.projectImagePath
       }
+
+      let result2 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectPImageGet'
+        }
+      })
+      if(result2.message == 'Success') {
+        this.imagePNames = JSON.parse(JSON.stringify(result2.projectImages))
+        this.imagePPath = result2.projectImagePath
+      }
+
+      let result3 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectDImageGet'
+        }
+      })
+      if(result3.message == 'Success') {
+        this.imageDNames = JSON.parse(JSON.stringify(result3.projectImages))
+        this.imageDPath = result3.projectImagePath
+      }
+
+      let result4 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectCImageGet'
+        }
+      })
+      if(result4.message == 'Success') {
+        this.imageCNames = JSON.parse(JSON.stringify(result4.projectImages))
+        this.imageCPath = result4.projectImagePath
+      }
+
+      let result5 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectAImageGet'
+        }
+      })
+      if(result5.message == 'Success') {
+        this.imageANames = JSON.parse(JSON.stringify(result5.projectImages))
+        this.imageAPath = result5.projectImagePath
+      }
+      
       this.projectSummaryReportDialog = true
     },
 
@@ -1977,6 +2214,10 @@ export default {
       this.projectSummaryData = JSON.parse(JSON.stringify(project))
       this.projectReport = project.projectReport
       this.imageInsertNames = []
+      this.imageInsertPNames = []
+      this.imageInsertDNames = []
+      this.imageInsertCNames = []
+      this.imageInsertANames = []
       this.updateReportDialog = true
     },
 
@@ -1985,6 +2226,38 @@ export default {
         this.imageInsertNames = image;
       } else {
         this.imageInsertNames = [];
+      }
+    },
+
+    productPImagesChanged(image) {
+      if(image) {
+        this.imageInsertPNames = image;
+      } else {
+        this.imageInsertPNames = [];
+      }
+    },
+
+    productDImagesChanged(image) {
+      if(image) {
+        this.imageInsertDNames = image;
+      } else {
+        this.imageInsertDNames = [];
+      }
+    },
+
+    productCImagesChanged(image) {
+      if(image) {
+        this.imageInsertCNames = image;
+      } else {
+        this.imageInsertCNames = [];
+      }
+    },
+
+    productAImagesChanged(image) {
+      if(image) {
+        this.imageInsertANames = image;
+      } else {
+        this.imageInsertANames = [];
       }
     },
 
@@ -2136,57 +2409,86 @@ export default {
         this.updateReportProgress = true
         this.projectSummaryData.token = this.$store.state.jwtToken
 
-        if(this.imageInsertNames.length <= 8) {
-          if(this.projectSummaryData.projectReport == 'ไม่รายงาน') {
-            let result = await this.$axios.$post('pjsummary.insert.php', this.projectSummaryData)
+        if(this.projectSummaryData.projectReport == 'ไม่รายงาน') {
+          let result = await this.$axios.$post('pjsummary.insert.php', this.projectSummaryData)
 
-            if(result.message == 'Success') {
-              if(this.imageInsertNames.length > 0) {
-                let result2 = this.imageInsertNames.map(async projectImage => {
-                  let formData = new FormData()
-                  formData.append('token', this.projectSummaryData.token)
-                  formData.append('function', 'projectImageUpload')
-                  formData.append('projectYear', this.projectSummaryData.projectYear)
-                  formData.append('projectID', this.projectSummaryData.projectID)
-                  formData.append('projectImage', projectImage)
-                  await this.$axios.$post('project.image.php', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                  });
+          if(result.message == 'Success') {
+            if(this.imageInsertPNames.length > 0 && this.imageInsertPNames.length <=4) {
+              let result2_1 = this.imageInsertPNames.map(async projectPImage => {
+                let formData = new FormData()
+                formData.append('token', this.projectSummaryData.token)
+                formData.append('function', 'projectPImageUpload')
+                formData.append('projectYear', this.projectSummaryData.projectYear)
+                formData.append('projectID', this.projectSummaryData.projectID)
+                formData.append('projectImage', projectPImage)
+                await this.$axios.$post('project.image.php', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
                 });
+              });
 
-                await Promise.all(result2)
-              }
-              Swal.fire({
-                title: 'สำเร็จ',
-                text: result.msg,
-                icon: 'success'
-              })
-              await this.showSummaryReportDialog(this.projectSummaryData)
-              this.$emit('getProjects', false)
-              this.imageNames = []
-              this.imagePath = ''
-              let result3 = await this.$axios.$get('project.image.php', {
-                params: {
-                  token: this.$store.state.jwtToken,
-                  projectYear: this.projectSummaryData.projectYear,
-                  projectID: this.projectSummaryData.projectID,
-                  function: 'projectImageGet'
-                }
-              })
-              if(result3.message == 'Success') {
-                this.imageNames = JSON.parse(JSON.stringify(result3.projectImages))
-                this.imagePath = result3.projectImagePath
-              }
+              await Promise.all(result2_1)
             }
-          } else {
-            let result = await this.$axios.$post('pjsummary.update.php', this.projectSummaryData)
 
-            if(this.imageInsertNames.length > 0) {
+            if(this.imageInsertDNames.length > 0 && this.imageInsertDNames.length <=4) {
+              let result2_2 = this.imageInsertDNames.map(async projectDImage => {
+                let formData = new FormData()
+                formData.append('token', this.projectSummaryData.token)
+                formData.append('function', 'projectDImageUpload')
+                formData.append('projectYear', this.projectSummaryData.projectYear)
+                formData.append('projectID', this.projectSummaryData.projectID)
+                formData.append('projectImage', projectDImage)
+                await this.$axios.$post('project.image.php', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
+                });
+              });
+
+              await Promise.all(result2_2)
+            }
+
+            if(this.imageInsertCNames.length > 0 && this.imageInsertCNames.length <=4) {
+              let result2_3 = this.imageInsertCNames.map(async projectCImage => {
+                let formData = new FormData()
+                formData.append('token', this.projectSummaryData.token)
+                formData.append('function', 'projectCImageUpload')
+                formData.append('projectYear', this.projectSummaryData.projectYear)
+                formData.append('projectID', this.projectSummaryData.projectID)
+                formData.append('projectImage', projectCImage)
+                await this.$axios.$post('project.image.php', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
+                });
+              });
+
+              await Promise.all(result2_3)
+            }
+
+            if(this.imageInsertANames.length > 0 && this.imageInsertANames.length <=4) {
+              let result2_4 = this.imageInsertANames.map(async projectAImage => {
+                let formData = new FormData()
+                formData.append('token', this.projectSummaryData.token)
+                formData.append('function', 'projectAImageUpload')
+                formData.append('projectYear', this.projectSummaryData.projectYear)
+                formData.append('projectID', this.projectSummaryData.projectID)
+                formData.append('projectImage', projectAImage)
+                await this.$axios.$post('project.image.php', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
+                });
+              });
+
+              await Promise.all(result2_4)
+            }
+
+            if(this.imageInsertNames.length > 0 && this.imageInsertNames.length <=4) {
               let result2 = this.imageInsertNames.map(async projectImage => {
                 let formData = new FormData()
-                formData.append('token', this.$store.state.jwtToken)
+                formData.append('token', this.projectSummaryData.token)
                 formData.append('function', 'projectImageUpload')
                 formData.append('projectYear', this.projectSummaryData.projectYear)
                 formData.append('projectID', this.projectSummaryData.projectID)
@@ -2197,23 +2499,23 @@ export default {
                   }
                 });
               });
+
               await Promise.all(result2)
             }
             Swal.fire({
               title: 'สำเร็จ',
-              text: 'แก้ไขข้อมูลสำเร็จ',
+              text: result.msg,
               icon: 'success'
             })
             await this.showSummaryReportDialog(this.projectSummaryData)
             this.$emit('getProjects', false)
-            this.imageInsertNames = []
             this.imageNames = []
             this.imagePath = ''
             let result3 = await this.$axios.$get('project.image.php', {
               params: {
                 token: this.$store.state.jwtToken,
-                projectYear: this.projectData.projectYear,
-                projectID: this.projectData.projectID,
+                projectYear: this.projectSummaryData.projectYear,
+                projectID: this.projectSummaryData.projectID,
                 function: 'projectImageGet'
               }
             })
@@ -2223,12 +2525,118 @@ export default {
             }
           }
         } else {
+          let result = await this.$axios.$post('pjsummary.update.php', this.projectSummaryData)
+
+          if(this.imageInsertPNames.length > 0 && this.imageInsertPNames.length <=4) {
+            let result2_1 = this.imageInsertPNames.map(async projectPImage => {
+              let formData = new FormData()
+              formData.append('token', this.projectSummaryData.token)
+              formData.append('function', 'projectPImageUpload')
+              formData.append('projectYear', this.projectSummaryData.projectYear)
+              formData.append('projectID', this.projectSummaryData.projectID)
+              formData.append('projectImage', projectPImage)
+              await this.$axios.$post('project.image.php', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              });
+            });
+
+            await Promise.all(result2_1)
+          }
+
+          if(this.imageInsertDNames.length > 0 && this.imageInsertDNames.length <=4) {
+            let result2_2 = this.imageInsertDNames.map(async projectDImage => {
+              let formData = new FormData()
+              formData.append('token', this.projectSummaryData.token)
+              formData.append('function', 'projectDImageUpload')
+              formData.append('projectYear', this.projectSummaryData.projectYear)
+              formData.append('projectID', this.projectSummaryData.projectID)
+              formData.append('projectImage', projectDImage)
+              await this.$axios.$post('project.image.php', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              });
+            });
+
+            await Promise.all(result2_2)
+          }
+
+          if(this.imageInsertCNames.length > 0 && this.imageInsertCNames.length <=4) {
+            let result2_3 = this.imageInsertCNames.map(async projectCImage => {
+              let formData = new FormData()
+              formData.append('token', this.projectSummaryData.token)
+              formData.append('function', 'projectCImageUpload')
+              formData.append('projectYear', this.projectSummaryData.projectYear)
+              formData.append('projectID', this.projectSummaryData.projectID)
+              formData.append('projectImage', projectCImage)
+              await this.$axios.$post('project.image.php', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              });
+            });
+
+            await Promise.all(result2_3)
+          }
+
+          if(this.imageInsertANames.length > 0 && this.imageInsertANames.length <=4) {
+            let result2_4 = this.imageInsertANames.map(async projectAImage => {
+              let formData = new FormData()
+              formData.append('token', this.projectSummaryData.token)
+              formData.append('function', 'projectAImageUpload')
+              formData.append('projectYear', this.projectSummaryData.projectYear)
+              formData.append('projectID', this.projectSummaryData.projectID)
+              formData.append('projectImage', projectAImage)
+              await this.$axios.$post('project.image.php', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              });
+            });
+
+            await Promise.all(result2_4)
+          }
+
+          if(this.imageInsertNames.length > 0 && this.imageInsertNames.length <=4) {
+            let result2 = this.imageInsertNames.map(async projectImage => {
+              let formData = new FormData()
+              formData.append('token', this.$store.state.jwtToken)
+              formData.append('function', 'projectImageUpload')
+              formData.append('projectYear', this.projectSummaryData.projectYear)
+              formData.append('projectID', this.projectSummaryData.projectID)
+              formData.append('projectImage', projectImage)
+              await this.$axios.$post('project.image.php', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              });
+            });
+            await Promise.all(result2)
+          }
           Swal.fire({
-            title: 'ผิดพลาด',
-            text: 'เพิ่มรูปภาพได้ไม่เกิน 8 ภาพ',
-            icon: 'error'
+            title: 'สำเร็จ',
+            text: 'แก้ไขข้อมูลสำเร็จ',
+            icon: 'success'
           })
+          await this.showSummaryReportDialog(this.projectSummaryData)
+          this.$emit('getProjects', false)
           this.imageInsertNames = []
+          this.imageNames = []
+          this.imagePath = ''
+          let result3 = await this.$axios.$get('project.image.php', {
+            params: {
+              token: this.$store.state.jwtToken,
+              projectYear: this.projectData.projectYear,
+              projectID: this.projectData.projectID,
+              function: 'projectImageGet'
+            }
+          })
+          if(result3.message == 'Success') {
+            this.imageNames = JSON.parse(JSON.stringify(result3.projectImages))
+            this.imagePath = result3.projectImagePath
+          }
         }
         this.updateReportProgress = false
         this.updateReportDialog = false

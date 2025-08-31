@@ -390,6 +390,8 @@
                         <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryQlyResult }}</pre>
                         <b  class="ml-3 fontBold">ผลกระทบ</b>
                         <pre class="ml-3 fontPrompt">{{ projectData.pjsummaryImpact }}</pre>
+                        <b  class="ml-3 fontBold">ผลการประเมินความประสิทธิภาพหรือความพึงพอใจ</b>
+                        <pre class="ml-3 fontPrompt">{{ projectData.pjsummarySatisfaction }}</pre>
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ปัญหาอุปสรรค</h3>
@@ -401,23 +403,79 @@
                       </v-col>
                       <v-col cols="12">
                         <h3 class="mb-2 fontBold">ภาพการดำเนินโครงการ</h3>
-                        <v-row dense v-if="imageNames.length > 0">
-                          <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
-                            <!-- <v-img
-                              :src="imagePath+imageName+'?t='+new Date()"
-                              class="align-end text-right"
-                              gradient="to bottom, rgba(255,255,255,.1), rgba(255,255,255,.5)"
-                            >
-                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal'">
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการวางแผน (P)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imagePNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imagePName in imagePNames" :key="imagePName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imagePPath+imagePName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imagePName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
                                 <v-icon small>fas fa-trash</v-icon>
                               </v-btn>
-                            </v-img> -->
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryPlan }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการปฏิบัติ (D)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageDNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageDName in imageDNames" :key="imageDName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imageDPath+imageDName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageDName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryDo }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการตรวจสอบ (C)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageCNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageCName in imageCNames" :key="imageCName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imageCPath+imageCName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageCName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryCheck }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพขั้นตอนการปรับปรุง (A)</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageANames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageAName in imageANames" :key="imageAName.key">
+                            <v-sheet elevation="3" class="pa-3 rounded text-right" >
+                              <img
+                                :src="imageAPath+imageAName+'?t='+new Date()"
+                                style="width: 100%;"
+                              >
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageAName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
+                                <v-icon small>fas fa-trash</v-icon>
+                              </v-btn>
+                            </v-sheet>
+                          </v-col>
+                        </v-row>
+                        <pre class="my-2 ml-5 fontPrompt">{{ projectData.pjsummaryAct }}</pre>
+                        <v-divider class="my-2 mx-5"></v-divider>
+                        <b class="ml-5 fontBold">ภาพบรรยากาศการดำเนินโครงการ</b>
+                        <v-row dense class="mt-2 pl-5" v-if="imageNames.length > 0">
+                          <v-col cols="6" md="3" v-for="imageName in imageNames" :key="imageName.key">
                             <v-sheet elevation="3" class="pa-3 rounded text-right" >
                               <img
                                 :src="imagePath+imageName+'?t='+new Date()"
                                 style="width: 100%;"
                               >
-                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal'">
+                              <v-btn icon small color="red darken-2" @click="showDeleteImageDialog(imageName)" v-if="userType=='Department' || userType=='Personal' || userType=='Admin' || userType=='Plan'">
                                 <v-icon small>fas fa-trash</v-icon>
                               </v-btn>
                             </v-sheet>
@@ -578,7 +636,15 @@ export default {
 
       projectSummaryReportDialog: false,
       imageNames: [],
+      imagePNames: [],
+      imageDNames: [],
+      imageCNames: [],
+      imageANames: [],
       imagePath: null,
+      imagePPath: null,
+      imageDpath: null,
+      imageCPath: null,
+      imageAPath: null,
 
       imageDialog: false,
       imageShowName: null,
@@ -965,7 +1031,16 @@ export default {
     async showSummaryReportDialog(project) {
       this.projectData = JSON.parse(JSON.stringify(project))
       this.imageNames = []
+      this.imagePNames = []
+      this.imageDNames = []
+      this.imageCNames = []
+      this.imageANames = []
       this.imagePath = ''
+      this.imagePPath = ''
+      this.imageDPath = ''
+      this.imageCPath = ''
+      this.imageAPath = ''
+
       let result = await this.$axios.$get('project.image.php', {
         params: {
           token: this.$store.state.jwtToken,
@@ -978,6 +1053,59 @@ export default {
         this.imageNames = JSON.parse(JSON.stringify(result.projectImages))
         this.imagePath = result.projectImagePath
       }
+
+      let result2 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectPImageGet'
+        }
+      })
+      if(result2.message == 'Success') {
+        this.imagePNames = JSON.parse(JSON.stringify(result2.projectImages))
+        this.imagePPath = result2.projectImagePath
+      }
+
+      let result3 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectDImageGet'
+        }
+      })
+      if(result3.message == 'Success') {
+        this.imageDNames = JSON.parse(JSON.stringify(result3.projectImages))
+        this.imageDPath = result3.projectImagePath
+      }
+
+      let result4 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectCImageGet'
+        }
+      })
+      if(result4.message == 'Success') {
+        this.imageCNames = JSON.parse(JSON.stringify(result4.projectImages))
+        this.imageCPath = result4.projectImagePath
+      }
+
+      let result5 = await this.$axios.$get('project.image.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          projectYear: this.projectData.projectYear,
+          projectID: this.projectData.projectID,
+          function: 'projectAImageGet'
+        }
+      })
+      if(result5.message == 'Success') {
+        this.imageANames = JSON.parse(JSON.stringify(result5.projectImages))
+        this.imageAPath = result5.projectImagePath
+      }
+
       this.projectSummaryReportDialog = true
     },
 

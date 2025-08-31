@@ -594,7 +594,7 @@
                   </v-btn>
                 </v-card-title>
                 <v-divider class="green"></v-divider>
-                  <PjsummaryInfo :project="project" :imageNames="imageNames" :imagePath="imagePath" class="my-3 mx-5" />
+                  <PjsummaryInfo :project="project" :imageNames="imageNames" :imagePath="imagePath" :imagePNames="imagePNames" :imagePPath="imagePPath" :imageDNames="imageDNames" :imageDPath="imageDPath" :imageCNames="imageCNames" :imageCPath="imageCPath" :imageANames="imageANames" :imageAPath="imageAPath" class="my-3 mx-5" />
                 <v-divider class="green lighten-2"></v-divider>
                 <v-card-actions>
                   <div class="col-12 text-center">
@@ -661,7 +661,15 @@ export default {
       imageUpdateNames: [],
       imageDeleteName: '',
       imageNames: [],
+      imagePNames: [],
+      imageDNames: [],
+      imageCNames: [],
+      imageANames: [],
       imagePath: '',
+      imagePPath: '',
+      imageDPath: '',
+      imageCPath: '',
+      imageAPath: '',
 
       parties: [],
       departments: [],
