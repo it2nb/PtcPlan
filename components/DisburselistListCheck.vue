@@ -1266,9 +1266,10 @@ export default {
           icon: 'success'
         }).then(async ()=>{
           if(disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'รอฝ่ายเห็นชอบ') {
-            if(this.disburseuser.userLineToken) {
+            if(this.disburseuser.userLineToken && this.disburseuser.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.disburseuser.userLineToken,
+              to: this.disburseuser.userLineUserID,
               message: lineMsg+'\n'+window.location.origin
             })
           }
@@ -1525,9 +1526,10 @@ export default {
             }).then(result2=>{
               if(result2.message == 'Success') {
                 result2.user.forEach(async user=>{
-                  if(user.userLineToken) {
+                  if(user.userLineToken && user.userLineUserID) {
                     await this.$axios.$post('sendline.php', {
                       token: user.userLineToken,
+                      to: user.userLineUserID,
                       message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาตรวจสอบความถูกต้อง\n'+window.location.origin
                     })
                   }
@@ -1548,9 +1550,10 @@ export default {
       }).then(result=>{
         if(result.message == 'Success') {
           result.user.forEach(async user=>{
-            if(user.userLineToken) {
+            if(user.userLineToken && user.userLineUserID) {
               await this.$axios.$post('sendline.php', {
                 token: user.userLineToken,
+                to: user.userLineUserID,
                 message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาตรวจสอบและให้ความเห็นชอบ\n'+window.location.origin
               })
             }

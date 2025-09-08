@@ -194,7 +194,7 @@
                   <v-chip x-small color="red darken-1" class="py-3" v-if="item.projectReport=='ไม่รายงาน'">
                     <v-icon small class="mr-1">fas fa-exclamation</v-icon> ไม่รายงาน
                   </v-chip>
-                  <v-chip x-small color="warning" class="py-3" v-else-if="item.projectReport=='ไม่ครบถ้วน' || item.imageQty<4">
+                  <v-chip x-small color="warning" class="py-3" v-else-if="item.projectReport=='ไม่ครบถ้วน' || (item.imageQty<2 && (item.imagePQty<2 || item.imageDQty<2 || item.imageCQty<2 || item.imageAQty<2))">
                     <v-icon small class="mr-1">fas fa-clock</v-icon> เข้ารายงาน
                   </v-chip>
                   <v-chip x-small color="success" class="py-3" v-else-if="item.projectReport=='ครบถ้วน'">

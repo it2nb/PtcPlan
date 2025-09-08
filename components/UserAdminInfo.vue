@@ -344,10 +344,11 @@ export default {
         let result = await this.$axios.$post('user.update.php', this.userUpdate)
 
         if(result.message == 'Success') {
-          if(this.userUpdate.userLineToken && (this.user.userLineToken!=this.userUpdate.userLineToken)) {
+          if((this.userUpdate.userLineToken && (this.user.userLineToken!=this.userUpdate.userLineToken)) || (this.userUpdate.userLineUserID && (this.user.userLineUserID!=this.userUpdate.userLineUserID))) {
             await this.$axios.$post('sendline.php', {
               token: this.userUpdate.userLineToken,
-              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Notify ของคุณเรียบร้อยแล้ว\n'+window.location.origin
+              to: this.userUpdate.userLineUserID,
+              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Messaging API ของคุณเรียบร้อยแล้ว\n'+window.location.origin
             })
           }
           let msg = result.msg

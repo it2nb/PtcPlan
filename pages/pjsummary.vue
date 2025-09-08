@@ -37,7 +37,7 @@
           </template>
 
           <template v-slot:item.pjsummaryStatus="{ item }">
-            <v-chip color="success" v-if="item.pjsummaryStatus==item.pjsummaryStatusAll && item.imageQty>=4">
+            <v-chip color="success" v-if="item.pjsummaryStatus==item.pjsummaryStatusAll && (item.imageQty>=2 || (item.imagePQty>=2 && item.imageDQty>=2 && item.imageCQty>=2 && item.imageAQty>=2))">
               <v-icon class="mr-1">fas fa-check-circle</v-icon> รายงานเรียบร้อย
             </v-chip>
             <v-chip color="warning" small v-else-if="item.pjsummaryStatus>0">
@@ -58,7 +58,7 @@
               <v-btn color="info" icon  small @click="showInfoDialog(item)" v-if="item.pjsummaryStatus>0">
                 <v-icon small class="mr-1">fas fa-search</v-icon>
               </v-btn>
-              <v-btn color="primary" icon  small :to="'print/pjsummaryReport/?id='+item.projectID" target="_blank" v-if="item.pjsummaryStatus==item.pjsummaryStatusAll && item.imageQty>=4">
+              <v-btn color="primary" icon  small :to="'print/pjsummaryReport/?id='+item.projectID" target="_blank" v-if="item.pjsummaryStatus==item.pjsummaryStatusAll && (item.imageQty>=2 || (item.imagePQty>=2 && item.imageDQty>=2 && item.imageCQty>=2 && item.imageAQty>=2))">
                 <v-icon small class="mr-1">fas fa-print</v-icon>
               </v-btn>
             </div>
@@ -589,7 +589,7 @@
                 <v-card-title class="grey lighten-2">
                   <span class="fontBold black--text">ข้อมูลการรายงานผลการดำเนินโครงการ</span>
                   <v-spacer></v-spacer>
-                  <v-btn icon color="primary" :to="'print/pjsummaryReport/?id='+project.projectID" target="_blank" v-if="project.pjsummaryStatus==project.pjsummaryStatusAll && project.imageQty>=4">
+                  <v-btn icon color="primary" :to="'print/pjsummaryReport/?id='+project.projectID" target="_blank" v-if="project.pjsummaryStatus==project.pjsummaryStatusAll && (project.imageQty>=2 || (project.imagePQty>=2 && project.imageDQty>=2 && project.imageCQty>=2 && project.imageAQty>=2))">
                   <v-icon>fas fa-print</v-icon>
                   </v-btn>
                 </v-card-title>

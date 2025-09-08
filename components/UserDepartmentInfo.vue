@@ -25,8 +25,8 @@
                 Email <b>{{ user.userEmail }}</b>
               </v-col>
               <v-col cols="12" md="4" class="py-2">
-                (1-on-1) Line TOKEN
-                <span v-if="user.userLineToken">
+                (1-on-1) LINE API Token
+                <span v-if="user.userLineToken?.length>0 && user.userLineUserID?.length>0">
                   <v-icon color="success" class="ml-1">fas fa-check-circle</v-icon>
                 </span>
                 <span v-else>
@@ -153,10 +153,17 @@
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="8">
-                        <h3 class="mb-2 fontBold">(1-on-1) Line TOKEN</h3>
+                        <h3 class="mb-2 fontBold">LINE API Channel access token</h3>
                         <v-text-field
                           v-model="userUpdate.userLineToken"
-                          label="Line TOKEN"
+                          label="LINE API Channel access token"
+                          dense
+                          outlined
+                        ></v-text-field>
+                        <h3 class="mb-2 fontBold">LINE API UserId</h3>
+                        <v-text-field
+                          v-model="userUpdate.userLineUserID"
+                          label="LINE API UserId"
                           dense
                           outlined
                         ></v-text-field>
@@ -471,6 +478,7 @@
   </div>
 </template>
 <script>
+
 var swal = require('sweetalert')
 export default {
   props: {
@@ -622,10 +630,11 @@ export default {
         }
 
         if(result.message == 'Success' || result2.message == 'Success' || result3.message == 'Success') {
-          if(this.userUpdate.userLineToken && (this.user.userLineToken!=this.userUpdate.userLineToken)) {
+          if((this.userUpdate.userLineToken && (this.user.userLineToken!=this.userUpdate.userLineToken)) || (this.userUpdate.userLineUserID && (this.user.userLineUserID!=this.userUpdate.userLineUserID))) {
             await this.$axios.$post('sendline.php', {
               token: this.userUpdate.userLineToken,
-              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Notify ของคุณเรียบร้อยแล้ว\n'+window.location.origin
+              to: this.userUpdate.userLineUserID,
+              message: 'ระบบอัพเดทการรับการแจ้งเตือนผ่าน Line Messaging API ของคุณเรียบร้อยแล้ว\n'+window.location.origin
             })
           }
           let msg = result.msg

@@ -971,15 +971,17 @@ export default {
         })
         if(disburseStatus == 'ขอซื้อ') {
           this.disburse.disburseStatus = 'ขอซื้อ'
-          if(this.user.userLineToken) {
+          if(this.user.userLineToken && this.user.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.user.userLineToken,
+              to: this.user.userLineUserID,
               message: 'ยืนยันรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) อยู่ระหว่างการยืนยันขอซื้อขอจ้างของหัวหน้าแผนก/งาน\n'+window.location.origin
             })
           }
-          if(this.departmentuser.userLineToken) {
+          if(this.departmentuser.userLineToken && this.departmentuser.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.departmentuser.userLineToken,
+              to: this.departmentuser.userLineUserID,
               message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) ส่งมาให้ > หัวหน้าแผนก/งาน > ยืนยันการจัดซื้อจัดจ้าง\n'+window.location.origin
             })
           }
@@ -994,9 +996,10 @@ export default {
             fn: 'byDisburse'
           })
 
-          if(this.user.userLineToken) {
+          if(this.user.userLineToken && this.user.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.user.userLineToken,
+              to: this.user.userLineUserID,
               message: 'ยืนยันรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) อยู่ระหว่างส่งตรวจสอบรายการ\n'+window.location.origin
             })
           }
@@ -1019,9 +1022,10 @@ export default {
                 }).then(result2=>{
                   if(result2.message == 'Success') {
                     result2.user.forEach(async user=>{
-                      if(user.userLineToken) {
+                      if(user.userLineToken && user.userLineUserID) {
                         await this.$axios.$post('sendline.php', {
                           token: user.userLineToken,
+                          to: user.userLineUserID,
                           message: 'มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburseSum)+' บาท) ส่งมาตรวจสอบความถูกต้อง\n'+window.location.origin
                         })
                       }
@@ -1107,15 +1111,17 @@ export default {
 
         if(this.disburseParStatus=='ตัดแผนแล้ว') {
           await this.sendLineGroup('รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว')
-          if(this.disburseuser.userLineToken) {
+          if(this.disburseuser.userLineToken && this.disburseuser.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.disburseuser.userLineToken,
+              to: this.disburseuser.userLineUserID,
               message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว > กรุณาปริ้นเอกสารคำขอจากระบบพร้อมแนบเอกสารหลักฐานที่เกี่ยวข้อง(ถ้ามี) ส่งงานบริหารงานทั่วไปดำเนินการต่อไป\n'+window.location.origin
             })
           }
-          if(this.user.userLineToken) {
+          if(this.user.userLineToken && this.user.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.user.userLineToken,
+              to: this.user.userLineUserID,
               message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว > กำลังดำเนินการจัดซื้อจัดจ้าง\n'+window.location.origin
             })
           }
@@ -1135,9 +1141,10 @@ export default {
                 }).then(result2=>{
                   if(result2.message == 'Success') {
                     result2.user.forEach(async user=>{
-                      if(user.userLineToken) {
+                      if(user.userLineToken && user.userLineUserID) {
                         await this.$axios.$post('sendline.php', {
                           token: user.userLineToken,
+                          to: user.userLineUserID,
                           message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว\n'+window.location.origin
                         })
                       }
@@ -1149,15 +1156,17 @@ export default {
           })
         } else {
           await this.sendLineGroup('รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'ไม่เห็นชอบ')
-          if(this.disburseuser.userLineToken) {
+          if(this.disburseuser.userLineToken && this.disburseuser.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.disburseuser.userLineToken,
+              to: this.disburseuser.userLineUserID,
               message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'ไม่เห็นชอบ\n'+window.location.origin
             })
           }
-          if(this.user.userLineToken) {
+          if(this.user.userLineToken && this.user.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.user.userLineToken,
+              to: this.user.userLineUserID,
               message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'ไม่เห็นชอบ\n'+window.location.origin
             })
           }

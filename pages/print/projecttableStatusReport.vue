@@ -50,7 +50,7 @@
             <td class="text-left font16" style="border: solid 1px black; padding: 3px; vertical-align: top;">{{ project.projectProgress }}</td>
             <td class="text-left font16" style="border: solid 1px black; padding: 3px; vertical-align: top;">
               <span v-if="project.projectProgress=='ดำเนินการเสร็จสิ้น'">
-                <span class="text-left font16" v-if="project.projectReport=='ไม่รายงาน' || (project.projectReport=='ครบถ้วน' && project.imageQty>=4)">
+                <span class="text-left font16" v-if="project.projectReport=='ไม่รายงาน' || (project.projectReport=='ครบถ้วน' && (project.imageQty>=2 || (project.imagePQty>=2 && project.imageDQty>=2 && project.imageCQty>=2 && project.imageAQty>=2)))">
                   {{ project.projectReport }}
                 </span>
                 <span class="text-left font16" v-else>

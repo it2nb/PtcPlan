@@ -161,14 +161,14 @@
           <div class="mt-1"  v-if="item.projectProgress=='ดำเนินการเสร็จสิ้น'">
             การรายงานผล
             <v-btn 
-              :color="item.projectReport=='ไม่รายงาน'? 'error' : (item.projectReport=='ไม่ครบถ้วน' || item.imageQty<4)? 'warning' : item.projectReport=='ครบถ้วน'? 'success' : ''" 
+              :color="item.projectReport=='ไม่รายงาน'? 'error' : (item.projectReport=='ไม่ครบถ้วน' || (item.imageQty<2 && (item.imagePQty<2 || item.imageDQty<2 || item.imageCQty<2 || item.imageAQty<2)))? 'warning' : item.projectReport=='ครบถ้วน'? 'success' : ''" 
               x-small 
               rounded
               @click="showSummaryReportDialog(item)">
               <span v-if="item.projectReport=='ไม่รายงาน'">
                 <v-icon small class="mr-1">fas fa-exclamation</v-icon> ไม่รายงาน
               </span>
-              <span v-else-if="item.projectReport=='ไม่ครบถ้วน' || item.imageQty<4">
+              <span v-else-if="item.projectReport=='ไม่ครบถ้วน' || (item.imageQty<2 && (item.imagePQty<2 || item.imageDQty<2 || item.imageCQty<2 || item.imageAQty<2))">
                 <v-icon small class="mr-1">fas fa-clock</v-icon> เข้ารายงาน
               </span>
               <span v-else-if="item.projectReport=='ครบถ้วน'">
@@ -184,7 +184,7 @@
           <v-chip x-small color="red darken-1" class="py-3" v-if="item.projectReport=='ไม่รายงาน'">
             <v-icon small class="mr-1">fas fa-exclamation</v-icon> ไม่รายงาน
           </v-chip>
-          <v-chip x-small color="warning" class="py-3" v-else-if="item.projectReport=='ไม่ครบถ้วน' || item.imageQty<4">
+          <v-chip x-small color="warning" class="py-3" v-else-if="item.projectReport=='ไม่ครบถ้วน' || (item.imageQty<2 && (item.imagePQty<2 || item.imageDQty<2 || item.imageCQty<2 || item.imageAQty<2))">
             <v-icon small class="mr-1">fas fa-clock</v-icon> เข้ารายงาน
           </v-chip>
           <v-chip x-small color="success" class="py-3" v-else-if="item.projectReport=='ครบถ้วน'">
@@ -2765,9 +2765,10 @@ export default {
       }).then(result=>{
         if(result.message == 'Success') {
           result.user.forEach(async user=>{
-            if(user.userLineToken) {
+            if(user.userLineToken && user.userLineUserID) {
               await this.$axios.$post('sendline.php', {
                 token: user.userLineToken,
+                to: user.userLineUserID,
                 message: msg+'\n'+window.location.origin
               })
             }
@@ -2785,9 +2786,10 @@ export default {
       }).then(result=>{
         if(result.message == 'Success') {
           result.user.forEach(async user=>{
-            if(user.userLineToken) {
+            if(user.userLineToken && user.userLineUserID) {
               await this.$axios.$post('sendline.php', {
                 token: user.userLineToken,
+                to: user.userLineUserID,
                 message: msg+'\n'+window.location.origin
               })
             }

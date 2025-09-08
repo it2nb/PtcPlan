@@ -64,35 +64,35 @@
       <v-row no-gutters>
         <v-col cols="12">
           <div class="mb-2 fontBold font18">8. ภาพการดำเนินโครงการ</div>
-          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการวางแผน (P)</div>
+          <div class="ml-5 mb-2 fontBold font18" v-if="imagePNames.length > 0">ภาพขั้นตอนการวางแผน (P)</div>
           <v-row  class="pl-5" v-if="imagePNames.length > 0">
             <v-col cols="6" class="text-center" v-for="imageName in imagePNames" :key="imageName.key">
               <img :src="imagePPath+imageName" width="100%">
             </v-col>
           </v-row>
-          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryPlan }}</pre>
-          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการปฏิบัติ (D)</div>
+          <pre class="mb-2 pl-8 font18" v-if="imagePNames.length > 0">{{ project.pjsummaryPlan }}</pre>
+          <div class="ml-5 mb-2 fontBold font18" v-if="imageDNames.length > 0">ภาพขั้นตอนการปฏิบัติ (D)</div>
           <v-row  class="pl-5" v-if="imageDNames.length > 0">
             <v-col cols="6" class="text-center" v-for="imageName in imageDNames" :key="imageName.key">
               <img :src="imageDPath+imageName" width="100%">
             </v-col>
           </v-row>
-          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryDo }}</pre>
-          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการตรวจสอบ (C)</div>
+          <pre class="mb-2 pl-8 font18" v-if="imageDNames.length > 0">{{ project.pjsummaryDo }}</pre>
+          <div class="ml-5 mb-2 fontBold font18" v-if="imageCNames.length > 0">ภาพขั้นตอนการตรวจสอบ (C)</div>
           <v-row  class="pl-5" v-if="imageCNames.length > 0">
             <v-col cols="6" class="text-center" v-for="imageName in imageCNames" :key="imageName.key">
               <img :src="imageCPath+imageName" width="100%">
             </v-col>
           </v-row>
-          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryCheck }}</pre>
-          <div class="ml-5 mb-2 fontBold font18">ภาพขั้นตอนการปรับปรุง (A)</div>
+          <pre class="mb-2 pl-8 font18" v-if="imageCNames.length > 0">{{ project.pjsummaryCheck }}</pre>
+          <div class="ml-5 mb-2 fontBold font18" v-if="imageANames.length > 0">ภาพขั้นตอนการปรับปรุง (A)</div>
           <v-row  class="pl-5" v-if="imageANames.length > 0">
             <v-col cols="6" class="text-center" v-for="imageName in imageANames" :key="imageName.key">
               <img :src="imageAPath+imageName" width="100%">
             </v-col>
           </v-row>
-          <pre class="mb-2 pl-8 font18">{{ project.pjsummaryCheck }}</pre>
-          <div class="ml-5 mb-2 fontBold font18">ภาพบรรยากาศการดำเนินโครงการ</div>
+          <pre class="mb-2 pl-8 font18" v-if="imageANames.length > 0">{{ project.pjsummaryCheck }}</pre>
+          <div class="ml-5 mb-2 fontBold font18" v-if="imageNames.length > 0">ภาพบรรยากาศการดำเนินโครงการ</div>
           <v-row class="pl-5" v-if="imageNames.length > 0">
             <v-col cols="6" class="text-center" v-for="imageName in imageNames" :key="imageName.key">
               <img :src="imagePath+imageName" width="100%">
