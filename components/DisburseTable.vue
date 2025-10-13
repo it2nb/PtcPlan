@@ -122,6 +122,9 @@
                       <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
                       </v-chip>
+                      <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='จัดส่งเอกสาร'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> จัดส่งเอกสาร
+                      </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ฝ่ายไม่เห็นชอบ'">
                         <v-icon x-small class="mr-1">fas fa-times</v-icon> ฝ่ายไม่เห็นชอบ
                       </v-chip>
@@ -605,6 +608,9 @@
                       <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
                       </v-chip>
+                      <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='จัดส่งเอกสาร'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> จัดส่งเอกสาร
+                      </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ฝ่ายไม่เห็นชอบ'">
                         <v-icon x-small class="mr-1">fas fa-times</v-icon> ฝ่ายไม่เห็นชอบ
                       </v-chip>
@@ -636,6 +642,9 @@
                       </v-chip>
                       <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='รอฝ่ายเห็นชอบ'">
                         <v-icon x-small class="mr-1">fas fa-clock</v-icon> รอฝ่ายเห็นชอบ
+                      </v-chip>
+                      <v-chip color="purple white--text" x-small v-if="item.disburseStatus=='จัดส่งเอกสาร'">
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> จัดส่งเอกสาร
                       </v-chip>
                       <v-chip color="red darken-2 white--text" x-small v-if="item.disburseStatus=='ฝ่ายไม่เห็นชอบ'">
                         <v-icon x-small class="mr-1">fas fa-times</v-icon> ฝ่ายไม่เห็นชอบ
@@ -1091,12 +1100,12 @@ export default {
 
         if(this.disburses) {
           if(this.userType=='Admin' || this.userType=='Director' || this.userType=='Plan' || this.userType=='Finance') {
-            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
+            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ' || disburse.disburseStatus=='จัดส่งเอกสาร')
           } else if(this.userType=='Party') {
             this.disburses = this.disburses.filter(disburse => disburse.disburseType=='ค่าใช้จ่าย'||(disburse.disburseType=='โครงการ'&&disburse.pjpartyID==this.partyID))
-            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='รอฝ่ายเห็นชอบ')
+            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus=='รอฝ่ายเห็นชอบ' || disburse.disburseStatus=='จัดส่งเอกสาร')
           } else if(this.userType=='Department') {
-            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'เขียนซื้อ' || disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ' || disburse.disburseStatus=='ฝ่ายไม่เห็นชอบ')
+            this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'เขียนซื้อ' || disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ' || disburse.disburseStatus=='ฝ่ายไม่เห็นชอบ' || disburse.disburseStatus=='จัดส่งเอกสาร')
           }
           this.budgetSum.disburseReqMoney = this.ReqDisburses.reduce((prev, curr)=> parseFloat(prev) + parseFloat(curr.disburseMoney), 0);
           //this.ReqDisburses = this.disburses.filter(disburse => disburse.disburseStatus === 'ขอซื้อ' || disburse.disburseStatus=='ตรวจสอบรายการ' || disburse.disburseStatus=='ไม่ถูกต้อง' || disburse.disburseStatus=='รอยืนยันจัดซื้อ' || disburse.disburseStatus=='รอฝ่ายเห็นชอบ')

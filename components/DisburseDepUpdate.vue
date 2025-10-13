@@ -330,6 +330,51 @@
               ]"
             ></v-textarea>
           </v-col>
+          <v-col cols="12">
+            <h3 class="fontBold">กรรรมการตรวจรับพัสดุ</h3>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="updateData.disburseAuditHead"
+              label="ประธานกรรมการตรวจรับ"
+              outlined
+              dense
+            />
+            <v-text-field
+              v-model="updateData.disburseAuditHeadPos"
+              label="ตำแหน่ง"
+              outlined
+              dense
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="updateData.disburseAuditComm"
+              label="กรรมการตรวจรับ"
+              outlined
+              dense
+            />
+            <v-text-field
+              v-model="updateData.disburseAuditCommPos"
+              label="ตำแหน่ง"
+              outlined
+              dense
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="updateData.disburseAuditSecr"
+              label="กรรมการและเลขานุการตรวจรับ"
+              outlined
+              dense
+            />
+            <v-text-field
+              v-model="updateData.disburseAuditSecrPos"
+              label="ตำแหน่ง"
+              outlined
+              dense
+            />
+          </v-col>
         </v-row>
       </v-card-text>
       <v-divider class="green lighten-2"></v-divider>

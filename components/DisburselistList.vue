@@ -102,6 +102,12 @@
               <h3 class="mb-2 fontBold">ผลผลิตที่คาดว่าจะได้</h3>
               {{ disburse.disburseProduct }}
             </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="mb-2 fontBold">กรรมการตรวจรับ</h3>
+              {{ disburse.disburseAuditHead }} {{ disburse.disburseAuditHeadPos }} ประธานกรรมการ<br>
+              {{ disburse.disburseAuditComm }} {{ disburse.disburseAuditCommPos }} กรรมการ<br>
+              {{ disburse.disburseAuditSecr }} {{ disburse.disburseAuditSecrPos }} กรรมการและเลขานุการ
+            </v-col>
             <!-- <v-col cols="12" v-if="disburse.disburseType=='โครงการ'">
               <h3 class="mb-2 fontBold">โครงการ</h3>
               {{  disburse.projectName }}
@@ -114,6 +120,9 @@
               <h3 class="mb-2 fontBold">หมวดงบประมาณรายจ่าย</h3>
               {{ disburse.expenseName }}( {{ disburse.expenseplanDes }} )
             </v-col> -->
+            <v-col cols="12" class="text-center font-weight-bold">
+             รายการขอจัดซื้อ DB-{{ disburse.disburseID }}
+            </v-col>
             <v-col cols="12">
               <v-form
                 v-model="insertValidate"
@@ -347,7 +356,7 @@
                 </v-row>
               </div>  
             </div>
-            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party' && (disburse.partyReheadUserID==user.userID || disburse.pjpartyReheadUserID==user.userID)">
+            <!-- <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party' && (disburse.partyReheadUserID==user.userID || disburse.pjpartyReheadUserID==user.userID)">
               <v-progress-circular
                 indeterminate
                 color="success"
@@ -361,7 +370,7 @@
                   ></v-checkbox>
                 </v-row>
               </div>  
-            </div>
+            </div> -->
             <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID && ((disburse.departmentHeadUserID!=user.userID && disburse.disburseType=='ค่าใช้จ่าย') || (disburse.pjdepartmentReheadUserID!=user.userID && disburse.disburseType=='โครงการ'))">
               <h4 class="font-weight-bold" v-if="disburselists.length > 0">ส่งหัวหน้าแผนก/งานยืนยันการจัดซื้อจัดจ้าง</h4>
               <v-progress-circular
@@ -442,7 +451,7 @@
                 </v-btn>
               </div>  
             </div>
-            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party' && (user.userID==disburse.partyHeadUserID || (user.userID==disburse.partyReheadUserID && rehead) || user.userID==disburse.pjpartyHeadUserID || (user.userID==disburse.pjpartyReheadUserID && rehead))">
+            <!-- <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'รอฝ่ายเห็นชอบ' && userType=='Party' && (user.userID==disburse.partyHeadUserID || (user.userID==disburse.partyReheadUserID && rehead) || user.userID==disburse.pjpartyHeadUserID || (user.userID==disburse.pjpartyReheadUserID && rehead))">
               <h4 class="font-weight-bold" v-if="disburselists.length > 0">ความเห็นของรองผู้อำนวยการ</h4>
               <v-progress-circular
                 indeterminate
@@ -484,6 +493,54 @@
                   color="success"
                   large
                   @click="confirmParty"
+                  v-if="disburseParStatus"
+                >
+                  บันทึก
+                </v-btn>
+              </div>  
+            </div> -->
+            <div class="col-12 text-center" v-else-if="disburse.disburseStatus == 'จัดส่งเอกสาร' && userType=='Plan'">
+              <h4 class="font-weight-bold" v-if="disburselists.length > 0">ลงรับเอกสารงานวางแผน</h4>
+              <v-progress-circular
+                indeterminate
+                color="success"
+                v-if="updateProgress"
+              ></v-progress-circular>
+              <div v-else-if="disburselists.length > 0">
+                <v-row class="mb-1 justify-center"  >
+                  <v-radio-group
+                    v-model="disburseParStatus"
+                    row
+                  >
+                    <v-radio 
+                      label="ตัดแผน"
+                      value="ตัดแผนแล้ว"
+                      color="success"
+                    > 
+                    </v-radio>
+                    <v-radio 
+                      label="ยกเลิก"
+                      value="ยกเลิก"
+                      color="error"
+                    > 
+                    </v-radio>
+                  </v-radio-group>
+                </v-row>
+                <v-col cols="12" md="10" class="mx-auto">
+                    <v-textarea
+                      v-model="disbursePlanRecDes"
+                      label="หมายเหตุ"
+                      outlined
+                    ></v-textarea>
+                </v-col>
+                <!-- <div class="mb-3 text-center" v-if="disburseParStatus">
+                ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
+                {{ user.userFullname }}
+              </div> -->
+                <v-btn
+                  color="success"
+                  large
+                  @click="confirmPlan"
                   v-if="disburseParStatus"
                 >
                   บันทึก
@@ -713,6 +770,7 @@ export default {
       disburseSum: 0,
       disburseParStatus: null,
       disbursePartyDes: null,
+      disbursePlanRecDes: null,
       insertData: {},
       insertProgress: false,
       insertValidate: null,
@@ -1168,6 +1226,92 @@ export default {
               token: this.user.userLineToken,
               to: this.user.userLineUserID,
               message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'ไม่เห็นชอบ\n'+window.location.origin
+            })
+          }
+        }
+        this.$emit('getUpdateStatus', {'status': true})
+        this.disburse.disburseStatus = this.disburseParStatus
+      }
+      this.updateProgress = false
+    },
+
+    async confirmPlan() {
+      this.updateProgress = true
+      let disbursePlanRecDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+      let disburseUpdate = await this.$axios.$post('disburse.update.php', {
+        token: this.$store.state.jwtToken,
+        disburseID: this.disburse.disburseID,
+        disburseStatus: this.disburseParStatus,
+        disbursePlanRecDes: this.disbursePlanRecDes,
+        disbursePlanRecDate: disbursePlanRecDate,
+      })
+
+      if(disburseUpdate.message == 'Success') {
+        Swal.fire({
+          title: 'เรียบร้อย',
+          text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
+          icon: 'success'
+        })
+
+        if(this.disburseParStatus=='ตัดแผนแล้ว') {
+          // await this.sendLineGroup('รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว')
+          // if(this.disburseuser.userLineToken && this.disburseuser.userLineUserID) {
+          //   await this.$axios.$post('sendline.php', {
+          //     token: this.disburseuser.userLineToken,
+          //     to: this.disburseuser.userLineUserID,
+          //     message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว > กรุณาปริ้นเอกสารคำขอจากระบบพร้อมแนบเอกสารหลักฐานที่เกี่ยวข้อง(ถ้ามี) ส่งงานบริหารงานทั่วไปดำเนินการต่อไป\n'+window.location.origin
+          //   })
+          // }
+          // if(this.user.userLineToken && this.user.userLineUserID) {
+          //   await this.$axios.$post('sendline.php', {
+          //     token: this.user.userLineToken,
+          //     to: this.user.userLineUserID,
+          //     message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว > กำลังดำเนินการจัดซื้อจัดจ้าง\n'+window.location.origin
+          //   })
+          // }
+          // await this.$axios.$get('department.php', {
+          //   params: {
+          //     token: this.$store.state.jwtToken,
+          //     departmentSys: 'Parcel'
+          //   }
+          // }).then(result=> {
+          //   if(result.message=='Success') {
+          //     result.department.forEach(async department => {
+          //       await this.$axios.$get('user.php', {
+          //         params: {
+          //           token: this.$store.state.jwtToken,
+          //           departmentID: department.departmentID
+          //         }
+          //       }).then(result2=>{
+          //         if(result2.message == 'Success') {
+          //           result2.user.forEach(async user=>{
+          //             if(user.userLineToken && user.userLineUserID) {
+          //               await this.$axios.$post('sendline.php', {
+          //                 token: user.userLineToken,
+          //                 to: user.userLineUserID,
+          //                 message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'เห็นชอบแล้ว\n'+window.location.origin
+          //               })
+          //             }
+          //           })
+          //         }
+          //       })
+          //     })
+          //   }
+          // })
+        } else {
+          // await this.sendLineGroup('รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : รองฝ่าย'+(this.disburse.pjpartyID? this.disburse.pjpartyName: this.disburse.partyName)+'ไม่เห็นชอบ')
+          if(this.disburseuser.userLineToken && this.disburseuser.userLineUserID) {
+            await this.$axios.$post('sendline.php', {
+              token: this.disburseuser.userLineToken,
+              to: this.disburseuser.userLineUserID,
+              message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ถูกยกเลิก\n'+window.location.origin
+            })
+          }
+          if(this.user.userLineToken && this.user.userLineUserID) {
+            await this.$axios.$post('sendline.php', {
+              token: this.user.userLineToken,
+              to: this.user.userLineUserID,
+              message: 'รายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ถูกยกเลิก\n'+window.location.origin
             })
           }
         }

@@ -227,7 +227,7 @@
           <span class="font16" v-if="project.directorSignName">({{ project.directorSignName }})</span>
           <span class="font16" v-else-if="bossparty.partyHeadFullname">({{ bossparty.partyHeadFullname }})</span>
           <span class="font16" v-else>(&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;)</span><br>
-          <span v-html="bossparty.partyReheadUserID==project.directorSign? 'รองผู้อำนวยการวิทยาลัย รักษาการในตำแหน่ง<br>' : ''" class="font16"></span>
+          <span v-html="bossparty.partyReheadUserID==project.directorSign? 'รองผู้อำนวยการวิทยาลัย รักษาราชการแทน<br>' : ''" class="font16"></span>
           ผู้อำนวยการวิทยาลัยเทคนิคแพร่
         </div>
       </div>

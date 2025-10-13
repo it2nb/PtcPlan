@@ -107,9 +107,9 @@ tbody tr:nth-of-type(odd) {
   margin-right: auto;
   margin-bottom: 0cm;
   margin-left: auto;
-  padding-top: 1cm;
-  padding-right: 1cm;
-  padding-bottom: 1cm;
+  padding-top: 0cm;
+  padding-right: 0.5cm;
+  padding-bottom: 0cm;
   padding-left: 1cm;
 }
 
@@ -243,8 +243,8 @@ tbody tr:nth-of-type(odd) {
     box-shadow: initial;
     background: initial;
     // padding: initial;
-    padding-left: initial;
-    padding-right: initial;
+    // padding-left: initial;
+    // padding-right: initial;
     page-break-before: always;
     background-color: white;
   }

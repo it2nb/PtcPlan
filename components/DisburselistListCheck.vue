@@ -122,6 +122,9 @@
                 @click="showUpdateIndexDialog(disburse)"
               >กำหนดเลขที่หนังสืองานสารบัญ</v-btn>
             </v-col>
+            <v-col cols="12" class="text-center font-weight-bold">
+             รายการขอจัดซื้อ DB-{{ disburse.disburseID }}
+            </v-col>
             <v-col cols="12">
               <v-data-table
               :headers="[
@@ -1189,16 +1192,16 @@ export default {
         if(disburse.disburseParcCheck=='ถูกต้อง') {
           disburse.disburseParcHead = this.user.userFullname
           disburse.parcUserID = this.user.userID
-          await this.$axios.$get('party.php', {
-            params: {
-              token: this.$store.state.jwtToken,
-              partyName: 'อำนวยการ'
-            }
-          }).then(result=> {
-            if(result.message == 'Success') {
-              this.disburse.directorName = result.party.partyHeadFullname
-            }
-          })
+          // await this.$axios.$get('party.php', {
+          //   params: {
+          //     token: this.$store.state.jwtToken,
+          //     partyName: 'อำนวยการ'
+          //   }
+          // }).then(result=> {
+          //   if(result.message == 'Success') {
+          //     this.disburse.directorName = result.party.partyHeadFullname
+          //   }
+          // })
           await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > งานวางแผนฯ > ตรวจสอบความถูกต้อง')
           await this.sendLindDepartSys('Plan', this.disburse.disburseID)
         }
@@ -1242,7 +1245,8 @@ export default {
         await this.sendLineGroup('ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ไม่ถูกต้อง > ส่งกลับไปแก้ไข')
         lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ไม่ถูกต้อง > โปรดแก้ไขและยืนยันคำขออีกครั้ง'
       } else if(disburse.disburseParcCheck=='ถูกต้อง' && disburse.disbursePlanCheck=='ถูกต้อง' && disburse.disburseAccoCheck=='ถูกต้อง' && disburse.disburseFinaCheck=='ถูกต้อง') {
-        disburse.disburseStatus = 'รอฝ่ายเห็นชอบ'
+        // disburse.disburseStatus = 'รอฝ่ายเห็นชอบ'
+        disburse.disburseStatus = 'จัดส่งเอกสาร'
         await this.$axios.$get('party.php', {
           params: {
             token: this.$store.state.jwtToken,
@@ -1253,9 +1257,30 @@ export default {
             this.disburse.directorName = result.party.partyHeadFullname
           }
         })
-        await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+' > ให้ความเห็นชอบ')
-        lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ถูกต้อง > รอให้รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+'ให้ความเห็นชอบ'
-        this.sendLindParty(disburse.pjpartyID? disburse.pjpartyID: disburse.partyID, disburse.disburseID)
+        await this.$axios.$get('party.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            partyName: 'แผนงานและความร่วมมือ'
+          }
+        }).then(result=> {
+          if(result.message == 'Success') {
+            this.disburse.dediPlanName = result.party.partyHeadFullname
+          }
+        })
+        await this.$axios.$get('party.php', {
+          params: {
+            token: this.$store.state.jwtToken,
+            partyName: 'บริหารทรัพยากร'
+          }
+        }).then(result=> {
+          if(result.message == 'Success') {
+            this.disburse.dediResourceName = result.party.partyHeadFullname
+          }
+        })
+        // await this.sendLineGroup('มีรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) ส่งมาให้ > รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+' > ให้ความเห็นชอบ')
+        // lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ถูกต้อง > รอให้รองฝ่าย'+(disburse.pjpartyID? disburse.pjpartyName: disburse.partyName)+'ให้ความเห็นชอบ'
+        lineMsg = 'ผลตรวจสอบรายการขอซื้อขอจ้าง รหัส DB-'+parseInt(this.disburse.disburseID)+' ('+this.qtyFormat(this.disburse.disburseMoney)+' บาท) : ถูกต้อง > กรุณาจัดพิมพ์ให้ผู้เกี่ยวข้องลงนาม > แนบเอกสารที่เกี่ยวข้องส่งงานวางแผนฯ'
+        // this.sendLindParty(disburse.pjpartyID? disburse.pjpartyID: disburse.partyID, disburse.disburseID)
       }
       let result = await this.updateDisburse(disburse)
 
@@ -1265,7 +1290,7 @@ export default {
           text: 'บันทึกข้อมูลเป็นที่เรียบร้อยแล้ว',
           icon: 'success'
         }).then(async ()=>{
-          if(disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'รอฝ่ายเห็นชอบ') {
+          if(disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'จัดส่งเอกสาร') {
             if(this.disburseuser.userLineToken && this.disburseuser.userLineUserID) {
             await this.$axios.$post('sendline.php', {
               token: this.disburseuser.userLineToken,
