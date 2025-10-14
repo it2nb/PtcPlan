@@ -44,10 +44,10 @@
           </table>
         </v-col>
         <v-col cols="12" class="pt-1 font16">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ subDepartment(disburse.departmentName) }} มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font16" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font16" v-if="disburse.disburseYear<=2025">{{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName+'  กิจกรรมที่ '+disburse.pjactivityNum+'.'+disburse.pjsubactivityNum+' '+disburse.pjsubactivityName : '' }}</span><span class="font16" v-else>{{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : ''}}</span> จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})
+          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{ subDepartment(disburse.departmentName) }} มีความประสงค์จะจัด{{disburse.disburseSubtype}}<span class="font16" v-if="disburse.disburseSubtype=='ซื้อ'">{{ disburse.disburseType=='โครงการ'? disburse.expenseName.replace('ค่า', '') : disburse.expenseplanDes.replace('ค่า', '') }}</span> เพื่อ{{ disburse.disburseDes }} <span class="font16" v-if="disburse.disburseYear<=2025">{{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName+'  กิจกรรมที่ '+disburse.pjactivityNum+'.'+disburse.pjsubactivityNum+' '+disburse.pjsubactivityName : '' }}</span><span class="font16" v-else>{{ disburse.disburseType=='โครงการ'? 'ตาม'+disburse.projectName : ''}}</span> <span class="font16" v-if="disburse.disburseYear<=2025">จำนวน {{ disburselists.length }} รายการ โดยมีค่าใช้จ่ายเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }})</span>
         </v-col>
         <v-col cols="12" class="pt-1 font16">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ดังนั้น เพื่อให้การดำเนินงานเป็นไปด้วยความเรียบร้อย จึงขออนุญาตดำเนินการและขออนุมัติงบประมาณเป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }}) เพื่อใช้จ่ายตามแบบโครงการและประมาณการค่าใช้จ่ายที่แนบท้าย
+          &emsp;&emsp;&emsp;&emsp;&emsp;ดังนั้น เพื่อให้การดำเนินงานเป็นไปด้วยความเรียบร้อย จึงขออนุญาตดำเนินการและขออนุมัติงบประมาณ <span class="font16" v-if="disburse.disburseYear>2025">จำนวน {{ disburselists.length }} รายการ</span> เป็นเงินจำนวน {{ moneyFormat(disburse.disburseMoney) }} บาท  ({{ thaiBaht(disburse.disburseMoney) }}) เพื่อใช้จ่ายตามแบบโครงการและประมาณการค่าใช้จ่ายที่แนบท้าย โดยต้องการใชัในวันที่ {{ thaiDate(disburse.disburseStart) }}
         </v-col>
         <v-col cols="12" class="pt-1 font16" v-if="disburse.disburseYear<=2025">
           &emsp;&emsp;&emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรด<br>
@@ -130,10 +130,12 @@
                   ลงชื่อ
                 </div>
                 <div class="font16 text-center" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
-                  ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : (disburse.userID==disburse.departmentHeadUserID? disburse.disburseReqName : disburse.departmentHeadFullname) }}) วันที่ {{ disburse.disburseDate? thaiDateShort(disburse.disburseDate) : '........./........./.........' }}
+                  ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : (disburse.userID==disburse.departmentHeadUserID? disburse.disburseReqName : disburse.departmentHeadFullname) }}) วันที่ ........./........./.........
+                  <!-- วันที่ {{ disburse.disburseDate? thaiDateShort(disburse.disburseDate) : '........./........./.........' }} -->
                 </div>
                 <div class="font16 text-center" v-else-if="disburse.disburseType=='โครงการ'">
-                  ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.pjdepartmentHead }}) วันที่ {{ disburse.disburseDate? thaiDateShort(disburse.disburseDate) : '........./........./.........' }}
+                  ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.pjdepartmentHead }}) วันที่ ........./........./.........
+                  <!-- วันที่ {{ disburse.disburseDate? thaiDateShort(disburse.disburseDate) : '........./........./.........' }} -->
                 </div>
               </td>
               <td class="px-2 col-6 font16" style="vertical-align: top;">
@@ -156,13 +158,16 @@
               <td class="px-2 col-6 font16" style="vertical-align: top;">
                 <div class="font16 font-weight-bold">3. ความเห็นหัวหน้างานวางแผนและงบประมาณ</div>
                 <div class="font16 overflow-hidden">
-                  ได้ตรวจสอบแล้ว <v-icon v-if="disburse.disbursePlanCheck=='ถูกต้อง'">far fa-square-check</v-icon><v-icon v-else>far fa-square</v-icon> มีอยู่ในแผน &emsp;<v-icon>far fa-square</v-icon> ไม่มีอยู่ในแผน
+                  ได้ตรวจสอบแล้ว 
+                  <!-- <v-icon v-if="disburse.disbursePlanCheck=='ถูกต้อง'">far fa-square-check</v-icon> -->
+                  <v-icon>far fa-square</v-icon> มีอยู่ในแผน &emsp;<v-icon>far fa-square</v-icon> ไม่มีอยู่ในแผน
                 </div>
                 <div class="font16" v-if="disburse.disbursePlanCheck=='ถูกต้อง'">
                   ใช้งบ {{ disburse.budgettypeName }} {{ String(disburse.budgetplanDes).length <65 ? disburse.budgetplanDes : String(disburse.budgetplanDes).substring(0, 65)+'...ฯ' }}
                 </div>
                 <div class="mt-2 font16">
-                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;<img :src="planSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="planSign && disburse.disbursePlanCheck=='ถูกต้อง'" />
+                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;
+                  <!-- <img :src="planSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="planSign && disburse.disbursePlanCheck=='ถูกต้อง'" /> -->
                 </div>
                 <div class="font16 text-center">
                   ({{ disburse.disbursePlanHead }}) วันที่ ........./........./.........
@@ -188,7 +193,8 @@
                   ใช้งบ {{ disburse.budgettypeName }} {{ String(disburse.budgetplanDes).length <65 ? disburse.budgetplanDes : String(disburse.budgetplanDes).substring(0, 65)+'...ฯ' }}
                 </div>
                 <div class="mt-2 font16">
-                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;<img :src="finaSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="finaSign && disburse.disburseFinaCheck=='ถูกต้อง'" />
+                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;
+                  <!-- <img :src="finaSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="finaSign && disburse.disburseFinaCheck=='ถูกต้อง'" /> -->
                 </div>
                 <div class="font16 text-center">
                   ({{ disburse.disburseFinaHead }}) วันที่ ........./........./.........
@@ -197,13 +203,16 @@
               <td class="px-2 col-6 font16" style="vertical-align: top;">
                 <div class="font16 font-weight-bold">6. ความเห็นหัวหน้างานบัญชี</div>
                 <div class="font16">
-                  ฐานะการเงิน <v-icon  v-if="disburse.disburseAccoCheck=='ถูกต้อง'">far fa-square-check</v-icon><v-icon v-else>far fa-square</v-icon> พอจ่าย &emsp;<v-icon>far fa-square</v-icon> ไม่พอจ่าย
+                  ฐานะการเงิน 
+                  <!-- <v-icon  v-if="disburse.disburseAccoCheck=='ถูกต้อง'">far fa-square-check</v-icon> -->
+                  <v-icon>far fa-square</v-icon> พอจ่าย &emsp;<v-icon>far fa-square</v-icon> ไม่พอจ่าย
                 </div>
                 <div class="font16" v-if="disburse.disburseAccoCheck=='ถูกต้อง'">
                   GL-{{ disburse.ledgerID }}
                 </div>
                 <div class="mt-2 font16">
-                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;<img :src="accoSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="accoSign && disburse.disburseAccoCheck=='ถูกต้อง'" />
+                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;
+                  <!-- <img :src="accoSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="accoSign && disburse.disburseAccoCheck=='ถูกต้อง'" /> -->
                 </div>
                 <div class="font16 text-center">
                   ({{ disburse.disburseAccoHead }}) วันที่ ........./........./.........
@@ -214,15 +223,52 @@
               <td class="px-2 col-6 font16" style="vertical-align: top;">
                 <div class="font16 font-weight-bold">7. ความเห็นหัวหน้างานพัสดุ</div>
                 <div class="font16 overflow-hidden">
-                  <v-icon  v-if="disburse.disburseParcCheck=='ถูกต้อง'">far fa-square-check</v-icon><v-icon v-else>far fa-square</v-icon> เห็นสมควรอนุญาต &emsp;<v-icon>far fa-square</v-icon> อื่นๆ................................
+                  <!-- <v-icon  v-if="disburse.disburseParcCheck=='ถูกต้อง'">far fa-square-check</v-icon> -->
+                  <v-icon>far fa-square</v-icon> เห็นสมควรอนุญาต &emsp;<v-icon>far fa-square</v-icon> อื่นๆ................................
                 </div>
                 <div class="mt-2 font16">
-                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;<img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" />
+                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;
+                  <!-- <img :src="parcSign+'?t='+new Date()" style="max-width: 100px; max-height: 20px;" v-if="parcSign && disburse.disburseParcCheck=='ถูกต้อง'" /> -->
                 </div>
                 <div class="font16 text-center">
                   ({{ disburse.disburseParcHead }}) วันที่ ........./........./.........
                 </div>
               </td>
+              <!-- <td class="px-2 col-6 font16" style="vertical-align: top;">
+                <div class="font16 font-weight-bold">8. ความเห็นรองผู้อำนวยการฝ่ายบริหารทรัพยากร</div>
+                <div class="font16 overflow-hidden">
+                  <v-icon>far fa-square</v-icon> เห็นสมควรอนุญาต &emsp;<v-icon>far fa-square</v-icon> อื่นๆ................................
+                </div>
+                <div class="mt-2 font16">
+                  ลงชื่อ
+                </div>
+                <div class="font16 text-center">
+                  ({{ disburse.dediResourceName }}) วันที่ ........./........./.........
+                </div>
+              </td> -->
+              <td class="px-2 col-6 font16" rowspan="2" style="vertical-align: top;">
+                <div class="font14" style="line-height: 1.4">
+                  <span class="font14 font-weight-bold">คำสั่ง</span> เพื่อให้เป็นไปตาม พรบ.จัดซื้อจัดจ้างฯ 2560 ม.100 และระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างฯ 2560 หมวด 6 จึงขอแต่งตั้งบุคคลต่อไปนี้เป็นกรรมการตรวจรับพัสดุ คือ<br>
+                </div>
+                <div class="font14 font-weight-bold">กรรมการตรวจรับพัสดุ</div>
+                <div class="font14 pl-2">
+                  1. {{ disburse.disburseAuditHead? disburse.disburseAuditHead : '................................................................' }}<br>
+                  2. {{ disburse.disburseAuditComm? disburse.disburseAuditComm : '................................................................' }}<br>
+                  3. {{ disburse.disburseAuditSecr? disburse.disburseAuditSecr : '................................................................' }}<br>
+                </div>
+                <div class="font16 font-weight-bold">คำสั่งผู้อำนวยการวิทยาลัยเทคนิคแพร่</div>
+                <div class="font16 overflow-hidden text-center">
+                  <v-icon>far fa-square</v-icon> อนุญาต &emsp;<v-icon>far fa-square</v-icon> ไม่อนุญาต
+                </div>
+                <div class="mt-3 font16 text-center">
+                  ลงชื่อ &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                </div>
+                <div class="font16 text-center">
+                  ({{ disburse.directorName }})  <br>วันที่ ........./........./.........
+                </div>
+              </td>
+            </tr>
+            <tr>
               <td class="px-2 col-6 font16" style="vertical-align: top;">
                 <div class="font16 font-weight-bold">8. ความเห็นรองผู้อำนวยการฝ่ายบริหารทรัพยากร</div>
                 <div class="font16 overflow-hidden">
@@ -235,9 +281,7 @@
                   ({{ disburse.dediResourceName }}) วันที่ ........./........./.........
                 </div>
               </td>
-            </tr>
-            <tr>
-              <td class="px-2 col-6 font16 text-center" colspan="2" style="vertical-align: top;">
+              <!-- <td class="px-2 col-6 font16 text-center" rowspan="2" style="vertical-align: top;">
                 <div class="font16 font-weight-bold">ความเห็นผู้อำนวยการวิทยาลัยเทคนิคแพร่</div>
                 <div class="font16 overflow-hidden">
                   <v-icon>far fa-square</v-icon> อนุญาต &emsp;<v-icon>far fa-square</v-icon> ไม่อนุญาต
@@ -248,7 +292,7 @@
                 <div class="font16 text-center">
                   ({{ disburse.directorName }})  <br>วันที่ ........./........./.........
                 </div>
-              </td>
+              </td> -->
             </tr>
           </table>
         </v-col>

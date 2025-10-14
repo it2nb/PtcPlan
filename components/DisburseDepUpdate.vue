@@ -289,7 +289,7 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">วันที่เริ่มต้น</h3>
+            <h3 class="mb-2 fontBold">ต้องการใช้ในวันที่</h3>
             <v-text-field
               v-model="updateData.disburseStart"
               label="วันที่เริ่มต้น"
@@ -304,7 +304,7 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">วันที่สิ้นสุด</h3>
+            <h3 class="mb-2 fontBold">สิ้นสุดวันที่</h3>
             <v-text-field
               v-model="updateData.disburseEnd"
               label="วันที่สิ้นสุด"
