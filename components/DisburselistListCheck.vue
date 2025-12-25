@@ -1173,6 +1173,7 @@ export default {
 
     async updateDisburse(disburse) {
       disburse.token = this.$store.state.jwtToken
+      disburse.disburseMoney= parseFloat(this.disburseSum)+parseFloat(this.vat)
       let disburseUpdate = await this.$axios.$post('disburse.update.php', disburse)
 
       if(disburseUpdate.message == 'Success') {

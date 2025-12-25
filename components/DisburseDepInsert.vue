@@ -260,7 +260,7 @@
               ]"
             ></v-text-field>
           </v-col> -->
-          <v-col cols="12" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && insertData.disburseType=='ค่าใช้จ่าย'">
+          <v-col cols="12" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุการศึกษา ป.ตรี' || expenseplanDes == 'วัสดุฝึก' || expenseplanDes == 'วัสดุฝึก ป.ตรี') && insertData.disburseType=='ค่าใช้จ่าย'">
             <h3 class="mb-2 fontBold">ชื่อวิชา</h3>
             <v-text-field
               v-model="insertData.disburseSubjectName"
@@ -293,7 +293,7 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">ต้องการใช้ในวันที่</h3>
+            <h3 class="mb-2 fontBold">ต้องการใช้ในวันที่ <span class="text-caption">(ควรเว้นระยะเวลาให้เจ้าหน้าที่ดำเนินการตามกระบวนการทางพัสดุได้ทัน)</span></h3>
             <v-text-field
               v-model="insertData.disburseStart"
               label="วันที่เริ่มต้น"
@@ -551,7 +551,7 @@ export default {
               this.insertData.departmentUserID = this.insertData.userID
               this.insertData.disburseDepReqName = this.insertData.disburseReqName
             }
-            if(this.expenseplanDes!='วัสดุการศึกษา' && this.expenseplanDes!='วัสดุฝึก') {
+            if(this.expenseplanDes!='วัสดุการศึกษา'&& this.expenseplanDes!='วัสดุการศึกษา ป.ตรี' && this.expenseplanDes!='วัสดุฝึก' && this.expenseplanDes!='วัสดุฝึก ป.ตรี') {
               // delete this.insertData.subjectCode
               delete this.insertData.disburseSubjectName
               // delete this.insertData.subjectJob

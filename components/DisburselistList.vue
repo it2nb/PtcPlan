@@ -371,7 +371,7 @@
                 </v-row>
               </div>  
             </div> -->
-            <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID && ((disburse.departmentHeadUserID!=user.userID && disburse.disburseType=='ค่าใช้จ่าย') || (disburse.pjdepartmentReheadUserID!=user.userID && disburse.disburseType=='โครงการ'))">
+            <div class="col-12 text-center" v-if="(disburse.disburseStatus == 'เขียนซื้อ' || disburse.disburseStatus == 'ไม่ถูกต้อง' || disburse.disburseStatus == 'ฝ่ายไม่เห็นชอบ') && userType=='Department' && disburse.userID==user.userID && ((disburse.departmentHeadUserID!=user.userID && disburse.disburseType=='ค่าใช้จ่าย') || (disburse.pjdepartmentHeadUserID!=user.userID && disburse.disburseType=='โครงการ'))">
               <h4 class="font-weight-bold" v-if="disburselists.length > 0">ส่งหัวหน้าแผนก/งานยืนยันการจัดซื้อจัดจ้าง</h4>
               <v-progress-circular
                 indeterminate

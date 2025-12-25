@@ -269,7 +269,7 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6" v-if="insertData.disburseType=='โครงการ'||insertData.disburseType=='ค่าใช้จ่าย'">
-            <h3 class="mb-2 fontBold">ต้องการใช้ในวันที่</h3>
+            <h3 class="mb-2 fontBold">ต้องการใช้ในวันที่ <span class="text-caption">(ควรเว้นระยะเวลาให้เจ้าหน้าที่ดำเนินการตามกระบวนการทางพัสดุได้ทัน)</span></h3>
             <v-text-field
               v-model="insertData.disburseStart"
               label="วันที่เริ่มต้น"

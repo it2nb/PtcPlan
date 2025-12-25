@@ -256,7 +256,7 @@
               ]"
             ></v-text-field>
           </v-col> -->
-          <v-col cols="12" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุฝึก') && updateData.disburseType=='ค่าใช้จ่าย'">
+          <v-col cols="12" v-if="(expenseplanDes == 'วัสดุการศึกษา' || expenseplanDes == 'วัสดุการศึกษา ป.ตรี' || expenseplanDes == 'วัสดุฝึก' || expenseplanDes == 'วัสดุฝึก ป.ตรี') && updateData.disburseType=='ค่าใช้จ่าย'">
             <h3 class="mb-2 fontBold">ชื่อวิชา</h3>
             <v-text-field
               v-model="updateData.disburseSubjectName"
@@ -289,7 +289,7 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <h3 class="mb-2 fontBold">ต้องการใช้ในวันที่</h3>
+            <h3 class="mb-2 fontBold">ต้องการใช้ในวันที่ <span class="text-caption">(ควรเว้นระยะเวลาให้เจ้าหน้าที่ดำเนินการตามกระบวนการทางพัสดุได้ทัน)</span></h3>
             <v-text-field
               v-model="updateData.disburseStart"
               label="วันที่เริ่มต้น"

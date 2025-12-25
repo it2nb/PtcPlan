@@ -12,6 +12,9 @@
             <!-- <v-btn color="success" text @click="showInsertDialog"  class="mb-2"> -->
               <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มรายการจัดซื้อ/เบิกเงิน
             </v-btn>
+            <v-btn color="primary" text  @click="disburseAnnounceDialog=true" v-if="userType=='Admin' || userType=='Plan' || userType=='Finance' || userType=='Department'" class="mb-2">
+              <v-icon small class="mr-1">far fa-circle-question</v-icon>การบวนการ/ขั้นตอน
+            </v-btn>
             <v-tabs
               v-model="tab"
               grow
@@ -819,6 +822,78 @@
       </v-dialog>
     </v-row>
 
+    <v-row justify="center">
+      <v-dialog
+        v-model="disburseAnnounceDialog"
+        persistent
+        fullscreen
+      >
+        <v-card color="rgba(0,0,0, .5)">
+          <v-row>
+            <v-col class="col-11 col-md-9 mx-auto my-5">
+              <v-card>
+                <v-card-actions class="amber lighten-4">
+                  <v-spacer></v-spacer>
+                  <v-btn icon color="black" @click="disburseAnnounceDialog = false">
+                    <v-icon>fas fa-times</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <div class="px-5 py-5" v-if="disburseAnnounceDialog">
+                  <h2 class="font-weight-bold">กระบวนการจัดซื้อจัดจ้างของระบบบริหารแผนปฏิบัติราชการ</h2>
+                  <ol class="mt-5 ml-5">
+                    <li class="mb-5">
+                      เพิ่มคำขอจัดซื้อ โดยคลิกที่ปุ่ม 
+                      <span class="success--text">
+                        <v-icon small color="success" class="mr-1">fas fa-plus-circle</v-icon> เพิ่มรายการจัดซื้อ/เบิกเงิน
+                      </span>
+                    </li>
+                    <li class="mb-5">
+                      เพิ่มรายการพัสดุ โดยคลิกที่ปุ่ม <v-icon small color="green darken-2" class="mr-1">fas fa-list</v-icon>
+                    </li>
+                    <li class="mb-5">
+                      คลิ๊กเลือก ยืนยันการส่งตรวจสอบความถูกต้อง และคลิกปุ่ม 
+                      <v-btn
+                        color="warning darken-1"
+                      >
+                        ยืนยันและส่งตรวจสอบรายการ
+                      </v-btn>
+                      หรือ
+                      <v-btn
+                        color="warning darken-1"
+                      >
+                        ยืนยันและส่งหัวหน้าฝ่าย/งาน
+                      </v-btn>
+                    </li>
+                    <li class="mb-5">
+                      เมื่อสถานะคำขอเป็น 
+                      <v-chip color="purple white--text" x-small>
+                        <v-icon x-small class="mr-1">fas fa-clock</v-icon> จัดส่งเอกสาร
+                      </v-chip>
+                      สั่งพิมพ์เอกสาร โดยคลิกที่ปุ่ม
+                      <v-icon small color="green darken-2" class="mr-1">fas fa-list</v-icon>
+                      --&gt;
+                      <v-btn 
+                        color="white"
+                      >
+                        <v-icon class="mr-1" color="primary">fas fa-print</v-icon> พิมพ์
+                      </v-btn>
+                      
+                    </li>
+                    <li class="mb-5">
+                       เซ็นต์ชื่อลงนาม <u>ผู้ขอซื้อ หัวหน้าแผนก/งาน และรองฝ่ายของตนเอง</u> ในบันทึกข้อความ และใบประมาณราคา/สผ.1 ที่ได้จากระบบ
+                    </li>
+                    <li class="mb-5">
+                      จัดส่งเอกสารจัดซื้อที่ได้จากระบบ และเอกสารที่เกี่ยวข้อง ที่งานวางแผนและงบประมาณ
+                    </li>
+                  </ol>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
 
   </div>
 </template>
@@ -1016,10 +1091,13 @@ export default {
       disburseUpdateStatusValidate: null,
 
       disburselistListDialog: false,
+
+      disburseAnnounceDialog: false,
     }
   },
 
   async mounted() {
+    this.disburseAnnounceDialog = true
     await this.getUser()
     await this.getDisburses()
   },

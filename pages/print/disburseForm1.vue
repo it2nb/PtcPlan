@@ -115,7 +115,7 @@
           ({{ disburse.disburseReqName }})<br>
           ผู้ขอจัดซื้อ
         </v-col>
-        <v-col class="col-12" style="line-height: 1.5">
+        <v-col class="col-12" style="line-height: 1.5" v-if="disburse.disburseYear>2025">
           <div class="font14 text-right">
             เลขที่คำขอจัดซื้อจัดจ้าง DB-{{ parseInt(disburseID) }}
           </div>
@@ -139,7 +139,7 @@
                 </div>
               </td>
               <td class="px-2 col-6 font16" style="vertical-align: top;">
-                <div class="font14 font-weight-bold">2. ความเห็นรองผู้อำนวยการฝ่าย{{ disburse.partyName}}</div>
+                <div class="font14 font-weight-bold">2. ความเห็นรองผู้อำนวยการฝ่าย{{ disburse.disburseType=='โครงการ'? disburse.pjpartyName : disburse.partyName}}</div>
                 <div class="font16 overflow-hidden">
                   <v-icon>far fa-square</v-icon> เห็นสมควรอนุญาต &emsp;<v-icon>far fa-square</v-icon> อื่นๆ................................
                 </div>
@@ -202,11 +202,11 @@
               </td>
               <td class="px-2 col-6 font16" style="vertical-align: top;">
                 <div class="font16 font-weight-bold">6. ความเห็นหัวหน้างานบัญชี</div>
-                <div class="font16">
+                <!-- <div class="font16">
                   ฐานะการเงิน 
-                  <!-- <v-icon  v-if="disburse.disburseAccoCheck=='ถูกต้อง'">far fa-square-check</v-icon> -->
+                  <v-icon  v-if="disburse.disburseAccoCheck=='ถูกต้อง'">far fa-square-check</v-icon>
                   <v-icon>far fa-square</v-icon> พอจ่าย &emsp;<v-icon>far fa-square</v-icon> ไม่พอจ่าย
-                </div>
+                </div> -->
                 <div class="font16" v-if="disburse.disburseAccoCheck=='ถูกต้อง'">
                   GL-{{ disburse.ledgerID }}
                 </div>
@@ -464,15 +464,15 @@
           </table>
         </v-col>
         <v-col cols="6" class="font16 text-center mt-5">
-          <!-- <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign" /> -->
-          <span class="font16">........................................</span><br>
+          <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign&&disburse.disburseYear<=2025" />
+          <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseReqName }}) <br> 
           {{ disburse.expenseplanDes.search('วัสดุการศึกษา') >= 0 || disburse.expenseplanDes.search('วัสดุฝึก') >= 0 ? 'ครูผู้สอน' : 'ผู้ขอจัดซื้อ' }}<br>
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col>
         <v-col cols="6" class="font16 text-center mt-5" v-if="disburse.disburseType=='ค่าใช้จ่าย'">
-          <!-- <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" /> -->
-          <span class="font16">........................................</span><br>
+          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign&&disburse.disburseYear<=2025" />
+          <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
           {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
           หัวหน้า{{ disburse.departmentName }}<br>
@@ -525,8 +525,8 @@
           วันที่ {{ thaiDate(disburse.disburseDate) }}
         </v-col> -->
         <v-col cols="6" class="font16 text-center mt-5" v-if="disburse.disburseType=='โครงการ'">
-          <!-- <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign" /> -->
-          <span class="font16">........................................</span><br>
+          <img :src="disburseDepartmentSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseDepartmentSign&&disburse.disburseYear<=2025" />
+          <span class="font16" v-else>........................................</span><br>
          ({{ disburse.disburseDepReqName? disburse.disburseDepReqName : disburse.departmentHeadFullname }}) <br>
          {{ disburse.departmentUserExpos }}<br v-if="disburse.departmentUserExpos">
           หัวหน้า{{ disburse.pjdepartmentName }}<br>
@@ -774,8 +774,8 @@
         </v-col>
         <v-col cols="12"></v-col>
         <v-col cols="6" class="font16 text-center mt-10 ml-auto">
-          <!-- <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign" /> -->
-          <span class="font16">........................................</span><br>
+          <img :src="disburseSign+'?t='+new Date()" style="max-width: 100px; max-height: 25px;" v-if="disburseSign&&disburse.disburseYear<=2025" />
+          <span class="font16" v-else>........................................</span><br>
           ({{ disburse.disburseReqName }}) <br>
           ผู้ประมาณราคา
         </v-col>
