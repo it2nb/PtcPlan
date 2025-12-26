@@ -381,11 +381,11 @@
               <div v-else-if="disburselists.length > 0">
                 <v-row class="mb-1 justify-center"  >
                     <v-checkbox
-                    v-model="confirmCheck"
+                    v-model="confirmCheckReq"
                     label="เมื่อยืนยันและส่งหัวหน้าแผนก/งานแล้วจะไม่สามารถแก้ไขได้"
                   ></v-checkbox>
                 </v-row>
-                <div class="mb-3 text-center" v-if="confirmCheck">
+                <div class="mb-3 text-center" v-if="confirmCheckReq">
                   ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
                   {{ user.userFullname }}
                 </div>
@@ -393,7 +393,7 @@
                   color="warning darken-1"
                   large
                   @click="confirmList"
-                  v-if="confirmCheck"
+                  v-if="confirmCheckReq"
                 >
                   ยืนยันและส่งหัวหน้าฝ่าย/งาน
                 </v-btn>
@@ -409,11 +409,11 @@
               <div v-else-if="disburselists.length > 0">
                 <v-row class="mb-1 justify-center"  >
                     <v-checkbox
-                    v-model="confirmCheck"
+                    v-model="confirmCheckDep"
                     label="เมื่อยืนยันและส่งตรวจสอบรายการแล้วจะไม่สามารถแก้ไขได้"
                   ></v-checkbox>
                 </v-row>
-                <div class="mb-3 text-center" v-if="confirmCheck">
+                <div class="mb-3 text-center" v-if="confirmCheckDep">
                   ลงชื่อ <img :src="userSign+'?t='+new Date()" style="max-width: 120px; max-height: 40px;" v-if="userSign" /><span v-else>...ไม่มีลายเซ็นต์...</span><br>
                   {{ user.userFullname }}
                 </div>
@@ -421,7 +421,7 @@
                   color="warning darken-1"
                   large
                   @click="confirmList"
-                  v-if="confirmCheck"
+                  v-if="confirmCheckDep"
                 >
                   ยืนยันและส่งตรวจสอบรายการ
                 </v-btn>
@@ -437,7 +437,7 @@
               <div v-else-if="disburselists.length > 0">
                 <v-row class="mb-1 justify-center"  >
                   <v-checkbox
-                    v-model="confirmCheck"
+                    v-model="confirmCheckDep"
                     label="เมื่อยืนยันขอจัดซื้อแล้วจะไม่สามารถแก้ไขได้"
                   ></v-checkbox>
                 </v-row>
@@ -445,7 +445,7 @@
                   color="warning darken-1"
                   large
                   @click="confirmRequest"
-                  v-if="confirmCheck"
+                  v-if="confirmCheckDep"
                 >
                   ยืนยันขอจัดซื้อ
                 </v-btn>
@@ -748,9 +748,9 @@ var numeral = require('numeral')
 import Swal from 'sweetalert2'
 export default {
   props: {
-    disburse: {
-      type: Object,
-      default: () => {}
+    disburseID: {
+      type: Number,
+      default: 0
     },
     userType: {
       type: String,
@@ -760,6 +760,7 @@ export default {
 
   data() {
     return {
+      disburse: {},
       user: {},
       userSign: null,
       disburseuser: {},
@@ -787,7 +788,8 @@ export default {
       deleteValidate: null,
       updateDialog: false,
       deleteDialog: false,
-      confirmCheck: null,
+      confirmCheckReq: null,
+      confirmCheckDep: null,
       vat: 0,
     }
   },
@@ -796,6 +798,7 @@ export default {
     let userlogin = JSON.parse(sessionStorage.getItem('loginuser'))
     //this.userType = userlogin.type
     this.user = JSON.parse(JSON.stringify(userlogin.user))
+    await this.getDisburse(this.disburseID)
     if(this.disburse) {
       await this.getDisburselist(this.disburse.disburseID)
       if(this.disburse.userID>0) {
@@ -810,6 +813,19 @@ export default {
   },
 
   methods: {
+    async getDisburse(disburseID) {
+      let result = await this.$axios.$get('disburse.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          disburseID: disburseID
+        }
+      })
+
+      if(result.message == 'Success') {
+        this.disburse = JSON.parse(JSON.stringify(result.disburse))
+      }
+    },
+
     async getDisburseUser(userID) {
       let result = await this.$axios.$get('user.php', {
         params: {
@@ -983,16 +999,19 @@ export default {
 
     async confirmList() {
       this.updateProgress = true
-      let disburseStatus = 'ตรวจสอบรายการ'
-      let disburseDepReqName = this.user.userFullname
-      let departmentUserID = this.user.userID
+      let disburseStatus = null
+      let disburseDepReqName = null
+      let departmentUserID = null
       let departmentUserExpos = null
 
-      if(this.disburse.disburseStatus=='เขียนซื้อ') {
+      if(this.confirmCheckReq) {
         disburseStatus = 'ขอซื้อ'
         disburseDepReqName = null
         departmentUserID = null
-      } if(this.disburse.disburseStatus=='ขอซื้อ') {
+      } else if(this.confirmCheckDep) {
+        disburseStatus = 'ตรวจสอบรายการ'
+        disburseDepReqName = this.user.userFullname
+        departmentUserID = this.user.userID
         if(this.user.userID!=this.disburse.departmentHeadUserID&&this.user.userID!=this.disburse.pjdepartmentHeadUserID) {
           departmentUserExpos = 'รักษาราชการแทน'
         }

@@ -721,7 +721,7 @@
                     <v-icon>fas fa-times</v-icon>
                   </v-btn>
                 </v-card-actions>
-                <DisburselistListCheckVue :disburse="JSON.parse(JSON.stringify(disburseData))" :departmentSys="departmentSys" @getUpdateStatus="updateDisburse" v-if="disburselistListDialog"/>
+                <DisburselistListCheckVue :disburseID="disburseData.disburseID" :departmentSys="departmentSys" @getUpdateStatus="updateDisburse" v-if="disburselistListDialog"/>
               </v-card>
             </v-col>
           </v-row>

@@ -813,7 +813,7 @@
                   </v-btn>
                 </v-card-actions>
                 <div v-if="disburselistListDialog">
-                  <DisburselistListVue :disburse="disburseData" :userType="userType" @getUpdateStatus="getDisburses"/>
+                  <DisburselistListVue :disburseID="disburseData.disburseID" :userType="userType" @getUpdateStatus="getDisburses"/>
                 </div>
               </v-card>
             </v-col>

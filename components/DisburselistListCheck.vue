@@ -977,9 +977,9 @@ import Swal from 'sweetalert2'
 import { readonly } from 'vue';
 export default {
   props: {
-    disburse: {
-      type: Object,
-      default: () => {}
+    disburseID: {
+      type: Number,
+      default: 0
     },
     departmentSys: {
         type: String,
@@ -989,6 +989,7 @@ export default {
 
   data() {
     return {
+      disburse: {},
       user: {},
       userSign: null,
       parcUsers: [],
@@ -1028,6 +1029,7 @@ export default {
   async mounted() {
     let loginuser = JSON.parse(sessionStorage.getItem('loginuser'))
     this.user = JSON.parse(JSON.stringify(loginuser.user))
+    await this.getDisburse(this.disburseID)
     if(this.disburse) {
       //this.disburse.companyID = parseInt(this.disburse.companyID)
       await this.getDisburselist(this.disburse.disburseID)
@@ -1045,6 +1047,19 @@ export default {
   },
 
   methods: {
+    async getDisburse() {
+      let result = await this.$axios.$get('disburse.php', {
+        params: {
+          token: this.$store.state.jwtToken,
+          disburseID: this.disburseID
+        }
+      })
+
+      if(result.message == 'Success') {
+        this.disburse = JSON.parse(JSON.stringify(result.disburse))
+      }
+    },
+
     async getDisburseUser(userID) {
       let result = await this.$axios.$get('user.php', {
         params: {
