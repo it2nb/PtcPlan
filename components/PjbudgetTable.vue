@@ -40,7 +40,7 @@
                 </div>
               </template>
 
-              <template v-slot:item.actions="{ item }" v-if="!readOnly">
+              <template v-slot:item.actions="{ item }">
                 <div  class="text-no-wrap">
                   <v-badge
                     :content="item.pjbudgetallocQty"
@@ -48,15 +48,16 @@
                     color="primary"
                     bordered
                     overlap
+                    v-if="!readOnly || userType=='Department'"
                   >
                     <v-btn color="primary" icon  small @click="showPjbudgetallocDialog(item)">
                       <v-icon small class="mr-1">fas fa-list</v-icon>
                     </v-btn>
                   </v-badge>
-                  <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin'">
+                  <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="!readOnly && ( (item.projectStatus!='อนุมัติ' && updateBt) || userType=='Admin')">
                     <v-icon small class="mr-1">fas fa-edit</v-icon>
                   </v-btn>
-                  <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="(item.projectStatus!='อนุมัติ' && parseFloat(item.disburseMoney)<=0 && deleteBt) || userType=='Admin'">
+                  <v-btn color="red darken-2" icon  small @click="showDeleteDialog(item)" v-if="!readOnly && ((item.projectStatus!='อนุมัติ' && parseFloat(item.disburseMoney)<=0 && deleteBt) || userType=='Admin')">
                     <v-icon small class="mr-1">fas fa-trash</v-icon>
                   </v-btn>
                 </div>

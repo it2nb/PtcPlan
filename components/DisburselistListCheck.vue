@@ -150,7 +150,7 @@
                 {{ moneyFormat(item.disburselistSumPrice) }}
               </template>
               <template v-slot:item.disburselistStatus="{ item}">
-                <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="item.disburselistStatus!='ถูกต้อง'">
+                <v-btn color="warning" icon  small @click="showUpdateDialog(item)" v-if="(item.disburselistStatus!='ถูกต้อง' || departmentSys=='Parcel') && disburse.disburseStatus != 'เบิกจ่ายแล้ว'">
                   <v-icon small class="mr-1">fas fa-edit</v-icon>
                 </v-btn>
                 <v-icon small color="success" v-if="item.disburselistStatus=='ถูกต้อง'">fas fa-check</v-icon>
@@ -524,6 +524,7 @@
                           type="number"
                           dense
                           required
+                          :disabled="updateData.disburselistStatus == 'ถูกต้อง'"
                           :rules="[
                             ()=>!!updateData.disburselistQty || 'กรุณากรอกข้อมูล'
                           ]"
@@ -548,6 +549,7 @@
                           outlined
                           dense
                           required
+                          :disabled="updateData.disburselistStatus == 'ถูกต้อง'"
                           :rules="[
                             ()=>!!updateData.disburselistPrice || 'กรุณากรอกข้อมูล'
                           ]"
