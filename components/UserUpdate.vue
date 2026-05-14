@@ -20,9 +20,7 @@
               label="ชื่อผู้ใช้ระบบ"
               outlined
               required
-              :rules="[
-                ()=>!!updateData.userName || 'กรุณากรอกข้อมูล'
-              ]"
+              :rules="[() => !!updateData.userName || 'กรุณากรอกข้อมูล']"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -42,9 +40,7 @@
               v-model="updateData.userFullname"
               label="ชื่อ-สกุล"
               outlined
-              :rules="[
-                ()=>!!updateData.userFullname || 'กรุณากรอกชื่อ-สกุล'
-              ]"
+              :rules="[() => !!updateData.userFullname || 'กรุณากรอกชื่อ-สกุล']"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -54,9 +50,7 @@
               label="เลขประจำตัวประชาชน"
               outlined
               required
-              :rules="[
-                ()=>!!updateData.personalIDcard || 'กรุณากรอกข้อมูล'
-              ]"
+              :rules="[() => !!updateData.personalIDcard || 'กรุณากรอกข้อมูล']"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -67,13 +61,11 @@
               :items="userStatuses"
               outlined
               required
-              :rules="[
-                ()=>!!updateData.userStatus || 'กรุณากรอกข้อมูล'
-              ]"
-              :readonly="userType=='Department' || userType=='Party'"
+              :rules="[() => !!updateData.userStatus || 'กรุณากรอกข้อมูล']"
+              :readonly="userType == 'Department' || userType == 'Party'"
             ></v-autocomplete>
           </v-col>
-          <v-col cols="12" md="6" v-if="updateData.userStatus=='Department'">
+          <v-col cols="12" md="6" v-if="updateData.userStatus == 'Department'">
             <h3 class="mb-2 fontBold">แผนก/งาน</h3>
             <v-autocomplete
               v-model="updateData.departmentID"
@@ -83,13 +75,11 @@
               item-value="departmentID"
               outlined
               required
-              :rules="[
-                ()=>!!updateData.departmentID || 'กรุณากรอกข้อมูล'
-              ]"
-              :readonly="userType=='Department' || userType=='Party'"
+              :rules="[() => !!updateData.departmentID || 'กรุณากรอกข้อมูล']"
+              :readonly="userType == 'Department' || userType == 'Party'"
             ></v-autocomplete>
           </v-col>
-          <v-col cols="12" md="6" v-if="updateData.userStatus=='Party'">
+          <v-col cols="12" md="6" v-if="updateData.userStatus == 'Party'">
             <h3 class="mb-2 fontBold">ฝ่าย</h3>
             <v-autocomplete
               v-model="updateData.partyID"
@@ -99,10 +89,8 @@
               item-value="partyID"
               outlined
               required
-              :rules="[
-                ()=>!!updateData.partyID || 'กรุณากรอกข้อมูล'
-              ]"
-              :readonly="userType=='Department' || userType=='Party'"
+              :rules="[() => !!updateData.partyID || 'กรุณากรอกข้อมูล']"
+              :readonly="userType == 'Department' || userType == 'Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
@@ -128,23 +116,13 @@
       <v-divider class="green lighten-2"></v-divider>
       <v-card-actions>
         <div class="col-12 text-center">
-          <v-btn
-            @click="cancelUpdate"
-            outlined
-          >
-            ยกเลิก
-          </v-btn>
+          <v-btn @click="cancelUpdate" outlined> ยกเลิก </v-btn>
           <v-progress-circular
             indeterminate
             color="success"
             v-if="updateProgress"
           ></v-progress-circular>
-          <v-btn
-            type="submit"
-            color="warning darken-1"
-            large
-            v-else
-          >
+          <v-btn type="submit" color="warning darken-1" large v-else>
             แก้ไข
           </v-btn>
         </div>
@@ -154,17 +132,17 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 export default {
   props: {
     user: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     userType: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
 
   data() {
@@ -174,107 +152,109 @@ export default {
       updateValidate: null,
       passwordShow: false,
       userStatuses: [
-        {'text': 'แผนก/งาน', 'value': 'Department'},
-        {'text': 'ฝ่ายบริหาร', 'value': 'Party'},
-        {'text': 'งานวางแผนและงบประมาณ', 'value': 'Plan'},
-        {'text': 'งานพัสดุ', 'value': 'Supply'},
-        {'text': 'งานการเงิน', 'value': 'Finance'},
-        {'text': 'งานบัญชี', 'value': 'Accountant'},
-        {'text': 'งานสารบัญ', 'value': 'Index'},
-        {'text': 'ผู้อำนวยการ', 'value': 'Director'},
-        {'text': 'ผู้ดูแลระบบ', 'value': 'Admin'},
+        { text: "แผนก/งาน", value: "Department" },
+        { text: "ฝ่ายบริหาร", value: "Party" },
+        { text: "งานพัฒนายุทธศาสตร์ฯ", value: "Plan" },
+        { text: "งานพัสดุ", value: "Supply" },
+        { text: "งานการเงิน", value: "Finance" },
+        { text: "งานบัญชี", value: "Accountant" },
+        { text: "งานสารบัญ", value: "Index" },
+        { text: "ผู้อำนวยการ", value: "Director" },
+        { text: "ผู้ดูแลระบบ", value: "Admin" },
       ],
       departments: [],
       parties: [],
-    }
+    };
   },
 
   async mounted() {
-    if(this.user) {
-      this.updateData = JSON.parse(JSON.stringify(this.user))
-      delete this.updateData.userPassword
-      await this.getDepartments()
-      await this.getParties()
+    if (this.user) {
+      this.updateData = JSON.parse(JSON.stringify(this.user));
+      delete this.updateData.userPassword;
+      await this.getDepartments();
+      await this.getParties();
     }
   },
 
   methods: {
     async getDepartments() {
       let params = {
-        token: this.$store.state.jwtToken
-      }
-      let result = await this.$axios.$get('department.php', {params})
-      if(result.message === 'Success') {
-        this.departments = JSON.parse(JSON.stringify(result.department))
+        token: this.$store.state.jwtToken,
+      };
+      let result = await this.$axios.$get("department.php", { params });
+      if (result.message === "Success") {
+        this.departments = JSON.parse(JSON.stringify(result.department));
       }
     },
 
     async getParties() {
       let params = {
-        token: this.$store.state.jwtToken
-      }
-      let result = await this.$axios.$get('party.php', {params})
-      if(result.message === 'Success') {
-        this.parties = JSON.parse(JSON.stringify(result.party))
+        token: this.$store.state.jwtToken,
+      };
+      let result = await this.$axios.$get("party.php", { params });
+      if (result.message === "Success") {
+        this.parties = JSON.parse(JSON.stringify(result.party));
       }
     },
 
     async updateUser() {
-      await this.$refs.updateForm.validate()
-      if(this.updateValidate) {
-        this.updateProgress = true
+      await this.$refs.updateForm.validate();
+      if (this.updateValidate) {
+        this.updateProgress = true;
 
-        if(this.updateData.userStatus == 'Director') {
+        if (this.updateData.userStatus == "Director") {
           let params = {
             token: this.$store.state.jwtToken,
-            partyName: 'อำนวยการ'
-          }
-          let partry = await this.$axios.$get('party.php', {params})
-          if(partry.message == 'Success') {
-            let bossparty = JSON.parse(JSON.stringify(partry.party))
-            this.updateData.partyID = bossparty.partyID
+            partyName: "อำนวยการ",
+          };
+          let partry = await this.$axios.$get("party.php", { params });
+          if (partry.message == "Success") {
+            let bossparty = JSON.parse(JSON.stringify(partry.party));
+            this.updateData.partyID = bossparty.partyID;
           }
         }
 
-        let result = await this.$axios.$post('user.update.php', this.updateData)
+        let result = await this.$axios.$post(
+          "user.update.php",
+          this.updateData
+        );
 
-        if(result.message == 'Success') {
+        if (result.message == "Success") {
           Swal.fire({
-            title: 'สำเร็จ',
+            title: "สำเร็จ",
             text: result.msg,
-            icon: 'success'
-          }).then(async ()=> {
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+            icon: "success",
+          }).then(async () => {
+            this.updateProgress = false;
+            this.$emit("getUpdateStatus", { status: true });
+          });
         } else {
           Swal.fire({
-            title: 'ไม่สำเร็จ',
+            title: "ไม่สำเร็จ",
             text: result.msg,
-            icon: 'error'
-          }).then(()=>{
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+            icon: "error",
+          }).then(() => {
+            this.updateProgress = false;
+            this.$emit("getUpdateStatus", { status: true });
+          });
         }
       }
     },
 
     cancelUpdate() {
-      this.$emit('getUpdateStatus', {'status': true})
-    }
-
+      this.$emit("getUpdateStatus", { status: true });
+    },
   },
 
   watch: {
     async user() {
-      if(this.user) {
-        this.updateData = JSON.parse(JSON.stringify(this.user))
-        delete this.updateData.userPassword
-        await this.getDepartments()
-        await this.getParties()
+      if (this.user) {
+        this.updateData = JSON.parse(JSON.stringify(this.user));
+        delete this.updateData.userPassword;
+        await this.getDepartments();
+        await this.getParties();
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

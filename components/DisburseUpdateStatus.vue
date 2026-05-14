@@ -1,7 +1,11 @@
 <template>
   <v-card>
     <v-card-title class="amber lighten-2">
-      <span class="fontBold">แก้ไขสถานะข้อมูลจัดซื้อ/เบิกเงิน ปีงบประมาณ พ.ศ.{{ parseInt(disburse.disburseYear)+543 }}</span>
+      <span class="fontBold"
+        >แก้ไขสถานะข้อมูลจัดซื้อ/เบิกเงิน ปีงบประมาณ พ.ศ.{{
+          parseInt(disburse.disburseYear) + 543
+        }}</span
+      >
     </v-card-title>
     <v-divider class="green"></v-divider>
     <v-form
@@ -16,7 +20,7 @@
           <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">แผนก/งาน</h3>
             <v-autocomplete
-             v-model="updateData.departmentID"
+              v-model="updateData.departmentID"
               label="แผนก/งาน"
               :items="departments"
               item-text="departmentName"
@@ -78,16 +82,42 @@
             <v-radio-group
               v-model="updateData.disburseStatus"
               row
-              v-if="userType=='Plan' || userType=='Admin' || userType=='Finance'"
+              v-if="
+                userType == 'Plan' ||
+                userType == 'Admin' ||
+                userType == 'Finance'
+              "
             >
-              <v-radio label="ตรวจสอบรายการ" value="ตรวจสอบรายการ" color="primary"></v-radio>
-              <v-radio label="ตัดแผนแล้ว" value="ตัดแผนแล้ว" color="primary"></v-radio>
-              <v-radio label="เบิกจ่ายแล้ว" value="เบิกจ่ายแล้ว" color="success" v-if="userType=='Finance'"></v-radio>
-              <v-radio label="ยกเลิก" value="ยกเลิก"  color="red darken-2" v-if="userType=='Finance'"></v-radio>
+              <v-radio
+                label="จัดส่งเอกสาร"
+                value="จัดส่งเอกสาร"
+                color="primary"
+              ></v-radio>
+              <v-radio
+                label="ตัดแผนแล้ว"
+                value="ตัดแผนแล้ว"
+                color="primary"
+              ></v-radio>
+              <v-radio
+                label="เบิกจ่ายแล้ว"
+                value="เบิกจ่ายแล้ว"
+                color="success"
+                v-if="userType == 'Finance'"
+              ></v-radio>
+              <v-radio
+                label="ยกเลิก"
+                value="ยกเลิก"
+                color="red darken-2"
+                v-if="userType == 'Finance'"
+              ></v-radio>
             </v-radio-group>
             <v-divider v-else></v-divider>
           </v-col>
-          <v-col cols="12" md="6" v-if="updateData.disburseStatus=='เบิกจ่ายแล้ว'">
+          <v-col
+            cols="12"
+            md="6"
+            v-if="updateData.disburseStatus == 'เบิกจ่ายแล้ว'"
+          >
             <h3 class="mb-2 fontBold">จำนวนเงิน(บาท)</h3>
             <v-text-field
               v-model="updateData.disburseFinMoney"
@@ -97,7 +127,11 @@
               dense
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6" v-if="updateData.disburseStatus=='เบิกจ่ายแล้ว'">
+          <v-col
+            cols="12"
+            md="6"
+            v-if="updateData.disburseStatus == 'เบิกจ่ายแล้ว'"
+          >
             <h3 class="mb-2 fontBold">วันที่เบิกจ่าย</h3>
             <v-text-field
               v-model="updateData.disburseFinDate"
@@ -110,7 +144,13 @@
               dense
             ></v-text-field>
           </v-col>
-          <v-col cols="12" v-if="updateData.disburseStatus=='เบิกจ่ายแล้ว' || updateData.disburseStatus=='ยกเลิก'">
+          <v-col
+            cols="12"
+            v-if="
+              updateData.disburseStatus == 'เบิกจ่ายแล้ว' ||
+              updateData.disburseStatus == 'ยกเลิก'
+            "
+          >
             <h3 class="mb-2 fontBold">หมายเหตุ</h3>
             <v-text-field
               v-model="updateData.disburseFinDes"
@@ -120,7 +160,7 @@
               dense
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4" v-if="departmentSys=='Parcel'">
+          <v-col cols="12" md="4" v-if="departmentSys == 'Parcel'">
             <h3 class="mb-2 fontBold">สถานะ</h3>
             <v-checkbox
               v-model="updateData.parcRecStatus"
@@ -131,7 +171,11 @@
               dense
             ></v-checkbox>
           </v-col>
-          <v-col cols="12" md="4" v-if="departmentSys=='Parcel' && updateData.parcRecStatus==1">
+          <v-col
+            cols="12"
+            md="4"
+            v-if="departmentSys == 'Parcel' && updateData.parcRecStatus == 1"
+          >
             <h3 class="mb-2 fontBold">เลขที่คุมเอกสาร</h3>
             <v-text-field
               v-model="updateData.parcRecNo"
@@ -140,7 +184,11 @@
               dense
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4" v-if="departmentSys=='Parcel' && updateData.parcRecStatus==1">
+          <v-col
+            cols="12"
+            md="4"
+            v-if="departmentSys == 'Parcel' && updateData.parcRecStatus == 1"
+          >
             <h3 class="mb-2 fontBold">วันที่ส่งเอกสาร</h3>
             <v-text-field
               v-model="updateData.parcRecDate"
@@ -155,23 +203,13 @@
       <v-divider class="green lighten-2"></v-divider>
       <v-card-actions>
         <div class="col-12 text-center">
-          <v-btn
-            @click="cancelUpdate"
-            outlined
-          >
-            ยกเลิก
-          </v-btn>
+          <v-btn @click="cancelUpdate" outlined> ยกเลิก </v-btn>
           <v-progress-circular
             indeterminate
             color="success"
             v-if="updateProgress"
           ></v-progress-circular>
-          <v-btn
-            type="submit"
-            color="warning darken-1"
-            large
-            v-else
-          >
+          <v-btn type="submit" color="warning darken-1" large v-else>
             แก้ไข
           </v-btn>
         </div>
@@ -181,22 +219,22 @@
 </template>
 
 <script>
-var numeral = require('numeral')
-import Swal from 'sweetalert2'
+var numeral = require("numeral");
+import Swal from "sweetalert2";
 export default {
   props: {
     disburse: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     userType: {
       type: String,
-      default: null
+      default: null,
     },
     departmentSys: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
 
   data() {
@@ -209,23 +247,23 @@ export default {
       updateData: {},
       updateProgress: false,
       updateValidate: null,
-    }
+    };
   },
 
   async mounted() {
-    if(this.disburse) {
-      this.updateData = JSON.parse(JSON.stringify(this.disburse))
-      if(this.userType=='Finance' || this.departmentSys=='Finance') {
-        this.updateData.disburseFinMoney = this.updateData.disburseMoney
+    if (this.disburse) {
+      this.updateData = JSON.parse(JSON.stringify(this.disburse));
+      if (this.userType == "Finance" || this.departmentSys == "Finance") {
+        this.updateData.disburseFinMoney = this.updateData.disburseMoney;
       }
-      await this.getDepartment()
-      await this.getExpaeseplan()
-      if(this.updateData.disburseType == 'ค่าใช้จ่าย') {
-        await this.getExpaesebudget(this.updateData.expenseplanID)
+      await this.getDepartment();
+      await this.getExpaeseplan();
+      if (this.updateData.disburseType == "ค่าใช้จ่าย") {
+        await this.getExpaesebudget(this.updateData.expenseplanID);
       }
-      await this.getProject()
-      if(this.updateData.disburseType == 'โครงการ') {
-        await this.getPjbudget(this.updateData.projectID)
+      await this.getProject();
+      if (this.updateData.disburseType == "โครงการ") {
+        await this.getPjbudget(this.updateData.projectID);
       }
     }
   },
@@ -233,158 +271,179 @@ export default {
   methods: {
     async getDepartment() {
       let params = {
-        token: this.$store.state.jwtToken
-      }
-      let result = await this.$axios.$get('department.php', {params})
-      if(result.message == 'Success') {
-        this.departments = JSON.parse(JSON.stringify(result.department))
+        token: this.$store.state.jwtToken,
+      };
+      let result = await this.$axios.$get("department.php", { params });
+      if (result.message == "Success") {
+        this.departments = JSON.parse(JSON.stringify(result.department));
       }
     },
 
     async getExpaeseplan() {
       let params = {
         token: this.$store.state.jwtToken,
-        expenseplanYear: this.updateData.disburseYear
-      }
-      let result = await this.$axios.$get('expenseplan.php', {params})
-      if(result.message == 'Success') {
-        this.expenseplans = JSON.parse(JSON.stringify(result.expenseplan))
+        expenseplanYear: this.updateData.disburseYear,
+      };
+      let result = await this.$axios.$get("expenseplan.php", { params });
+      if (result.message == "Success") {
+        this.expenseplans = JSON.parse(JSON.stringify(result.expenseplan));
       }
     },
 
     async expenseplanIDChange() {
-      await this.getExpaesebudget(this.updateData.expenseplanID)
+      await this.getExpaesebudget(this.updateData.expenseplanID);
     },
 
     async getProject() {
       let params = {
         token: this.$store.state.jwtToken,
-        projectStatus: 'อนุมัติ',
-        projectPlanStatus: 'อนุมัติหลักการ',
-        projectYear: this.updateData.disburseYear
-      }
-      let result = await this.$axios.$get('project.php', {params})
-      if(result.message == 'Success') {
-        this.projects = JSON.parse(JSON.stringify(result.project))
+        projectStatus: "อนุมัติ",
+        projectPlanStatus: "อนุมัติหลักการ",
+        projectYear: this.updateData.disburseYear,
+      };
+      let result = await this.$axios.$get("project.php", { params });
+      if (result.message == "Success") {
+        this.projects = JSON.parse(JSON.stringify(result.project));
       }
     },
 
     async projectIDChange() {
-      await this.getPjbudget(this.updateData.projectID)
+      await this.getPjbudget(this.updateData.projectID);
     },
 
     async getPjbudget(projectID) {
       let params = {
         token: this.$store.state.jwtToken,
-        projectID: projectID
-      }
-      let result = await this.$axios.$get('pjbudget.php', {params})
-      if(result.message == 'Success') {
-        this.pjbudgets = JSON.parse(JSON.stringify(result.pjbudget))
+        projectID: projectID,
+      };
+      let result = await this.$axios.$get("pjbudget.php", { params });
+      if (result.message == "Success") {
+        this.pjbudgets = JSON.parse(JSON.stringify(result.pjbudget));
       }
     },
 
     async getExpaesebudget(expenseplanID) {
       let params = {
         token: this.$store.state.jwtToken,
-        expenseplanID: expenseplanID
-      }
-      let result = await this.$axios.$get('expensebudget.php', {params})
-      if(result.message == 'Success') {
-        this.expensebudgets = JSON.parse(JSON.stringify(result.expensebudget))
+        expenseplanID: expenseplanID,
+      };
+      let result = await this.$axios.$get("expensebudget.php", { params });
+      if (result.message == "Success") {
+        this.expensebudgets = JSON.parse(JSON.stringify(result.expensebudget));
       }
     },
 
     async updateDisburse() {
-      await this.$refs.updateForm.validate()
-      if(this.updateValidate) {
-        this.updateProgress = true
+      await this.$refs.updateForm.validate();
+      if (this.updateValidate) {
+        this.updateProgress = true;
 
-        this.updateData.disburseMoney = numeral(this.updateData.disburseMoney).value()
-        if(this.userType=='Finance' || this.departmentSys=='Finance') {
-          this.updateData.disburseFinMoney = numeral(this.updateData.disburseFinMoney).value()
-          if(!this.updateData.disburseFinDate) {
-            this.updateData.disburseFinDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        this.updateData.disburseMoney = numeral(
+          this.updateData.disburseMoney
+        ).value();
+        if (this.userType == "Finance" || this.departmentSys == "Finance") {
+          this.updateData.disburseFinMoney = numeral(
+            this.updateData.disburseFinMoney
+          ).value();
+          if (!this.updateData.disburseFinDate) {
+            this.updateData.disburseFinDate = new Date()
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " ");
           }
         }
 
-        if(!this.updateData.parcRecDate && this.departmentSys=='Parcel' && this.updateData.parcRecStatus==1) {
-          this.updateData.parcRecDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        if (
+          !this.updateData.parcRecDate &&
+          this.departmentSys == "Parcel" &&
+          this.updateData.parcRecStatus == 1
+        ) {
+          this.updateData.parcRecDate = new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
         }
 
-        if(this.expensebudgets.length > 0) {
-          let budgetplan = await this.expensebudgets.find(budgetplan => budgetplan.expenseplanID==this.updateData.expenseplanID)
-          if(budgetplan) {
-            this.updateData.expenseID = budgetplan.expenseID
+        if (this.expensebudgets.length > 0) {
+          let budgetplan = await this.expensebudgets.find(
+            (budgetplan) =>
+              budgetplan.expenseplanID == this.updateData.expenseplanID
+          );
+          if (budgetplan) {
+            this.updateData.expenseID = budgetplan.expenseID;
           }
         }
-        if(this.pjbudgets.length > 0) {
-          let pjbudget = await this.pjbudgets.find(pjbudget => pjbudget.pjbudgetID==this.updateData.pjbudgetID)
-          if(pjbudget) {
-            this.updateData.budgetplanID = pjbudget.budgetplanID
-            this.updateData.expenseID = pjbudget.expenseID
+        if (this.pjbudgets.length > 0) {
+          let pjbudget = await this.pjbudgets.find(
+            (pjbudget) => pjbudget.pjbudgetID == this.updateData.pjbudgetID
+          );
+          if (pjbudget) {
+            this.updateData.budgetplanID = pjbudget.budgetplanID;
+            this.updateData.expenseID = pjbudget.expenseID;
           }
         }
 
-        let result = await this.$axios.$post('disburse.update.php', this.updateData)
+        let result = await this.$axios.$post(
+          "disburse.update.php",
+          this.updateData
+        );
 
-        if(result.message == 'Success') {
+        if (result.message == "Success") {
           Swal.fire({
-            title: 'สำเร็จ',
+            title: "สำเร็จ",
             text: result.msg,
-            icon: 'success'
-          }).then(async ()=> {
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+            icon: "success",
+          }).then(async () => {
+            this.updateProgress = false;
+            this.$emit("getUpdateStatus", { status: true });
+          });
         } else {
           Swal.fire({
-            title: 'ไม่สำเร็จ',
+            title: "ไม่สำเร็จ",
             text: result.msg,
-            icon: 'error'
-          }).then(()=>{
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+            icon: "error",
+          }).then(() => {
+            this.updateProgress = false;
+            this.$emit("getUpdateStatus", { status: true });
+          });
         }
       }
     },
 
     cancelUpdate() {
-      this.$emit('getUpdateStatus', {'status': true})
+      this.$emit("getUpdateStatus", { status: true });
     },
 
     thaiDate(inDate) {
-      let result = ''
-      if(inDate) {
-        let thdate = new Date(inDate)
-        result = thdate.toLocaleDateString('th-TH', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
+      let result = "";
+      if (inDate) {
+        let thdate = new Date(inDate);
+        result = thdate.toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
       }
-      return result
-    }
-
+      return result;
+    },
   },
 
   watch: {
     async disburse() {
-      if(this.disburse) {
-        this.updateData = JSON.parse(JSON.stringify(this.disburse))
-        this.updateData.disburseFinMoney = this.updateData.disburseMoney
-        await this.getDepartment()
-        await this.getExpaeseplan()
-        if(this.updateData.disburseType == 'ค่าใช้จ่าย') {
-          await this.getExpaesebudget(this.updateData.expenseplanID)
+      if (this.disburse) {
+        this.updateData = JSON.parse(JSON.stringify(this.disburse));
+        this.updateData.disburseFinMoney = this.updateData.disburseMoney;
+        await this.getDepartment();
+        await this.getExpaeseplan();
+        if (this.updateData.disburseType == "ค่าใช้จ่าย") {
+          await this.getExpaesebudget(this.updateData.expenseplanID);
         }
-        await this.getProject()
-        if(this.updateData.disburseType == 'โครงการ') {
-          await this.getPjbudget(this.updateData.projectID)
+        await this.getProject();
+        if (this.updateData.disburseType == "โครงการ") {
+          await this.getPjbudget(this.updateData.projectID);
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

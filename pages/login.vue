@@ -19,6 +19,7 @@
           </v-tabs>
           <v-tabs-items
             v-model="loginTypeTab"
+            touchless
           >
             <!-- <v-tab-item>
               <v-form

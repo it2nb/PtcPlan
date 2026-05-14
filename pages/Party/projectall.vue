@@ -31,7 +31,7 @@
 <script>
 import ProjectTableVue from "~/components/ProjectTable.vue";
 export default {
-  layout: "department_layout",
+  layout: "party_layout",
 
   components: {
     ProjectTableVue,
@@ -40,6 +40,7 @@ export default {
   data() {
     return {
       userID: null,
+      partyID: null,
       userType: null,
       projectYear: null,
       insertBt: 0,
@@ -52,12 +53,8 @@ export default {
   async mounted() {
     let loginuser = JSON.parse(sessionStorage.getItem("loginuser"));
     this.userID = loginuser.user.userID;
-    this.userType = loginuser.user.departmentSys;
-    if (this.userType == "Plan") {
-      this.insertBt = 1;
-      this.updateBt = 1;
-      this.deleteBt = 1;
-    }
+    this.userType = loginuser.user.userStatus;
+    this.partyID = loginuser.user.partyID;
     if (this.$route.query.periodYear) {
       this.projectYear = this.$route.query.periodYear;
     } else {

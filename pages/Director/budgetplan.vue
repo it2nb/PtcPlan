@@ -32,6 +32,7 @@
     </v-tabs>
     <v-tabs-items
       v-model="tabIndex"
+      touchless
     >
       <v-tab-item>
         <div v-if="personalIDcard && budgetplanYear">

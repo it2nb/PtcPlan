@@ -40,7 +40,7 @@
               </v-col>
               <v-col cols="3" class="text-center">
                 <v-avatar color="blue-grey darken-2" size="48">
-                  <v-icon color="grey lighten-2"> fas fa-user </v-icon>
+                  <v-icon color="grey lighten-2"> fas fa-cog </v-icon>
                 </v-avatar>
               </v-col>
             </v-row>
@@ -61,19 +61,6 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <v-divider></v-divider>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item to="/Party/projectall" router exact color="teal darken-2">
-          <v-list-item-action>
-            <v-icon>fas fa-dot-circle</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>โครงการทั้งหมด</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <Headerapp :drawer="drawer" @getDrawer="drawerChange" />
@@ -91,7 +78,7 @@
 <script>
 import Headerapp from "~/components/Headerapp";
 export default {
-  name: "PartyLayout",
+  name: "PlanLayout",
 
   components: {
     Headerapp,
@@ -106,33 +93,53 @@ export default {
         {
           icon: "fas fa-dot-circle ",
           title: "Info",
-          to: "/Party/",
+          to: "/Plan/",
         },
         {
           icon: "fas fa-dot-circle ",
           title: "ข้อมูลส่วนตัว",
-          to: "/Party/me",
+          to: "/Plan/me",
+        },
+        {
+          icon: "fas fa-dot-circle ",
+          title: "ยุทธศาสตร์สถานศึกษา",
+          to: "/Plan/orgstrategic",
         },
         {
           icon: "fas fa-dot-circle ",
           title: "นโยบายที่เกี่ยวข้อง",
-          to: "/Party/policy",
+          to: "/Plan/policy",
         },
         {
           icon: "fas fa-dot-circle",
           title: "แผนงบประมาณ",
-          to: "/Party/budgetplan",
+          to: "/Plan/budgetplan",
         },
         {
           icon: "fas fa-dot-circle",
           title: "โครงการ",
-          to: "/Party/project",
+          to: "/Plan/project",
         },
         {
           icon: "fas fa-dot-circle",
-          title: "การจัดซื้อ/เบิกเงิน",
-          to: "/Party/disburse",
+          title: "จัดซื้อ/เบิกเงิน",
+          to: "/Plan/disburse",
         },
+        {
+          icon: "fas fa-dot-circle",
+          title: "ไฟล์เอกสาร",
+          to: "/Plan/document",
+        },
+        // {
+        //   icon: 'fas fa-dot-circle',
+        //   title: 'แผนกงาน',
+        //   to: '/Plan/department'
+        // },
+        // {
+        //   icon: 'fas fa-dot-circle ',
+        //   title: 'นโยบายที่เกี่ยวข้อง',
+        //   to: '/Plan/strategic',
+        // },
       ],
     };
   },
@@ -141,7 +148,7 @@ export default {
     let loginUser = JSON.parse(sessionStorage.getItem("loginuser")) || {
       type: "",
     };
-    if (loginUser.type == "Party") {
+    if (loginUser.type == "Plan") {
       this.user = loginUser.user;
     } else {
       this.$router.replace("/");

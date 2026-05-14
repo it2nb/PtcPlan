@@ -4,7 +4,11 @@
       <v-col cols="12">
         <v-card elevation="1">
           <v-card-title class="ptcBg white--text">
-            <b>ใบโอนจัดสรรงบประมาณ ประจำปีงบประมาณ พ.ศ.{{ parseInt(this.budgetslipYear)+543 }}</b>
+            <b
+              >ใบโอนจัดสรรงบประมาณ ประจำปีงบประมาณ พ.ศ.{{
+                parseInt(this.budgetslipYear) + 543
+              }}</b
+            >
           </v-card-title>
           <!-- <v-card-subtitle class="ptcBg white--text" v-if="budgetplanID">
             <b>หมวดงบประมาณรายรับ : {{ budgetplan.budgetFullname }}</b>
@@ -31,8 +35,19 @@
                       outlined
                       @change="filterProjects"
                     ></v-select> -->
-                    <v-btn color="success" text @click="showInsertDialog" v-if="insertBt || userType=='Admin' || userType=='Plan' || userType=='Finance'">
-                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon> เพิ่มงบประมาณที่ได้รับจัดสรร
+                    <v-btn
+                      color="success"
+                      text
+                      @click="showInsertDialog"
+                      v-if="
+                        insertBt ||
+                        userType == 'Admin' ||
+                        userType == 'Plan' ||
+                        userType == 'Finance'
+                      "
+                    >
+                      <v-icon small class="mr-1">fas fa-plus-circle</v-icon>
+                      เพิ่มงบประมาณที่ได้รับจัดสรร
                     </v-btn>
                   </v-col>
                   <v-col cols="12" md="6">
@@ -52,7 +67,9 @@
                 <div  class="text-no-wrap">OSC-{{ parseInt(item.budgetslipID) }}</div>
               </template> -->
               <template v-slot:item.index="{ item }">
-                <div class="text-no-wrap">{{  budgetslip.indexOf(item)+1 }}</div>
+                <div class="text-no-wrap">
+                  {{ budgetslip.indexOf(item) + 1 }}
+                </div>
               </template>
               <template v-slot:item.budgetslipNo="{ item }">
                 <div class="text-no-wrap">{{ item.budgetslipNo }}</div>
@@ -64,15 +81,28 @@
                 </div>
               </template>
               <template v-slot:item.budgetslipMoney="{ item }">
-                <div class="text-no-wrap">{{ moneyFormat(item.budgetslipMoney) }}</div>
+                <div class="text-no-wrap">
+                  {{ moneyFormat(item.budgetslipMoney) }}
+                </div>
               </template>
               <template v-slot:item.budgetslipDate="{ item }">
-                <div class="text-no-wrap">{{ thaiDate(item.budgetslipDate) }}</div>
+                <div class="text-no-wrap">
+                  {{ thaiDate(item.budgetslipDate) }}
+                </div>
               </template>
               <template v-slot:item.budgetslipNo="{ item }">
                 <div>
-                  <v-btn small color="primary" rounded outlined :href="item.budgetslipFile" target="_blank" v-if="item.budgetslipFile">
-                    <v-icon small class="mr-1">fas fa-file-lines</v-icon> {{ item.budgetslipNo }}
+                  <v-btn
+                    small
+                    color="primary"
+                    rounded
+                    outlined
+                    :href="item.budgetslipFile"
+                    target="_blank"
+                    v-if="item.budgetslipFile"
+                  >
+                    <v-icon small class="mr-1">fas fa-file-lines</v-icon>
+                    {{ item.budgetslipNo }}
                   </v-btn>
                 </div>
               </template>
@@ -81,15 +111,13 @@
         </v-card>
       </v-col>
     </v-row>
-
   </div>
 </template>
 
 <script>
-import numeral from 'numeral'
+import numeral from "numeral";
 export default {
-  components: {
-  },
+  components: {},
 
   props: {
     // budgetslip: {
@@ -102,27 +130,27 @@ export default {
     },
     personalIDcard: {
       type: String,
-      default: null
+      default: null,
     },
     budgetslipYear: {
       type: String,
-      default: null
+      default: null,
     },
     budgetplanID: {
       type: String,
-      default: null
+      default: null,
     },
     insertBt: {
       type: Number,
-      default: 0
+      default: 0,
     },
     updateBt: {
       type: Number,
-      default: 0
+      default: 0,
     },
     deleteBt: {
       type: Number,
-      default: 0
+      default: 0,
     },
   },
 
@@ -135,21 +163,41 @@ export default {
         //   sortable: false,
         //   value: 'budgetslipNo',
         // },
-        { text: '#', value: 'index', align: 'center', class: 'text-center' },
-        { text: 'รายการงบประมาณ', value: 'budgetplanDes', align: 'left', class: 'text-center' },
-        { text: 'หมวดงบประมาณ', value: 'budgettypeName', align: 'left', class: 'text-center' },
-        { text: '', value: 'budgetName', align: 'left', class: 'text-center' },
-        { text: 'จำนวน (บาท)', value: 'budgetslipMoney', align: 'right', class: 'text-center' },
-        { text: 'วันที่', value: 'budgetslipDate', align: 'center', class: 'text-center' },
+        { text: "#", value: "index", align: "center", class: "text-center" },
+        {
+          text: "รายการงบประมาณ",
+          value: "budgetplanDes",
+          align: "left",
+          class: "text-center",
+        },
+        {
+          text: "หมวดงบประมาณ",
+          value: "budgettypeName",
+          align: "left",
+          class: "text-center",
+        },
+        { text: "", value: "budgetName", align: "left", class: "text-center" },
+        {
+          text: "จำนวน (บาท)",
+          value: "budgetslipMoney",
+          align: "right",
+          class: "text-center",
+        },
+        {
+          text: "วันที่",
+          value: "budgetslipDate",
+          align: "center",
+          class: "text-center",
+        },
         // { text: '', value: 'actions', align: 'center' },
         {
-          text: 'เลขที่ใบโอน',
-          align: 'center',
+          text: "เลขที่ใบโอน",
+          align: "center",
           sortable: false,
-          value: 'budgetslipNo',
+          value: "budgetslipNo",
         },
       ],
-      search: '',
+      search: "",
       budgetplan: {},
       budgetslipLoading: true,
       budgetslipOrg: [],
@@ -165,78 +213,80 @@ export default {
       deleteDialog: false,
       deleteProgress: false,
       budgetslipDeleteValidate: null,
-    }
+    };
   },
 
   async mounted() {
-    if(this.budgetplanID) {
-      await this.getBudgetplan()
+    if (this.budgetplanID) {
+      await this.getBudgetplan();
     }
-    await this.getBudgetslips()
+    await this.getBudgetslips();
   },
 
   methods: {
     async getBudgetplan() {
-      let result = await this.$axios.$get('budgetplan.php', {
+      let result = await this.$axios.$get("budgetplan.php", {
         params: {
           token: this.$store.state.jwtToken,
-          budgetplanID: this.budgetplanID
-        }
-      })
+          budgetplanID: this.budgetplanID,
+        },
+      });
 
-      if(result.message === 'Success') {
-        this.budgetplan = JSON.parse(JSON.stringify(result.budgetplan))
+      if (result.message === "Success") {
+        this.budgetplan = JSON.parse(JSON.stringify(result.budgetplan));
       }
     },
 
     async getBudgetslips() {
-      this.budgetslipLoading = true
-      let result = await this.$axios.$get('budgetslip.php', {
+      this.budgetslipLoading = true;
+      let result = await this.$axios.$get("budgetslip.php", {
         params: {
           token: this.$store.state.jwtToken,
           budgetslipYear: this.budgetslipYear,
-        }
-      })
+        },
+      });
 
-      if(result.message === 'Success') {
-        this.budgetslipOrg = JSON.parse(JSON.stringify(result.budgetslip))
-        this.budgetslip = this.budgetslipOrg.filter(budgetslip => budgetslip.budgettypePublic == 1)
+      if (result.message === "Success") {
+        this.budgetslipOrg = JSON.parse(JSON.stringify(result.budgetslip));
+        this.budgetslip = this.budgetslipOrg.filter(
+          (budgetslip) => budgetslip.budgettypePublic == 1
+        );
       }
-      this.budgetslipLoading = false
+      this.budgetslipLoading = false;
     },
 
     moneyFormat(money) {
-      return numeral(money).format('0,0.00')
+      return numeral(money).format("0,0.00");
     },
 
     thaiDate(inDate) {
-      let result = ''
-      if(inDate) {
-        let thdate = new Date(inDate)
-        result = thdate.toLocaleDateString('th-TH', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        })
+      let result = "";
+      if (inDate) {
+        let thdate = new Date(inDate);
+        result = thdate.toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
       }
-      return result
-    }
+      return result;
+    },
   },
 
-watch: {
-  async budgetslipYear() {
-    if(this.budgetplanID) {
-      await this.getBudgetplan()
-    }
-    await this.getBudgetslips()
-  },
+  watch: {
+    async budgetslipYear() {
+      if (this.budgetplanID) {
+        await this.getBudgetplan();
+      }
+      await this.getBudgetslips();
+    },
 
-  async budgetplanID() {
-    if(this.budgetplanID) {
-      await this.getBudgetplan()
-    }
-    await this.getBudgetslips()
-  }
-}
-}
+    async budgetplanID() {
+      if (this.budgetplanID) {
+        await this.getBudgetplan();
+      }
+      await this.getBudgetslips();
+    },
+  },
+};
 </script>

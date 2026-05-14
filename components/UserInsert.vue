@@ -20,9 +20,7 @@
               label="ชื่อผู้ใช้ระบบ"
               outlined
               required
-              :rules="[
-                ()=>!!insertData.userName || 'กรุณากรอกข้อมูล'
-              ]"
+              :rules="[() => !!insertData.userName || 'กรุณากรอกข้อมูล']"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -33,9 +31,7 @@
               :type="passwordShow ? 'text' : 'password'"
               :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
               outlined
-              :rules="[
-                ()=>!!insertData.userPassword || 'กรุณากรอกรหัสผ่าน'
-              ]"
+              :rules="[() => !!insertData.userPassword || 'กรุณากรอกรหัสผ่าน']"
               @click:append="passwordShow = !passwordShow"
             ></v-text-field>
           </v-col>
@@ -45,9 +41,7 @@
               v-model="insertData.userFullname"
               label="ชื่อ-สกุล"
               outlined
-              :rules="[
-                ()=>!!insertData.userFullname || 'กรุณากรอกชื่อ-สกุล'
-              ]"
+              :rules="[() => !!insertData.userFullname || 'กรุณากรอกชื่อ-สกุล']"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -57,9 +51,7 @@
               label="เลขประจำตัวประชาชน"
               outlined
               required
-              :rules="[
-                ()=>!!insertData.personalIDcard || 'กรุณากรอกข้อมูล'
-              ]"
+              :rules="[() => !!insertData.personalIDcard || 'กรุณากรอกข้อมูล']"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -70,13 +62,11 @@
               :items="userStatuses"
               outlined
               required
-              :rules="[
-                ()=>!!insertData.userStatus || 'กรุณากรอกข้อมูล'
-              ]"
-              :readonly="userType=='Department' || userType=='Party'"
+              :rules="[() => !!insertData.userStatus || 'กรุณากรอกข้อมูล']"
+              :readonly="userType == 'Department' || userType == 'Party'"
             ></v-autocomplete>
           </v-col>
-          <v-col cols="12" md="6" v-if="insertData.userStatus=='Department'">
+          <v-col cols="12" md="6" v-if="insertData.userStatus == 'Department'">
             <h3 class="mb-2 fontBold">แผนก/งาน</h3>
             <v-autocomplete
               v-model="insertData.departmentID"
@@ -86,13 +76,11 @@
               item-value="departmentID"
               outlined
               required
-              :rules="[
-                ()=>!!insertData.departmentID || 'กรุณากรอกข้อมูล'
-              ]"
-              :readonly="userType=='Department' || userType=='Party'"
+              :rules="[() => !!insertData.departmentID || 'กรุณากรอกข้อมูล']"
+              :readonly="userType == 'Department' || userType == 'Party'"
             ></v-autocomplete>
           </v-col>
-          <v-col cols="12" md="6" v-if="insertData.userStatus=='Party'">
+          <v-col cols="12" md="6" v-if="insertData.userStatus == 'Party'">
             <h3 class="mb-2 fontBold">ฝ่าย</h3>
             <v-autocomplete
               v-model="insertData.partyID"
@@ -102,10 +90,8 @@
               item-value="partyID"
               outlined
               required
-              :rules="[
-                ()=>!!insertData.partyID || 'กรุณากรอกข้อมูล'
-              ]"
-              :readonly="userType=='Department' || userType=='Party'"
+              :rules="[() => !!insertData.partyID || 'กรุณากรอกข้อมูล']"
+              :readonly="userType == 'Department' || userType == 'Party'"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
@@ -131,23 +117,13 @@
       <v-divider class="green lighten-2"></v-divider>
       <v-card-actions>
         <div class="col-12 text-center">
-          <v-btn
-            @click="cancelInsert"
-            outlined
-          >
-            ยกเลิก
-          </v-btn>
+          <v-btn @click="cancelInsert" outlined> ยกเลิก </v-btn>
           <v-progress-circular
             indeterminate
             color="success"
             v-if="insertProgress"
           ></v-progress-circular>
-          <v-btn
-            type="submit"
-            color="success darken-1"
-            large
-            v-else
-          >
+          <v-btn type="submit" color="success darken-1" large v-else>
             บันทึก
           </v-btn>
         </div>
@@ -157,18 +133,18 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2'
-import { readonly } from 'vue';
+import Swal from "sweetalert2";
+import { readonly } from "vue";
 export default {
   props: {
     user: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     userType: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
 
   data() {
@@ -178,116 +154,121 @@ export default {
       insertValidate: null,
       passwordShow: false,
       userStatuses: [
-        {'text': 'แผนก/งาน', 'value': 'Department'},
-        {'text': 'ฝ่ายบริหาร', 'value': 'Party'},
-        {'text': 'งานวางแผนและงบประมาณ', 'value': 'Plan'},
-        {'text': 'งานพัสดุ', 'value': 'Supply'},
-        {'text': 'งานการเงิน', 'value': 'Finance'},
-        {'text': 'งานบัญชี', 'value': 'Accountant'},
-        {'text': 'งานสารบัญ', 'value': 'Index'},
-        {'text': 'ผู้อำนวยการ', 'value': 'Director'},
-        {'text': 'ผู้ดูแลระบบ', 'value': 'Admin'},
+        { text: "แผนก/งาน", value: "Department" },
+        { text: "ฝ่ายบริหาร", value: "Party" },
+        { text: "งานพัฒนายุทธศาสตร์ฯ", value: "Plan" },
+        { text: "งานพัสดุ", value: "Supply" },
+        { text: "งานการเงิน", value: "Finance" },
+        { text: "งานบัญชี", value: "Accountant" },
+        { text: "งานสารบัญ", value: "Index" },
+        { text: "ผู้อำนวยการ", value: "Director" },
+        { text: "ผู้ดูแลระบบ", value: "Admin" },
       ],
       departments: [],
       parties: [],
-    }
+    };
   },
 
   async mounted() {
-    if(this.user) {
-      this.insertData = JSON.parse(JSON.stringify(this.user))
-      await this.getDepartments()
-      await this.getParties()
+    if (this.user) {
+      this.insertData = JSON.parse(JSON.stringify(this.user));
+      await this.getDepartments();
+      await this.getParties();
     }
   },
 
   methods: {
     async getDepartments() {
       let params = {
-        token: this.$store.state.jwtToken
-      }
-      let result = await this.$axios.$get('department.php', {params})
-      if(result.message === 'Success') {
-        this.departments = JSON.parse(JSON.stringify(result.department))
+        token: this.$store.state.jwtToken,
+      };
+      let result = await this.$axios.$get("department.php", { params });
+      if (result.message === "Success") {
+        this.departments = JSON.parse(JSON.stringify(result.department));
       }
     },
 
     async getParties() {
       let params = {
-        token: this.$store.state.jwtToken
-      }
-      let result = await this.$axios.$get('party.php', {params})
-      if(result.message === 'Success') {
-        this.parties = JSON.parse(JSON.stringify(result.party))
+        token: this.$store.state.jwtToken,
+      };
+      let result = await this.$axios.$get("party.php", { params });
+      if (result.message === "Success") {
+        this.parties = JSON.parse(JSON.stringify(result.party));
       }
     },
 
     async insertUser() {
-      await this.$refs.insertForm.validate()
-      if(this.insertValidate) {
-        this.insertProgress = true
-        if(this.insertData.userStatus == 'Director') {
+      await this.$refs.insertForm.validate();
+      if (this.insertValidate) {
+        this.insertProgress = true;
+        if (this.insertData.userStatus == "Director") {
           let params = {
             token: this.$store.state.jwtToken,
-            partyName: 'อำนวยการ'
-          }
-          let partry = await this.$axios.$get('party.php', {params})
-          if(partry.message == 'Success') {
-            let bossparty = JSON.parse(JSON.stringify(partry.party))
-            this.insertData.partyID = bossparty.partyID
+            partyName: "อำนวยการ",
+          };
+          let partry = await this.$axios.$get("party.php", { params });
+          if (partry.message == "Success") {
+            let bossparty = JSON.parse(JSON.stringify(partry.party));
+            this.insertData.partyID = bossparty.partyID;
           }
         }
-        let result = await this.$axios.$post('user.insert.php', this.insertData)
+        let result = await this.$axios.$post(
+          "user.insert.php",
+          this.insertData
+        );
 
-        if(result.message == 'Success') {
+        if (result.message == "Success") {
           Swal.fire({
-            title: 'สำเร็จ',
+            title: "สำเร็จ",
             text: result.msg,
-            icon: 'success'
-          }).then(async ()=> {
-            this.insertProgress = false
-            this.$emit('getInsertStatus', {'status': true, 'userID': result.userID})
-          })
+            icon: "success",
+          }).then(async () => {
+            this.insertProgress = false;
+            this.$emit("getInsertStatus", {
+              status: true,
+              userID: result.userID,
+            });
+          });
         } else {
           Swal.fire({
-            title: 'ไม่สำเร็จ',
+            title: "ไม่สำเร็จ",
             text: result.msg,
-            icon: 'error'
-          }).then(()=>{
-            this.insertProgress = false
-            this.$emit('getInsertStatus', {'status': true})
-          })
+            icon: "error",
+          }).then(() => {
+            this.insertProgress = false;
+            this.$emit("getInsertStatus", { status: true });
+          });
         }
       }
     },
 
     cancelInsert() {
-      this.$emit('getInsertStatus', {'status': true})
+      this.$emit("getInsertStatus", { status: true });
     },
 
     thaiDate(inDate) {
-      let result = ''
-      if(inDate) {
-        let thdate = new Date(inDate)
-        result = thdate.toLocaleDateString('th-TH', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
+      let result = "";
+      if (inDate) {
+        let thdate = new Date(inDate);
+        result = thdate.toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
       }
-      return result
-    }
-
+      return result;
+    },
   },
 
   watch: {
     async user() {
-      if(this.user) {
-        this.insertData = JSON.parse(JSON.stringify(this.user))
-        await this.getDepartments()
-        await this.getParties()
+      if (this.user) {
+        this.insertData = JSON.parse(JSON.stringify(this.user));
+        await this.getDepartments();
+        await this.getParties();
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

@@ -45,6 +45,7 @@
     <v-tabs-items
       v-model="tab"
       v-if="projectYear"
+      touchless
     >
       <v-tab-item>
         <BudgetDisburseInfoTableVue :budgetYear="projectYear" :budgetPeriod="budgetPeriod" />

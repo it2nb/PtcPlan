@@ -20,6 +20,7 @@
       <v-tabs-items
         v-model="tab"
         class="container px-md-12"
+        touchless
       >
         <v-tab-item
           v-for="documenttype in documenttypes"

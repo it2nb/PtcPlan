@@ -15,37 +15,43 @@
         </div>
       </v-col>
     </v-row>
-    <v-tabs
-      v-model="tabIndex"
-      class="mt-2"
-      background-color="green lighten-5"
-    >
-      <v-tab>
-        แผนงบประมาณรายรับ
-      </v-tab>
-      <v-tab>
-        แผนงบประมาณรายจ่าย
-      </v-tab>
-      <v-tab>
-        งบประมาณที่ได้รับจัดสรร
-      </v-tab>
+    <v-tabs v-model="tabIndex" class="mt-2" background-color="green lighten-5">
+      <v-tab> แผนงบประมาณรายรับ </v-tab>
+      <v-tab> แผนงบประมาณรายจ่าย </v-tab>
+      <v-tab> งบประมาณที่ได้รับจัดสรร </v-tab>
     </v-tabs>
-    <v-tabs-items
-      v-model="tabIndex"
-    >
+    <v-tabs-items v-model="tabIndex" touchless>
       <v-tab-item>
         <div v-if="personalIDcard && budgetplanYear">
-          <BudgetplanTable :personalIDcard="personalIDcard" :budgetplanYear="budgetplanYear" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" userType="Plan" />
+          <BudgetplanTable
+            :personalIDcard="personalIDcard"
+            :budgetplanYear="budgetplanYear"
+            :insertBt="insertBt"
+            :updateBt="updateBt"
+            :deleteBt="deleteBt"
+            :userType="userType"
+          />
         </div>
       </v-tab-item>
       <v-tab-item>
         <div v-if="personalIDcard && budgetplanYear">
-          <ExpenseplanTable :personalIDcard="personalIDcard" :expenseplanYear="budgetplanYear" :insertBt="insertBt" :updateBt="updateBt" :deleteBt="deleteBt" userType="Plan" />
+          <ExpenseplanTable
+            :personalIDcard="personalIDcard"
+            :expenseplanYear="budgetplanYear"
+            :insertBt="insertBt"
+            :updateBt="updateBt"
+            :deleteBt="deleteBt"
+            :userType="userType"
+          />
         </div>
       </v-tab-item>
       <v-tab-item>
         <div v-if="personalIDcard && budgetplanYear">
-          <BudgetslipTableVue :budgetslipYear="budgetplanYear" :updateBt="1" :deleteBt="1" />
+          <BudgetslipTableVue
+            :budgetslipYear="budgetplanYear"
+            :updateBt="updateBt"
+            :deleteBt="deleteBt"
+          />
         </div>
       </v-tab-item>
     </v-tabs-items>
@@ -53,16 +59,16 @@
 </template>
 
 <script>
-import BudgetplanTable from '~/components/BudgetplanTable'
-import ExpenseplanTable from '~/components/ExpenseplanTable'
-import BudgetslipTableVue from '~/components/BudgetslipTable.vue'
+import BudgetplanTable from "~/components/BudgetplanTable";
+import ExpenseplanTable from "~/components/ExpenseplanTable";
+import BudgetslipTableVue from "~/components/BudgetslipTable.vue";
 export default {
-  layout: 'department_layout',
+  layout: "department_layout",
 
   components: {
     BudgetplanTable,
     ExpenseplanTable,
-    BudgetslipTableVue
+    BudgetslipTableVue,
   },
 
   data() {
@@ -70,72 +76,88 @@ export default {
       budgetplans: [],
       personalIDcard: null,
       budgetplanYear: null,
-      insertBt: 1,
-      updateBt: 1,
-      deleteBt: 1,
+      insertBt: 0,
+      updateBt: 0,
+      deleteBt: 0,
       periodYears: [],
       tabIndex: 0,
-    }
+      userType: "",
+    };
   },
 
   async mounted() {
-    let loginuser = JSON.parse(sessionStorage.getItem("loginuser"))
-    this.personalIDcard = loginuser.user.personalIDcard
-    if(this.$route.query.periodYear) {
-      this.budgetplanYear = this.$route.query.periodYear
+    let loginuser = JSON.parse(sessionStorage.getItem("loginuser"));
+    this.userType = loginuser.user.departmentSys;
+    if (this.userType == "Plan") {
+      this.insertBt = 1;
+      this.updateBt = 1;
+      this.deleteBt = 1;
+    }
+    this.personalIDcard = loginuser.user.personalIDcard;
+    if (this.$route.query.periodYear) {
+      this.budgetplanYear = this.$route.query.periodYear;
     } else {
-      await this.getPeriod()
+      await this.getPeriod();
       // if(this.periodYears.length > 0) {
       //   this.periodYears.reverse()
       //   this.budgetplanYear = this.periodYears[0].periodYear
       // }
-      if(this.periodYears.length > 0) {
-        let thisPeriod = this.periodYears.filter(period => Date.now() >= new Date(period.periodBegin.replace('/', '-')).getTime() && Date.now() <= new Date(period.periodEnd.replace('/', '-')+' 23:59:00').getTime())
-        if(thisPeriod.length > 0) {
-          this.budgetplanYear = thisPeriod[0].periodYear
+      if (this.periodYears.length > 0) {
+        let thisPeriod = this.periodYears.filter(
+          (period) =>
+            Date.now() >=
+              new Date(period.periodBegin.replace("/", "-")).getTime() &&
+            Date.now() <=
+              new Date(
+                period.periodEnd.replace("/", "-") + " 23:59:00"
+              ).getTime()
+        );
+        if (thisPeriod.length > 0) {
+          this.budgetplanYear = thisPeriod[0].periodYear;
         } else {
-          this.budgetplanYear = this.periodYears[0].periodYear
+          this.budgetplanYear = this.periodYears[0].periodYear;
         }
       }
     }
-    await this.getBudgetplans()
+    await this.getBudgetplans();
   },
 
   methods: {
     async getPeriod() {
       let params = {
         token: this.$store.state.jwtToken,
-        fn: "All"
-      }
-      let result = await this.$axios.$get('period.php', {
-        params:params
-      })
+        fn: "All",
+      };
+      let result = await this.$axios.$get("period.php", {
+        params: params,
+      });
 
-      if(result.message == 'Success') {
-        this.periodYears = JSON.parse(JSON.stringify(result.period))
+      if (result.message == "Success") {
+        this.periodYears = JSON.parse(JSON.stringify(result.period));
       }
     },
 
     async getBudgetplans() {
-      let result = await this.$axios.$get('budgetplan.php', {
+      let result = await this.$axios.$get("budgetplan.php", {
         params: {
           token: this.$store.state.jwtToken,
-          budgetplanYear: this.budgetplanYear
-        }
-      })
+          budgetplanYear: this.budgetplanYear,
+        },
+      });
 
-      if(result.message === 'Success') {
-        this.budgetplans = JSON.parse(JSON.stringify(result.budgetplan))
+      if (result.message === "Success") {
+        this.budgetplans = JSON.parse(JSON.stringify(result.budgetplan));
       }
-    }
+    },
   },
 
-watch: {
-  async budgetplanYear() {
-    await this.periodYears.find(period => period.periodYear==this.budgetplanYear)
-    await this.getBudgetplans()
-  }
-}
-
-}
+  watch: {
+    async budgetplanYear() {
+      await this.periodYears.find(
+        (period) => period.periodYear == this.budgetplanYear
+      );
+      await this.getBudgetplans();
+    },
+  },
+};
 </script>

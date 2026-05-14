@@ -13,7 +13,7 @@
     >
       <v-card-text>
         <v-row dense>
-            <v-col cols="12" md="6">
+          <v-col cols="12" md="6">
             <h3 class="mb-2 fontBold">ฝ่าย</h3>
             <v-select
               v-model="updateData.partyID"
@@ -22,9 +22,7 @@
               item-text="partyName"
               item-value="partyID"
               outlined
-              :rules="[
-                ()=>!!updateData.partyID || 'กรุณากรอกข้อมูล'
-              ]"
+              :rules="[() => !!updateData.partyID || 'กรุณากรอกข้อมูล']"
             ></v-select>
           </v-col>
           <v-col cols="12" md="6">
@@ -34,9 +32,7 @@
               label="ชื่อแผนก/งาน"
               outlined
               required
-              :rules="[
-                ()=>!!updateData.departmentName || 'กรุณากรอกข้อมูล'
-              ]"
+              :rules="[() => !!updateData.departmentName || 'กรุณากรอกข้อมูล']"
             ></v-text-field>
           </v-col>
           <v-col cols="12">
@@ -96,23 +92,13 @@
       <v-divider class="green lighten-2"></v-divider>
       <v-card-actions>
         <div class="col-12 text-center">
-          <v-btn
-            @click="cancelUpdate"
-            outlined
-          >
-            ยกเลิก
-          </v-btn>
+          <v-btn @click="cancelUpdate" outlined> ยกเลิก </v-btn>
           <v-progress-circular
             indeterminate
             color="success"
             v-if="updateProgress"
           ></v-progress-circular>
-          <v-btn
-            type="submit"
-            color="warning darken-1"
-            large
-            v-else
-          >
+          <v-btn type="submit" color="warning darken-1" large v-else>
             แก้ไข
           </v-btn>
         </div>
@@ -122,112 +108,116 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 export default {
   props: {
     department: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
   },
 
   data() {
     return {
-        parties: [],
+      parties: [],
       updateData: {},
       users: [],
       departmentSyses: [
-        {text: 'ไม่มี', value: 'none'},
-        {text: 'งานพัสดุ', value: 'Parcel'},
-        {text: 'งานวางแผน', value: 'Plan'},
-        {text: 'งานบัญชี', value: 'Account'},
-        {text: 'งานการเงิน', value: 'Finance'}
+        { text: "ไม่มี", value: "none" },
+        { text: "งานพัสดุ", value: "Parcel" },
+        { text: "งานวางแผน", value: "Plan" },
+        { text: "งานบัญชี", value: "Account" },
+        { text: "งานการเงิน", value: "Finance" },
+        { text: "งานติดตาม", value: "Monitor" },
+        { text: "งานประกันคุณภาพ", value: "QA" },
       ],
       updateProgress: false,
       updateValidate: null,
-    }
+    };
   },
 
   async mounted() {
-    if(this.department) {
-        await this.getParties()
-        await this.getUsers()
-      this.updateData = JSON.parse(JSON.stringify(this.department))
+    if (this.department) {
+      await this.getParties();
+      await this.getUsers();
+      this.updateData = JSON.parse(JSON.stringify(this.department));
     }
   },
 
   methods: {
     async getParties() {
-        let result = await this.$axios.$get('party.php', {
-            params: {
-                token: this.$store.state.jwtToken,
-            }
-        })
-        if(result.message == 'Success') {
-            this.parties = JSON.parse(JSON.stringify(result.party))
-        }
+      let result = await this.$axios.$get("party.php", {
+        params: {
+          token: this.$store.state.jwtToken,
+        },
+      });
+      if (result.message == "Success") {
+        this.parties = JSON.parse(JSON.stringify(result.party));
+      }
     },
 
     async getUsers() {
-        let result = await this.$axios.$get('user.php', {
-            params: {
-                token: this.$store.state.jwtToken,
-                departmentID: this.department.departmentID
-            }
-        })
-        if(result.message == 'Success') {
-            this.users = JSON.parse(JSON.stringify(result.user))
-            this.users = this.users.filter(user=>user.userEnable=='Enable')
-            this.users.unshift({
-              userID: 0,
-              userFullname: 'ไม่มี'
-            })
-        }
+      let result = await this.$axios.$get("user.php", {
+        params: {
+          token: this.$store.state.jwtToken,
+          departmentID: this.department.departmentID,
+        },
+      });
+      if (result.message == "Success") {
+        this.users = JSON.parse(JSON.stringify(result.user));
+        this.users = this.users.filter((user) => user.userEnable == "Enable");
+        this.users.unshift({
+          userID: 0,
+          userFullname: "ไม่มี",
+        });
+      }
     },
 
     async updateDepartment() {
-      await this.$refs.updateForm.validate()
-      if(this.updateValidate) {
-        this.updateProgress = true
+      await this.$refs.updateForm.validate();
+      if (this.updateValidate) {
+        this.updateProgress = true;
 
-        let result = await this.$axios.$post('department.update.php', this.updateData)
+        let result = await this.$axios.$post(
+          "department.update.php",
+          this.updateData
+        );
 
-        if(result.message == 'Success') {
+        if (result.message == "Success") {
           Swal.fire({
-            title: 'สำเร็จ',
+            title: "สำเร็จ",
             text: result.msg,
-            icon: 'success'
-          }).then(async ()=> {
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+            icon: "success",
+          }).then(async () => {
+            this.updateProgress = false;
+            this.$emit("getUpdateStatus", { status: true });
+          });
         } else {
           Swal.fire({
-            title: 'ไม่สำเร็จ',
+            title: "ไม่สำเร็จ",
             text: result.msg,
-            icon: 'error'
-          }).then(()=>{
-            this.updateProgress = false
-            this.$emit('getUpdateStatus', {'status': true})
-          })
+            icon: "error",
+          }).then(() => {
+            this.updateProgress = false;
+            this.$emit("getUpdateStatus", { status: true });
+          });
         }
       }
     },
 
     cancelUpdate() {
-      this.$emit('getUpdateStatus', {'status': true})
-    }
-
+      this.$emit("getUpdateStatus", { status: true });
+    },
   },
 
   watch: {
     async department() {
-      if(this.department) {
-        await this.getParties()
-        await this.getUsers()
-        this.updateData = JSON.parse(JSON.stringify(this.department))
+      if (this.department) {
+        await this.getParties();
+        await this.getUsers();
+        this.updateData = JSON.parse(JSON.stringify(this.department));
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
