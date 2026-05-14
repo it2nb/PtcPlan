@@ -1235,6 +1235,11 @@ export default {
 
       if (result.message == "Success") {
         this.disburse = JSON.parse(JSON.stringify(result.disburse));
+        if(this.disburse.disburseType == 'ค่าใช้จ่าย') {
+          await this.getDepartmentHeadUser(this.disburse.departmentID);
+        } else if (this.disburse.disburseType == 'โครงการ') {
+          await this.getDepartmentHeadUser(this.disburse.pjdepartmentID);
+        }
       }
     },
 
@@ -1248,7 +1253,7 @@ export default {
 
       if (result.message == "Success") {
         this.disburseuser = JSON.parse(JSON.stringify(result.user));
-        await this.getDepartmentHeadUser(this.disburseuser.departmentID);
+        //await this.getDepartmentHeadUser(this.disburseuser.departmentID);
       }
     },
 
@@ -1500,14 +1505,17 @@ export default {
       // }
 
       disburseStatus = "จัดส่งเอกสาร";
-      disburseDepReqName = this.user.userFullname;
-      departmentUserID = this.user.userID;
-      if (
-        this.user.userID != this.disburse.departmentHeadUserID &&
-        this.user.userID != this.disburse.pjdepartmentHeadUserID
-      ) {
-        departmentUserExpos = "รักษาราชการแทน";
-      }
+      // disburseDepReqName = this.user.userFullname;
+      // departmentUserID = this.user.userID;
+      
+      // if (
+      //   this.user.userID != this.disburse.departmentHeadUserID &&
+      //   this.user.userID != this.disburse.pjdepartmentHeadUserID
+      // ) {
+      //   departmentUserExpos = "รักษาราชการแทน";
+      // }
+      disburseDepReqName = this.departmentuser.userFullname;
+      departmentUserID = this.departmentuser.userID;
 
       let planCheck = await this.getDepartmentHead("Plan");
       let parcCheck = await this.getDepartmentHead("Parcel");
@@ -1515,6 +1523,7 @@ export default {
       let finaCheck = await this.getDepartmentHead("Finance");
       let dediPlan = await this.getPartyHead("ยุทธศาสตร์และแผนงาน");
       let dediResource = await this.getPartyHead("บริหารทรัพยากร");
+      let director = await this.getPartyHead("อำนวยการ");
 
       let disburseUpdate = await this.$axios.$post("disburse.update.php", {
         token: this.$store.state.jwtToken,
@@ -1535,6 +1544,7 @@ export default {
         finaUserID: finaCheck.departmentHeadUserID,
         dediPlanName: dediPlan.partyHeadFullname,
         dediResourceName: dediResource.partyHeadFullname,
+        directorName: director.partyHeadFullname,
         disburseDepReqName: disburseDepReqName,
         departmentUserID: departmentUserID,
         departmentUserExpos: departmentUserExpos,
@@ -1693,6 +1703,7 @@ export default {
         finaUserID: 0,
         dediPlanName: "",
         dediResourceName: "",
+        directorName: "",
         disburseDepReqName: disburseDepReqName,
         departmentUserID: departmentUserID,
         departmentUserExpos: departmentUserExpos,

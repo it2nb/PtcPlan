@@ -564,7 +564,7 @@
                   &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                 </div>
                 <div class="font16 text-center">
-                  ({{ disburse.directorName }}) <br />วันที่
+                  ({{ disburse.directorName? disburse.directorName : director.partyHeadFullname }}) <br />วันที่
                   ........./........./.........
                 </div>
               </td>
@@ -1468,6 +1468,7 @@ export default {
       disburseDepartmentSign: null,
       disbursePartySign: null,
       pjdepartmentSign: null,
+      director: {},
       pjpartySign: null,
       parcSign: null,
       planSign: null,
@@ -1484,6 +1485,7 @@ export default {
     this.disburseID = this.$route.query.id;
     this.state = this.$store.state;
     await this.getDisburse();
+    this.director = await this.getPartyHead('อำนวยการ');
   },
 
   methods: {
@@ -1579,6 +1581,21 @@ export default {
           );
         }
       }
+    },
+
+    async getPartyHead(partyName) {
+      let party = {};
+      let result = await this.$axios.$get("party.php", {
+        params: {
+          token: this.$store.state.jwtToken,
+          partyName: partyName,
+        },
+      });
+
+      if (result.message == "Success") {
+        party = JSON.parse(JSON.stringify(result.party));
+      }
+      return party;
     },
 
     async getDepartmentSignature(userID) {
