@@ -1,39 +1,41 @@
 // @import url('https://fonts.googleapis.com/css2?family=Niramit:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Prompt:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Sarabun:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
 
-*, body {
+*,
+body {
   font-family: Prompt;
   font-weight: 300;
 }
 
 pre {
-  white-space: pre-wrap;       /* Since CSS 2.1 */
-  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-  white-space: -pre-wrap;      /* Opera 4-6 */
-  white-space: -o-pre-wrap;    /* Opera 7 */
-  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
 tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, .04);
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
-.tableNormal, .tableNormal td, .tableNormal th  {
+.tableNormal,
+.tableNormal td,
+.tableNormal th {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 2px;
-
 }
 
 .headerBg {
-  background-color: #B71C1C;
+  background-color: #b71c1c;
 }
 
 .ptcBg {
-  background-color: #A90D1A;
+  background-color: #a90d1a;
 }
 
 .ptcColor {
-  color: #A90D1A;
+  color: #a90d1a;
 }
 
 .fontPrompt {
@@ -60,34 +62,34 @@ tbody tr:nth-of-type(odd) {
 }
 
 .fontRedPtc {
-  color: #A70D19;
+  color: #a70d19;
 }
 
 .bgRedPtc {
-  background-color: #A70D19;
+  background-color: #a70d19;
 }
 
 .mainTitle > h1 {
-  color: #E53935;
+  color: #e53935;
   border: solid 1px red;
   padding: 15px 0px;
 }
 
 .mainTitle > h3 {
   color: white;
-  background-color: #E53935;
+  background-color: #e53935;
   padding: 8px 0px;
 }
 
 .subTitle {
-  border-bottom: solid 3px#E53935  ;
+  border-bottom: solid 3px#E53935;
   padding: 5px 0px;
 }
 
 .subTitle > span {
   padding: 8px 25px 8px 15px;
   margin: 0px;
-  background-color: #E53935;
+  background-color: #e53935;
   color: white;
   // border-top-left-radius: 8px;
   border-top-right-radius: 25px;
@@ -99,7 +101,7 @@ tbody tr:nth-of-type(odd) {
   font-size: 11px;
   width: 21cm;
   min-height: 29.7cm;
-  border: 1px #D3D3D3 solid;
+  border: 1px #d3d3d3 solid;
   border-radius: 5px;
   background: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -119,7 +121,7 @@ tbody tr:nth-of-type(odd) {
   font-size: 11px;
   width: 21cm;
   min-height: 29.7cm;
-  border: 1px #D3D3D3 solid;
+  border: 1px #d3d3d3 solid;
   border-radius: 5px;
   background: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -139,7 +141,7 @@ tbody tr:nth-of-type(odd) {
   font-size: 11px;
   width: 29.1cm;
   min-height: 21cm;
-  border: 1px #D3D3D3 solid;
+  border: 1px #d3d3d3 solid;
   border-radius: 5px;
   background: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -219,7 +221,8 @@ tbody tr:nth-of-type(odd) {
   border-spacing: 0;
 }
 
-.printTable td,.printTable th {
+.printTable td,
+.printTable th {
   border: solid thin black;
   padding: 5px;
 }
@@ -230,6 +233,21 @@ tbody tr:nth-of-type(odd) {
 
 .krut2 {
   height: 3cm;
+}
+
+.thaiJustifiedText {
+  /* Step 1: Force standard line justification */
+  text-align: justify;
+
+  /* Step 2: Allow justification to distribute space between characters/syllables */
+  text-justify: inter-character;
+
+  /* Step 3: Tell the browser how to break lines smoothly without spaces */
+  line-break: loose;
+  word-break: keep-all;
+
+  /* ป้องกันข้อความล้นทะลุกล่อง (ถ้าคำยาวเกินไปจะยอมให้ตัดกลางคำ) */
+  overflow-wrap: break-word;
 }
 
 @media print {
@@ -357,7 +375,8 @@ tbody tr:nth-of-type(odd) {
     border: solid thin black;
   }
 
-  .printTable td,.printTable th {
+  .printTable td,
+  .printTable th {
     border: solid thin black;
     padding: 5px;
   }
@@ -370,7 +389,22 @@ tbody tr:nth-of-type(odd) {
     height: 3cm;
   }
 
+  .thaiJustifiedText {
+    /* Step 1: Force standard line justification */
+    text-align: justify;
+
+    /* Step 2: Allow justification to distribute space between characters/syllables */
+    text-justify: inter-character;
+
+    /* Step 3: Tell the browser how to break lines smoothly without spaces */
+    line-break: loose;
+    word-break: keep-all;
+
+    /* ป้องกันข้อความล้นทะลุกล่อง (ถ้าคำยาวเกินไปจะยอมให้ตัดกลางคำ) */
+    overflow-wrap: break-word;
+  }
+
   .noPrint {
-      display: none;
+    display: none;
   }
 }

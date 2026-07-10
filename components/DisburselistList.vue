@@ -210,7 +210,8 @@
               @submit.prevent="insertDisburselist"
               class="mt-4"
               v-if="
-                ((disburse.disburseStatus == 'เขียนซื้อ' &&
+                (((disburse.disburseStatus == 'เขียนซื้อ' ||
+                  disburse.disburseStatus == 'ขอซื้อ') &&
                   disburse.userID == user.userID) ||
                   disburse.disburseStatus == 'เขียนซื้อ' ||
                   (disburse.disburseStatus == 'ขอซื้อ' &&
@@ -408,7 +409,8 @@
               <template
                 v-slot:item.actions="{ item }"
                 v-if="
-                  ((disburse.disburseStatus == 'เขียนซื้อ' &&
+                  (((disburse.disburseStatus == 'เขียนซื้อ' ||
+                    disburse.disburseStatus == 'ขอซื้อ') &&
                     disburse.userID == user.userID) ||
                     disburse.disburseStatus == 'เขียนซื้อ' ||
                     (disburse.disburseStatus == 'ขอซื้อ' &&
@@ -1235,9 +1237,9 @@ export default {
 
       if (result.message == "Success") {
         this.disburse = JSON.parse(JSON.stringify(result.disburse));
-        if(this.disburse.disburseType == 'ค่าใช้จ่าย') {
+        if (this.disburse.disburseType == "ค่าใช้จ่าย") {
           await this.getDepartmentHeadUser(this.disburse.departmentID);
-        } else if (this.disburse.disburseType == 'โครงการ') {
+        } else if (this.disburse.disburseType == "โครงการ") {
           await this.getDepartmentHeadUser(this.disburse.pjdepartmentID);
         }
       }
@@ -1507,7 +1509,7 @@ export default {
       disburseStatus = "จัดส่งเอกสาร";
       // disburseDepReqName = this.user.userFullname;
       // departmentUserID = this.user.userID;
-      
+
       // if (
       //   this.user.userID != this.disburse.departmentHeadUserID &&
       //   this.user.userID != this.disburse.pjdepartmentHeadUserID

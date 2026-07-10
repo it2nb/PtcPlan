@@ -61,8 +61,8 @@
             </tr>
           </table>
         </v-col>
-        <v-col cols="12" class="pt-1 font16">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ด้วย{{
+        <v-col cols="12" class="pt-1 font16 thaiJustifiedText">
+          &emsp;&emsp;&emsp;ด้วย{{
             subDepartment(disburse.departmentName)
           }}
           มีความประสงค์จะจัด{{ disburse.disburseSubtype
@@ -97,9 +97,8 @@
             }})</span
           >
         </v-col>
-        <v-col cols="12" class="pt-1 font16">
-          &emsp;&emsp;&emsp;&emsp;&emsp;ดังนั้น
-          เพื่อให้การดำเนินงานเป็นไปด้วยความเรียบร้อย
+        <v-col cols="12" class="pt-1 font16 thaiJustifiedText">
+          &emsp;&emsp;&emsp;ดังนั้น เพื่อให้การดำเนินงานเป็นไปด้วยความเรียบร้อย
           จึงขออนุญาตดำเนินการและขออนุมัติงบประมาณ
           <span class="font16" v-if="disburse.disburseYear > 2025"
             >จำนวน {{ disburselists.length }} รายการ</span
@@ -114,13 +113,13 @@
           class="pt-1 font16"
           v-if="disburse.disburseYear <= 2025"
         >
-          &emsp;&emsp;&emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรด<br />
-          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;1. ทราบ <br />
-          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;2. พิจารณาอนุญาตดำเนินการ <br />
-          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;3. อนุมัติค่าใช้จ่ายตามโครงการ
+          &emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรด<br />
+          &emsp;&emsp;&emsp;&emsp;1. ทราบ <br />
+          &emsp;&emsp;&emsp;&emsp;2. พิจารณาอนุญาตดำเนินการ <br />
+          &emsp;&emsp;&emsp;&emsp;3. อนุมัติค่าใช้จ่ายตามโครงการ
         </v-col>
         <v-col cols="12" class="mb-1 pt-1 font16" v-else>
-          &emsp;&emsp;&emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรดพิจารณา
+          &emsp;&emsp;&emsp;จึงเรียนมาเพื่อโปรดพิจารณา
         </v-col>
         <v-col cols="12" v-if="disburse.disburseYear <= 2025">
           <v-row v-if="disburse.disburseType == 'ค่าใช้จ่าย'">
@@ -564,8 +563,11 @@
                   &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                 </div>
                 <div class="font16 text-center">
-                  ({{ disburse.directorName? disburse.directorName : director.partyHeadFullname }}) <br />วันที่
-                  ........./........./.........
+                  ({{
+                    disburse.directorName
+                      ? disburse.directorName
+                      : director.partyHeadFullname
+                  }}) <br />วันที่ ........./........./.........
                 </div>
               </td>
             </tr>
@@ -1485,7 +1487,7 @@ export default {
     this.disburseID = this.$route.query.id;
     this.state = this.$store.state;
     await this.getDisburse();
-    this.director = await this.getPartyHead('อำนวยการ');
+    this.director = await this.getPartyHead("อำนวยการ");
   },
 
   methods: {

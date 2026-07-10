@@ -1,39 +1,34 @@
 <template>
   <div style="line-height: 1.8">
-    <div class="printPage3x2" style="padding-left: 2cm;">
+    <div class="printPage3x2" style="padding-left: 2cm">
       <v-row no-gutters class="mb-2">
-        <v-col cols="12" align-self="end" class="text-center font18 font-weight-bold">
-            ใบเบิกเงิน{{ disburse.budgettypeName }} ({{ disburse.budgetplanDes }})
+        <v-col
+          cols="12"
+          align-self="end"
+          class="text-center font18 font-weight-bold"
+        >
+          ใบเบิกเงิน{{ disburse.budgettypeName }} ({{ disburse.budgetplanDes }})
         </v-col>
         <v-col cols="12" class="mt-5 font16 text-center" v-if="state">
-            ชื่อสถานศึกษา &emsp; {{ state.appSubTitle }} &emsp; สำนักงานคณะกรรมการการอาชีวศึกษา
+          ชื่อสถานศึกษา &emsp; {{ state.appSubTitle }} &emsp;
+          สำนักงานคณะกรรมการการอาชีวศึกษา
         </v-col>
         <v-col cols="12" class="font16 text-center">
-            ใบเบิกที่ ……………… / ……………… ลงวันที่ ……………… เดือน…………………พ.ศ………… <br>
-ข้าพเจ้าขอเบิกเงินงบประมาณ  ดังรายการต่อไปนี้ 
+          ใบเบิกที่ ……………… / ……………… ลงวันที่ ……………… เดือน…………………พ.ศ………… <br />
+          ข้าพเจ้าขอเบิกเงินงบประมาณ ดังรายการต่อไปนี้
         </v-col>
         <v-col cols="12" class="mt-3 font16">
           <table width="100%" class="tableNormal">
             <thead>
               <tr>
                 <th class="font16 font-weight-bold">
-                    หมวดรายจ่าย<br>ตามงบประมาณ 
+                  หมวดรายจ่าย<br />ตามงบประมาณ
                 </th>
-                <th class="font16 font-weight-bold">
-                  รายการ
-                </th>
-                <th class="font16 font-weight-bold">
-                  ใบสำคัญที่
-                </th>
-                <th class="font16 font-weight-bold">
-                  จำนวนเงิน
-                </th>
-                <th class="font16 font-weight-bold">
-                  รวมเงิน
-                </th>
-                <th class="font16 font-weight-bold">
-                  หมายเหตุ
-                </th>
+                <th class="font16 font-weight-bold">รายการ</th>
+                <th class="font16 font-weight-bold">ใบสำคัญที่</th>
+                <th class="font16 font-weight-bold">จำนวนเงิน</th>
+                <th class="font16 font-weight-bold">รวมเงิน</th>
+                <th class="font16 font-weight-bold">หมายเหตุ</th>
               </tr>
             </thead>
             <tbody>
@@ -62,101 +57,96 @@
                   {{ disburse.expenseName }}
                 </td>
                 <td class="font16">
-                  {{ disburse.disburseType=='โครงการ'? subDepartment(disburse.pjdepartmentName) : subDepartment(disburse.departmentName) }}
+                  {{
+                    disburse.disburseType == "โครงการ"
+                      ? subDepartment(disburse.pjdepartmentName)
+                      : subDepartment(disburse.departmentName)
+                  }}
                 </td>
-                <td class="font16 pl-2">
-                  
-                </td>
-                <td class="font16 text-right  text-no-wrap">
-                  
-                </td>
-                <td class="font16 text-right  text-no-wrap">
-                  
-                </td>
-                <td class="font16">
-                  
-                </td>
+                <td class="font16 pl-2"></td>
+                <td class="font16 text-right text-no-wrap"></td>
+                <td class="font16 text-right text-no-wrap"></td>
+                <td class="font16"></td>
               </tr>
               <tr>
                 <td></td>
-                <td class="font16">
-                  จำนวน {{ disburselists.length }} รายการ
-                </td>
-                <td class="font16 pl-2">
-                  
-                </td>
-                <td class="font16 text-right  text-no-wrap">
-                  
-                </td>
-                <td class="font16 text-right  text-no-wrap">
-                  
-                </td>
-                <td class="font16">
-                  
-                </td>
+                <td class="font16">จำนวน {{ disburselists.length }} รายการ</td>
+                <td class="font16 pl-2"></td>
+                <td class="font16 text-right text-no-wrap"></td>
+                <td class="font16 text-right text-no-wrap"></td>
+                <td class="font16"></td>
               </tr>
               <tr>
                 <td></td>
-                <td class="font16">
-                  กับ {{ disburse.companyName }}
-                </td>
-                <td class="font16 pl-2">
-                  
-                </td>
-                <td class="font16 text-right  text-no-wrap">
-                  
-                </td>
-                <td class="font16 text-right  text-no-wrap">
-                  
-                </td>
-                <td class="font16">
-                  
-                </td>
+                <td class="font16">กับ {{ disburse.companyName }}</td>
+                <td class="font16 pl-2"></td>
+                <td class="font16 text-right text-no-wrap"></td>
+                <td class="font16 text-right text-no-wrap"></td>
+                <td class="font16"></td>
               </tr>
               <tr>
                 <td></td>
                 <td colspan="3" class="font16 font-weight-bold">รวมทั้งสิ้น</td>
-                <td class="font16 text-right font-weight-bold">{{ moneyFormat(disburse.disburseMoney) }}</td>
+                <td class="font16 text-right font-weight-bold">
+                  {{ moneyFormat(disburse.disburseMoney) }}
+                </td>
                 <td></td>
               </tr>
               <tr>
                 <td></td>
-                <td colspan="5" class="font16 font-weight-bold">รวมทั้งสิ้น(อักษร) ({{ thaiBaht(disburse.disburseMoney) }})</td>
+                <td colspan="5" class="font16 font-weight-bold">
+                  รวมทั้งสิ้น(อักษร) ({{ thaiBaht(disburse.disburseMoney) }})
+                </td>
               </tr>
             </tbody>
           </table>
         </v-col>
         <v-col cols="6" class="mt-3 font16">
-          ได้ตรวจรายการจ่ายและใบสำคัญที่ขอเบิกมานี้<br>
-          รวม .................................ฉบับ เห็นถูกต้องแล้ว<br>
-          <div class="mt-2 font16">........................................ เจ้าหน้าที่</div>
-          (........................................)<br>
-          <div class="mt-2 font16">........................................รองผู้อำนวยการวิทยาลัย</div>
+          ได้ตรวจรายการจ่ายและใบสำคัญที่ขอเบิกมานี้<br />
+          รวม .................................ฉบับ เห็นถูกต้องแล้ว<br />
+          <div class="mt-2 font16">
+            ........................................ เจ้าหน้าที่
+          </div>
+          (........................................)<br />
+          <div class="mt-2 font16">
+            ........................................รองผู้อำนวยการวิทยาลัย
+          </div>
           ({{ dedirectorName }})
         </v-col>
-        <v-col cols="6" class="mt-3 font16">
-          ขอรับรองว่า การเบิกเงินตามรายการข้างต้นนี้ ได้ดำเนินการตามระเบียบกระทรวงการคลัง ว่าด้วยการจัดซื้อจัดจ้าง และการบริหารพัสดุภาครัฐ พ.ศ.2560 โดยวิธีเฉพาะเจาะจง เป็นการถูกต้องตามระเบียบแล้ว <br>
-          <div class="mt-2 font16">........................................ผู้เบิก</div>
+        <v-col cols="6" class="mt-3 font16 thaiJustifiedText">
+          ขอรับรองว่า การเบิกเงินตามรายการข้างต้นนี้
+          ได้ดำเนินการตามระเบียบกระทรวงการคลัง ว่าด้วยการจัดซื้อจัดจ้าง
+          และการบริหารพัสดุภาครัฐ พ.ศ.2560 โดยวิธีเฉพาะเจาะจง
+          เป็นการถูกต้องตามระเบียบแล้ว <br />
+          <div class="mt-2 font16">
+            ........................................ผู้เบิก
+          </div>
           ({{ disburse.disburseParcHead }})
         </v-col>
         <v-col cols="6" class="mt-3 font16">
-          <b class="font16 font-weight-bold">อนุมัติจ่ายได้</b><br>
-          <div class="mt-3 font16">........................................ผู้อำนวยการวิทยาลัย</div>
-          ({{ directorName ? directorName : '........................................' }})<br>
+          <b class="font16 font-weight-bold">อนุมัติจ่ายได้</b><br />
+          <div class="mt-3 font16">
+            ........................................ผู้อำนวยการวิทยาลัย
+          </div>
+          ({{
+            directorName
+              ? directorName
+              : "........................................"
+          }})<br />
           วันที่……….เดือน………………….พ.ศ…………
         </v-col>
         <v-col cols="6" class="mt-3 font16">
-          <br>
-          ........................................จ่ายเงิน<br>
-          ({{ disburse.disburseFinaHead }})<br>
+          <br />
+          ........................................จ่ายเงิน<br />
+          ({{ disburse.disburseFinaHead }})<br />
           วันที่……….เดือน………………….พ.ศ…………
         </v-col>
         <v-col cols="6" class="mt-3 font16">
-          ได้รับเงิน<br>
-          (………………………………………)<br>
-          ไว้ถูกต้องแล้ว<br>
+          ได้รับเงิน<br />
+          (………………………………………)<br />
+          ไว้ถูกต้องแล้ว<br />
           <div class="mt-2 font16">(……………………………………………) ผู้รับเงิน</div>
-          (……………………………………………)<br>
+          (……………………………………………)<br />
           วันที่…………เดือน…………………พ.ศ…………
         </v-col>
       </v-row>
@@ -164,110 +154,124 @@
   </div>
 </template>
 <script>
-var numeral = require('numeral')
-const { bahttext } = require('bahttext')
+var numeral = require("numeral");
+const { bahttext } = require("bahttext");
 export default {
-  layout: 'print_layout',
+  layout: "print_layout",
   data() {
     return {
-        state: null,
-        disburseID: null,
-        parcelName: null,
-        financeName: null,
-        dedirectorName: null,
-        directorName: null,
-        disburse: {},
-        disburselistall: [],
-        disburselists: [],
-        disburselistdis: [],
-        formDate: []
-    }
+      state: null,
+      disburseID: null,
+      parcelName: null,
+      financeName: null,
+      dedirectorName: null,
+      directorName: null,
+      disburse: {},
+      disburselistall: [],
+      disburselists: [],
+      disburselistdis: [],
+      formDate: [],
+    };
   },
 
   async mounted() {
-    this.disburseID = this.$route.query.id
-    this.state = this.$store.state
-    await this.getDisburse()
-    await this.getName()
+    this.disburseID = this.$route.query.id;
+    this.state = this.$store.state;
+    await this.getDisburse();
+    await this.getName();
   },
 
   methods: {
     async getDisburse() {
-        let disburseQuery = await this.$axios.$get('disburse.php', {
-            params: {
-                token: this.$store.state.jwtToken,
-                disburseID: this.disburseID
-            }
-        })
+      let disburseQuery = await this.$axios.$get("disburse.php", {
+        params: {
+          token: this.$store.state.jwtToken,
+          disburseID: this.disburseID,
+        },
+      });
 
-        if(disburseQuery.message == 'Success') {
-            this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse))
-            this.formDate = this.disburse.disburseDate.split('-')
+      if (disburseQuery.message == "Success") {
+        this.disburse = JSON.parse(JSON.stringify(disburseQuery.disburse));
+        this.formDate = this.disburse.disburseDate.split("-");
 
-            let disburselistQuery = await this.$axios.$get('disburselist.php', {
-              params: {
-                token: this.$store.state.jwtToken,
-                disburseID: this.disburseID
-              }
-            })
+        let disburselistQuery = await this.$axios.$get("disburselist.php", {
+          params: {
+            token: this.$store.state.jwtToken,
+            disburseID: this.disburseID,
+          },
+        });
 
-            if(disburselistQuery.message == 'Success') {
-              this.disburselistall = JSON.parse(JSON.stringify(disburselistQuery.disburselist))
-              this.disburselists = this.disburselistall.filter(disburselist => disburselist.disburselistPrice>=0)
-              this.disburselistdis = this.disburselistall.filter(disburselist => disburselist.disburselistPrice<0)
-            }
+        if (disburselistQuery.message == "Success") {
+          this.disburselistall = JSON.parse(
+            JSON.stringify(disburselistQuery.disburselist)
+          );
+          this.disburselists = this.disburselistall.filter(
+            (disburselist) => disburselist.disburselistPrice >= 0
+          );
+          this.disburselistdis = this.disburselistall.filter(
+            (disburselist) => disburselist.disburselistPrice < 0
+          );
         }
+      }
     },
 
     async getName() {
-      let token = this.$store.state.jwtToken
-      await this.$axios.$get('party.php', {
-        params: {
-          token: token,
-          partyName: 'อำนวยการ'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          this.directorName = result.party.partyHeadFullname
-        }
-      })
-
-      await this.$axios.$get('party.php', {
-        params: {
-          token: token,
-          partyName: 'บริหารทรัพยากร'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          this.dedirectorName = result.party.partyHeadFullname
-        }
-      })
-
-      await this.$axios.$get('department.php', {
-        params: {
-          token: token,
-          departmentSys: 'Parcel'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          if(result.department.length>0){
-            this.parcelName = result.department[0].departmentHeadFullname
+      let token = this.$store.state.jwtToken;
+      await this.$axios
+        .$get("party.php", {
+          params: {
+            token: token,
+            partyName: "อำนวยการ",
+          },
+        })
+        .then((result) => {
+          if (result.message == "Success") {
+            this.directorName = result.party.partyHeadFullname;
           }
-        }
-      })
+        });
 
-      await this.$axios.$get('department.php', {
-        params: {
-          token: token,
-          departmentSys: 'Finance'
-        }
-      }).then(result=> {
-        if(result.message == 'Success') {
-          if(result.department.length>0){
-            this.financeName = result.department[0].departmentHeadFullname
+      await this.$axios
+        .$get("party.php", {
+          params: {
+            token: token,
+            partyName: "บริหารทรัพยากร",
+          },
+        })
+        .then((result) => {
+          if (result.message == "Success") {
+            this.dedirectorName = result.party.partyHeadFullname;
           }
-        }
-      })
+        });
+
+      await this.$axios
+        .$get("department.php", {
+          params: {
+            token: token,
+            departmentSys: "Parcel",
+          },
+        })
+        .then((result) => {
+          if (result.message == "Success") {
+            if (result.department.length > 0) {
+              this.parcelName = result.department[0].departmentHeadFullname;
+            }
+          }
+        });
+
+      await this.$axios
+        .$get("department.php", {
+          params: {
+            token: token,
+            departmentSys: "Finance",
+          },
+        })
+        .then((result) => {
+          if (result.message == "Success") {
+            if (result.department.length > 0) {
+              this.financeName = result.department[0].departmentHeadFullname;
+            }
+          }
+        });
     },
 
     // async getOrgstartegics() {
@@ -299,63 +303,64 @@ export default {
     // },
 
     subDepartment(departmentName) {
-      if(departmentName) {
-        let subd = departmentName.substring(departmentName.indexOf("(") + 1, departmentName.lastIndexOf(")"))
-        if(subd){
-          return subd
+      if (departmentName) {
+        let subd = departmentName.substring(
+          departmentName.indexOf("(") + 1,
+          departmentName.lastIndexOf(")")
+        );
+        if (subd) {
+          return subd;
         } else {
-          return departmentName
+          return departmentName;
         }
       }
     },
 
     thaiDate(inDate) {
-      let result = ''
-      if(inDate) {
-        let thdate = new Date(inDate)
-        result = thdate.toLocaleDateString('th-TH', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
+      let result = "";
+      if (inDate) {
+        let thdate = new Date(inDate);
+        result = thdate.toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
       }
-      return result
+      return result;
     },
 
     thaiMonthShort(inDate) {
-      let result = ''
-      if(inDate) {
-        let thdate = new Date(inDate)
-        result = thdate.toLocaleDateString('th-TH', {
-          month: 'short',
-        })
+      let result = "";
+      if (inDate) {
+        let thdate = new Date(inDate);
+        result = thdate.toLocaleDateString("th-TH", {
+          month: "short",
+        });
       }
-      return result
+      return result;
     },
 
     moneyFormat(money) {
-      return numeral(money).format('0,0.00')
+      return numeral(money).format("0,0.00");
     },
 
-    qtyFormat(qty){
-      if(qty%1) {
-        return numeral(qty).format('0,0.00')
+    qtyFormat(qty) {
+      if (qty % 1) {
+        return numeral(qty).format("0,0.00");
       } else {
-        return numeral(qty).format('0,0')
+        return numeral(qty).format("0,0");
       }
     },
 
     thaiBaht(money) {
-      return bahttext(money)
-    }
-
-  }
-}
+      return bahttext(money);
+    },
+  },
+};
 </script>
 
 <style scoped>
-  
-  @page {
-    size: A4;
-  }
+@page {
+  size: A4;
+}
 </style>

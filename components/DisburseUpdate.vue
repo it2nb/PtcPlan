@@ -623,12 +623,14 @@ export default {
         this.updateData.disburseMoney = numeral(
           this.updateData.disburseMoney
         ).value();
+
         if (this.expensebudgets.length > 0) {
           let budgetplan = await this.expensebudgets.find(
             (budgetplan) =>
               budgetplan.expenseplanID == this.updateData.expenseplanID
           );
-          if (budgetplan.expenseID) {
+
+          if (budgetplan?.expenseID) {
             this.updateData.expenseID = budgetplan.expenseID;
           }
         }
